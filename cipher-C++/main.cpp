@@ -4,9 +4,6 @@
 #include "strings.h"
 
 int main() {
-	std::vector<std::string> words = fileLoaders::loadLines("D:/cipher-data/wordcountsbyfrequency.txt");
-	for (std::string word : words) {
-		std::cout << word << std::endl;
-	}
+	
 	return 0;
 }
