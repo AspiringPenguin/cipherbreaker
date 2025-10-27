@@ -19,7 +19,7 @@ namespace strings {
 			}
 		}
 
-		sections.push_back(string.substr(pos, string.length() - pos - 1));
+		sections.push_back(string.substr(pos, string.length() - pos));
 
 		return sections;
 	}

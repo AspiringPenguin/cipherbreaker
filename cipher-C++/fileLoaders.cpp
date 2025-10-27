@@ -40,6 +40,9 @@ namespace fileLoaders {
 	{
 		auto map = std::unordered_map<std::string, int>();
 		for (std::string line : loadLines(fileName)) {
+			if (line == "") {
+				continue;
+			}
 			auto items = strings::split(line, ",");
 			map[items[0]] = std::stoi(items[1]);
 		}
