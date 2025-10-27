@@ -1,4 +1,5 @@
 #include "fileLoaders.h"
+#include "strings.h"
 
 namespace fileLoaders {
 	std::string loadFile(std::string fileName) {
@@ -23,10 +24,7 @@ namespace fileLoaders {
 	}
 	std::vector<std::string> loadList(std::string fileName)
 	{
-		auto wordList = std::vector<std::string>();
-
 		std::string fileContents = loadFile(fileName);
-
-		return wordList;
+		return strings::split(fileContents, "\n");
 	}
 }
