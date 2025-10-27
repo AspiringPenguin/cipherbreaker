@@ -31,12 +31,20 @@ namespace fileLoaders {
 	std::unordered_map<std::string, int> loadMapInt(std::string fileName)
 	{
 		auto map = std::unordered_map<std::string, int>();
-		for (std::string line:loadLines())
-		return std::unordered_map<std::string, int>();
+		for (std::string line : loadLines(fileName)) {
+			auto items = strings::split(line, ",");
+			map[items[0]] = std::stoi(items[1]);
+		}
+		return map;
 	}
 
 	std::unordered_map<std::string, double> loadMapDouble(std::string fileName)
 	{
-		return std::unordered_map<std::string, double>();
+		auto map = std::unordered_map<std::string, double>();
+		for (std::string line : loadLines(fileName)) {
+			auto items = strings::split(line, ",");
+			map[items[0]] = std::stod(items[1]);
+		}
+		return map;
 	}
 }
