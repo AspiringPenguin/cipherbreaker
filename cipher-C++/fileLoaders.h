@@ -7,5 +7,5 @@
 namespace fileLoaders {
 	std::string loadFile(std::string fileName);
 
-	std::vector<std::string> loadList(std::string fileName);
+	std::vector<std::string> loadLines(std::string fileName);
 }

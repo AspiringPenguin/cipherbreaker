@@ -22,7 +22,7 @@ namespace fileLoaders {
 			return contents;
 		}
 	}
-	std::vector<std::string> loadList(std::string fileName)
+	std::vector<std::string> loadLines(std::string fileName)
 	{
 		std::string fileContents = loadFile(fileName);
 		return strings::split(fileContents, "\n");
