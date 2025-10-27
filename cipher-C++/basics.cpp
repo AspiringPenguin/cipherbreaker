@@ -2,7 +2,14 @@
 
 namespace basics {
 	std::string formatString(std::string inp) {
-		return "";
+		std::string newString = "";
+		for (char c : inp) {
+			c = tolower(c);
+			if (std::find(alphabet.begin(), alphabet.end(), c) != alphabet.end()) {
+				newString += c;
+			}
+		}
+		return newString;
 	}
 
 	std::unordered_map<char, int> createAlphabetMap()
