@@ -1,9 +1,12 @@
 #include <iostream>
 #include <string>
 #include "fileLoaders.h"
+#include "strings.h"
 
 int main() {
-	std::string contents = fileLoaders::loadFile("D:/cipher-data/corpus.txt");
-	std::cout << contents << std::endl;
+	std::string toSplit = "this,isnot,a,test,arewesure?";
+	for (std::string sub : strings::split(toSplit, ",")) {
+		std::cout << sub << std::endl;
+	}
 	return 0;
 }
