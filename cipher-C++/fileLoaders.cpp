@@ -39,7 +39,9 @@ namespace fileLoaders {
 
 	std::vector<std::string> loadVector (std::string fileName){ //Throws away values attached to the key
 		auto items = std::vector<std::string>();
-		for (std::string line : loadLines(fileName)) {
+		auto lines = loadLines(fileName);
+		items.reserve(lines.size());
+		for (std::string line : lines) {
 			items.push_back(strings::split(line, ",")[0]);
 		}
 		return items;
@@ -48,7 +50,9 @@ namespace fileLoaders {
 	std::unordered_map<std::string, int> loadMapInt(std::string fileName)
 	{
 		auto map = std::unordered_map<std::string, int>();
-		for (std::string line : loadLines(fileName)) {
+		auto lines = loadLines(fileName);
+		map.reserve(lines.size());
+		for (std::string line : lines) {
 			if (line == "") {
 				continue;
 			}
@@ -61,7 +65,9 @@ namespace fileLoaders {
 	std::unordered_map<std::string, double> loadMapDouble(std::string fileName)
 	{
 		auto map = std::unordered_map<std::string, double>();
-		for (std::string line : loadLines(fileName)) {
+		auto lines = loadLines(fileName);
+		map.reserve(lines.size());
+		for (std::string line : lines) {
 			auto items = strings::split(line, ",");
 			map[items[0]] = std::stod(items[1]);
 		}
