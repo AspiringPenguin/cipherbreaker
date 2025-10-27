@@ -1,5 +1,6 @@
 #pragma once
 #include "fileLoaders.h"
+#include <array>
 
 namespace corpus {
 	//Corpus
@@ -7,6 +8,9 @@ namespace corpus {
 
 	//Monogram frequencies 
 	static auto frequencies = fileLoaders::loadMapDouble("D:/cipher-data/lettercountsnospaces.txt");
+
+	std::array<double, 26> frequenciesAsArray(std::unordered_map<std::string, double> map);
+	static auto frequencyArray = frequenciesAsArray(frequencies);
 
 	//Word data
 	static auto wordFrequencies = fileLoaders::loadMapInt("D:/cipher-data/wordcountsbyfrequency.txt");
