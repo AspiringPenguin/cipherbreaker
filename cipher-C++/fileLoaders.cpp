@@ -28,6 +28,14 @@ namespace fileLoaders {
 		return strings::split(fileContents, "\n");
 	}
 
+	std::vector<std::string> loadVector (std::string fileName){ //Throws away values attached to the key
+		auto items = std::vector<std::string>();
+		for (std::string line : loadLines(fileName)) {
+			items.push_back(strings::split(line, ",")[0]);
+		}
+		return items;
+	}
+
 	std::unordered_map<std::string, int> loadMapInt(std::string fileName)
 	{
 		auto map = std::unordered_map<std::string, int>();
