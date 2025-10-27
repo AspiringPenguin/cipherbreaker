@@ -1,11 +1,13 @@
 #include "basics.h"
 
-std::unordered_map<char, int> basics::createAlphabetMap()
-{
-	auto map = std::unordered_map<char, int>();
+namespace basics {
+	std::unordered_map<char, int> createAlphabetMap()
+	{
+		auto map = std::unordered_map<char, int>();
 
-	for (int i = 0; i < 26; i++) {
-		map[alphabet[i]] = i;
+		for (int i = 0; i < 26; i++) {
+			map[alphabet[i]] = i;
+		}
+		return map;
 	}
-	return map;
 }
