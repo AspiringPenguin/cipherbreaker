@@ -27,4 +27,16 @@ namespace fileLoaders {
 		std::string fileContents = loadFile(fileName);
 		return strings::split(fileContents, "\n");
 	}
+
+	std::unordered_map<std::string, int> loadMapInt(std::string fileName)
+	{
+		auto map = std::unordered_map<std::string, int>();
+		for (std::string line:loadLines())
+		return std::unordered_map<std::string, int>();
+	}
+
+	std::unordered_map<std::string, double> loadMapDouble(std::string fileName)
+	{
+		return std::unordered_map<std::string, double>();
+	}
 }

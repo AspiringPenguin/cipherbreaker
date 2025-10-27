@@ -1,11 +1,16 @@
 #pragma once
-#include <vector>
 #include <fstream>
+#include <unordered_map>
 #include <iostream>
 #include <string>
+#include <vector>
 
 namespace fileLoaders {
 	std::string loadFile(std::string fileName);
 
 	std::vector<std::string> loadLines(std::string fileName);
+
+	std::unordered_map<std::string, int> loadMapInt(std::string fileName);
+
+	std::unordered_map<std::string, double> loadMapDouble(std::string fileName);
 }
