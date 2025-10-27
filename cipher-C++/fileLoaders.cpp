@@ -22,6 +22,7 @@ namespace fileLoaders {
 			return contents;
 		}
 	}
+
 	std::vector<std::string> loadLines(std::string fileName)
 	{
 		std::string fileContents = loadFile(fileName);
