@@ -10,13 +10,21 @@ namespace fileLoaders {
 			return "";
 		}
 		else {
-			char letter; //For reading the file
+			std::string line; //For reading the file
 
 			std::string contents = ""; //To return
 
+			bool skip = true;
+
 			while (!reader.eof()) {
-				reader.get(letter);
-				contents += letter;
+				getline(reader, line);
+				if (!skip) {
+					contents += "\n";
+				}
+				else {
+					skip = false;
+				}
+				contents += line;
 			}
 			reader.close();
 			return contents;
