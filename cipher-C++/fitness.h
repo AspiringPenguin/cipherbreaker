@@ -3,6 +3,8 @@
 #include <string>
 
 namespace fitness {
-	std::array<int, 26> monogramFrequencies(std::string text);
+	std::array<double, 26> monogramFrequencies(std::string text);
+	std::array<double, 26> monogramFrequencies(std::string text, int divisor);
 	double chi2(std::array<double, 26> expected, std::array<double, 26> actual);
+	double chi2Fitness(std::string text);
 }
