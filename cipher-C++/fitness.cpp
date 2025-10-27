@@ -1,7 +1,6 @@
 #include "basics.h"
 #include "corpus.h"
 #include "fitness.h"
-#include <iostream>
 
 namespace fitness {
 	std::array<double, 26> monogramFrequencies(std::string text) {
@@ -51,5 +50,17 @@ namespace fitness {
 
 	double angleBetweenVectorsFitness(std::string text) {
 		return angleBetweenVectors(monogramFrequencies(text), corpus::frequencyArray);
+	}
+
+	double tetragramFitness(std::string text) {
+		double tot = 0;
+		int n = text.length() - 3;
+		std::string tetra;
+		for (int i = 0; i < n; i++) {
+			tetra = text.substr(i, 4);
+			tot += corpus::tetragramLogarithms[tetra];
+		}
+		tot /= n;
+		return tot;
 	}
 }
