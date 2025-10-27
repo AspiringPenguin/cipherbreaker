@@ -30,6 +30,9 @@
     <ClCompile Include="fitness.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="basics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fileLoaders.h">
@@ -42,6 +45,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="fitness.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="basics.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

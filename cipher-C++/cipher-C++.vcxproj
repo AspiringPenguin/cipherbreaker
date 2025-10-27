@@ -123,6 +123,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="basics.cpp" />
     <ClCompile Include="corpus.cpp" />
     <ClCompile Include="fileLoaders.cpp" />
     <ClCompile Include="fitness.cpp" />
@@ -130,6 +131,7 @@
     <ClCompile Include="strings.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="basics.h" />
     <ClInclude Include="corpus.h" />
     <ClInclude Include="fileLoaders.h" />
     <ClInclude Include="fitness.h" />
