@@ -41,3 +41,4 @@
 *.dwo
 /cipher-C++/x64/Debug
 /.vs/cipherbreaker
+/cipher-C++/x64/Release
