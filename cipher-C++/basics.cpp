@@ -1,6 +1,10 @@
 #include "basics.h"
 
 namespace basics {
+	std::string formatString(std::string inp) {
+		return "";
+	}
+
 	std::unordered_map<char, int> createAlphabetMap()
 	{
 		auto map = std::unordered_map<char, int>();
