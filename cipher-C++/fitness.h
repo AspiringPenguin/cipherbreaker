@@ -11,4 +11,6 @@ namespace fitness {
 	double angleBetweenVectors(std::array<double, 26> vec1, std::array<double, 26> vec2);
 	double angleBetweenVectorsFitness(std::string text);
 	double tetragramFitness(std::string text);
+	double indexOfCoincidence(std::string text, int normalisationFactor);
+	double indexOfCoincidence(std::string text);
 }

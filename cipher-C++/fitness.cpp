@@ -63,4 +63,18 @@ namespace fitness {
 		tot /= n;
 		return tot;
 	}
+
+	double indexOfCoincidence(std::string text, int normalisationFactor) {
+		unsigned long long l = text.length();
+		auto freqs = monogramFrequencies(text);
+		double tot = 0;
+		for (int i = 0; i < 26; i++) {
+			tot += (freqs[i] * (freqs[i] - 1)) / (l * (l - 1));
+		}
+		return tot * normalisationFactor;
+	}
+
+	double indexOfCoincidence(std::string text) {
+		return indexOfCoincidence(text, 26);
+	}
 }
