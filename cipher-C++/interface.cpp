@@ -63,4 +63,9 @@ namespace cliInterface {
 		return menuItems[pos].run(cipher);
 	}
 
+	//Option to print the cipher
+	int outputCipher(std::string cipher) {
+		std::cout << cipher << std::endl;
+		return 0;
+	}
 }
