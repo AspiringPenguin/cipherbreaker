@@ -35,4 +35,20 @@ namespace monoalphabetic {
 			return encrypt(text, invertKey(key));
 		}
 	}
+
+	std::array<char, 26> stringToKey(std::string key) {
+		key = basics::formatString(key);
+
+		auto arr = std::array<char, 26>();
+
+		for (int i = 0; i < 26; i++) { //Each char in key
+			arr[i] = key[i];
+		}
+
+		return arr;
+	}
+
+	std::string atbash(std::string cipher) { //Reciprocal key
+		return encrypt(cipher, atbashKey);
+	}
 }
