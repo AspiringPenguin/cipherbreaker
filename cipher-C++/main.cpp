@@ -6,9 +6,13 @@
 #include "monoalphabetic.h"
 #include "strings.h"
 
+//Add test func if not a release build
+#ifdef TEST
 int testStuff(std::string cipher) {
+	std::cout << monoalphabetic::atbash(basics::formatString(cipher)) << std::endl;
 	return 2;
 }
+#endif
 
 int main() {
 	std::string cipher = cliInterface::getCipherInput();
@@ -17,7 +21,12 @@ int main() {
 
 	//Add menu options
 	menu.addMenuItem(cliInterface::MenuItem("Show cipher", *cliInterface::outputCipher));
+
+
+	//Add test func if not a release build
+	#ifdef TEST
 	menu.addMenuItem(cliInterface::MenuItem("Test stuff", *testStuff));
+	#endif
 
 	return menu.run();
 }
