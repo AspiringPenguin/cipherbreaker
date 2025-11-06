@@ -9,7 +9,7 @@
 //Add test func if not a release build
 #ifdef TEST
 int testStuff(std::string cipher) {
-	std::cout << monoalphabetic::atbash(basics::formatString(cipher)) << std::endl;
+	std::cout << cliInterface::offerDecryption("test decryption") << std::endl;
 	return 2;
 }
 #endif

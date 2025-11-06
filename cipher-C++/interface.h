@@ -4,6 +4,7 @@
 
 namespace cliInterface {
 	std::string getCipherInput();
+	bool offerDecryption(std::string text);
 	int outputCipher(std::string cipher);
 	int exit(std::string cipher);
 

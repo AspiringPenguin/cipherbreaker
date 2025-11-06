@@ -1,3 +1,4 @@
+#include "basics.h"
 #include "interface.h"
 #include <iostream>
 
@@ -18,6 +19,18 @@ namespace cliInterface {
 			getline(std::cin, inp);
 		}
 		return cipher;
+	}
+
+	bool offerDecryption(std::string text) {
+		std::cout << "Possible decryption:" << std::endl;
+		std::cout << text << std::endl;
+		std::cout << "Accept? (y/n) > ";
+		std::string inp;
+		getline(std::cin, inp);
+		if (basics::formatString(inp) == "y") {
+			return true;
+		}
+		return false;
 	}
 
 	//MenuItem
