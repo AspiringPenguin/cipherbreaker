@@ -13,5 +13,7 @@ namespace monoalphabetic {
 
 	std::string atbash(std::string cipher);
 
+	int cliAtbash(std::string cipher);
+
 	static std::array<char, 26> atbashKey = stringToKey("ZYXWVUTSRQPONMLKJIHGFEDCBA");
 }

@@ -22,6 +22,8 @@ int main() {
 	//Add menu options
 	menu.addMenuItem(cliInterface::MenuItem("Show cipher", *cliInterface::outputCipher));
 
+	menu.addMenuItem(cliInterface::MenuItem("Atbash", *monoalphabetic::cliAtbash));
+
 
 	//Add test func if not a release build
 	#ifdef TEST

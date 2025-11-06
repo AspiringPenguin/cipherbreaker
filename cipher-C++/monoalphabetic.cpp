@@ -1,5 +1,8 @@
 #include "basics.h"
+#include "fitness.h"
+#include "interface.h"
 #include "monoalphabetic.h"
+#include <iostream>
 
 namespace monoalphabetic {
 	std::string encrypt(std::string text, std::array<char, 26> key)
@@ -50,5 +53,18 @@ namespace monoalphabetic {
 
 	std::string atbash(std::string cipher) { //Reciprocal key
 		return encrypt(cipher, atbashKey);
+	}
+
+	int cliAtbash(std::string cipher) {
+		cipher = basics::formatString(cipher);
+
+		auto decrypted = atbash(cipher);
+
+		if (fitness::tetragramFitness(decrypted) > -18) {
+			if (cliInterface::offerDecryption(decrypted)) {
+				return 1;
+			}
+		}
+		return 0;
 	}
 }
