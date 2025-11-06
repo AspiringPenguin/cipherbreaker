@@ -28,5 +28,7 @@ int main() {
 	menu.addMenuItem(cliInterface::MenuItem("Test stuff", *testStuff));
 	#endif
 
-	return menu.run();
+	cliInterface::showMenu(menu);
+
+	return 0;
 }

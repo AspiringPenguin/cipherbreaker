@@ -5,6 +5,7 @@
 namespace cliInterface {
 	std::string getCipherInput();
 	int outputCipher(std::string cipher);
+
 	class MenuItem {
 		int (*func) (std::string);
 	public:
@@ -23,4 +24,7 @@ namespace cliInterface {
 		void addMenuItem(MenuItem i);
 		int run();
 	};
+
+
+	void showMenu(Menu menu);
 }

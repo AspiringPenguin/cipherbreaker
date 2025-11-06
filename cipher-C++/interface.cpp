@@ -68,4 +68,24 @@ namespace cliInterface {
 		std::cout << cipher << std::endl;
 		return 2;
 	}
+
+	void showMenu(Menu menu) {
+		int exitCode = menu.run();
+		if (exitCode == 0) {
+			std::cout << "FAILURE" << std::endl << std::endl;
+			showMenu(menu);
+		}
+		else if (exitCode == 1) {
+			std::cout << "SUCCESS" << std::endl << std::endl;
+			showMenu(menu);
+		}
+		else if (exitCode == 2) {
+			std::cout << "COMPLETE" << std::endl << std::endl;
+			showMenu(menu);
+		}
+		else if (exitCode == 3) {
+			std::cout << "FUNCTION IS WIP\nThe function has finished with no other relevant outcome." << std::endl << std::endl;
+			showMenu(menu);
+		}
+	}
 }
