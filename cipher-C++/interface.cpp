@@ -66,6 +66,6 @@ namespace cliInterface {
 	//Option to print the cipher
 	int outputCipher(std::string cipher) {
 		std::cout << cipher << std::endl;
-		return 0;
+		return 2;
 	}
 }
