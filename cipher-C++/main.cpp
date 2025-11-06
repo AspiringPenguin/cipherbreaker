@@ -28,6 +28,9 @@ int main() {
 	menu.addMenuItem(cliInterface::MenuItem("Test stuff", *testStuff));
 	#endif
 
+	//Finally, the exit code
+	menu.addMenuItem(cliInterface::MenuItem("Exit", *cliInterface::exit));
+
 	cliInterface::showMenu(menu);
 
 	return 0;

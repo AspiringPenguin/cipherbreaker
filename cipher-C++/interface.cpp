@@ -69,8 +69,15 @@ namespace cliInterface {
 		return 2;
 	}
 
+	int exit(std::string cipher) {
+		return -2;
+	}
+
 	void showMenu(Menu menu) {
 		int exitCode = menu.run();
+		if (exitCode == -2) {
+			return; //Exit here
+		}
 		if (exitCode == 0) {
 			std::cout << "FAILURE" << std::endl << std::endl;
 			showMenu(menu);
