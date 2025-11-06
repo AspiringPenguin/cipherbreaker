@@ -3,13 +3,16 @@
 #include "basics.h"
 #include "fileLoaders.h"
 #include "interface.h"
+#include "modularNumber.h"
 #include "monoalphabetic.h"
 #include "strings.h"
 
 //Add test func if not a release build
 #ifdef TEST
 int testStuff(std::string cipher) {
-	std::cout << cliInterface::offerDecryption("test decryption") << std::endl;
+	modularNumber m = 7;
+	m = 6;
+	std::cout << m << std::endl;
 	return 2;
 }
 #endif

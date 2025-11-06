@@ -185,6 +185,7 @@
     <ClCompile Include="fitness.cpp" />
     <ClCompile Include="interface.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="modularNumber.cpp" />
     <ClCompile Include="monoalphabetic.cpp" />
     <ClCompile Include="strings.cpp" />
   </ItemGroup>
@@ -194,6 +195,7 @@
     <ClInclude Include="fileLoaders.h" />
     <ClInclude Include="fitness.h" />
     <ClInclude Include="interface.h" />
+    <ClInclude Include="modularNumber.h" />
     <ClInclude Include="monoalphabetic.h" />
     <ClInclude Include="strings.h" />
   </ItemGroup>
