@@ -1,5 +1,9 @@
 #include "modularNumber.h"
 
+void modularNumber::update() {
+	value = value % modulus;
+}
+
 modularNumber::modularNumber(int n) {
 	value = n;
 	modulus = 26;

@@ -4,6 +4,9 @@
 class modularNumber {
 	int value;
 	int modulus;
+
+	void update();
+
 public:
 	modularNumber(int n);
 	modularNumber(int n, int m);
