@@ -24,6 +24,8 @@ int main() {
 
 	menu.addMenuItem(cliInterface::MenuItem("Atbash", *monoalphabetic::cliAtbash));
 
+	menu.addMenuItem(cliInterface::MenuItem("Caesar", *monoalphabetic::cliCaesarBruteForce));
+
 
 	//Add test func if not a release build
 	#ifdef TEST

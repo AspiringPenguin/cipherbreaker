@@ -11,9 +11,17 @@ namespace monoalphabetic {
 
 	std::array<char, 26> stringToKey(std::string key);
 
+	static std::array<char, 26> atbashKey = stringToKey("ZYXWVUTSRQPONMLKJIHGFEDCBA");
+
 	std::string atbash(std::string cipher);
 
 	int cliAtbash(std::string cipher);
 
-	static std::array<char, 26> atbashKey = stringToKey("ZYXWVUTSRQPONMLKJIHGFEDCBA");
+	std::string caesarEncrypt(std::string text, int n);
+
+	std::string caesarDecrypt(std::string cipher, int n);
+
+	std::string caesarBruteForce(std::string cipher);
+
+	int cliCaesarBruteForce(std::string cipher);
 }

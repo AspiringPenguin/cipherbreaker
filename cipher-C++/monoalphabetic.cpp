@@ -1,6 +1,7 @@
 #include "basics.h"
 #include "fitness.h"
 #include "interface.h"
+#include "modularNumber.h"
 #include "monoalphabetic.h"
 #include <iostream>
 
@@ -62,6 +63,43 @@ namespace monoalphabetic {
 
 		if (fitness::tetragramFitness(decrypted) > -18) {
 			if (cliInterface::offerDecryption(decrypted)) {
+				return 1;
+			}
+		}
+		return 0;
+	}
+
+	std::string caesarEncrypt(std::string text, int shift) {
+		return caesarDecrypt(text, 26-shift);
+	}
+
+	std::string caesarDecrypt(std::string cipher, int shift) {
+		std::string text = "";
+		modularNumber n;
+		for (char c : cipher) {
+			n = basics::alphabetIndex[c];
+			n += shift;
+			text += basics::alphabet[n];
+		}
+		return text;
+	}
+
+	std::string caesarBruteForce(std::string cipher) {
+		std::string decrypt;
+		for (int i = 1; i < 26; i++) {
+			decrypt = caesarDecrypt(cipher, i);
+			if (fitness::tetragramFitness(decrypt) > -15) {
+				return decrypt;
+			}
+		}
+		return "";
+	}
+
+	int cliCaesarBruteForce(std::string cipher) {
+		cipher = basics::formatString(cipher);
+		std::string decrypt = caesarBruteForce(cipher);
+		if (decrypt != "") {
+			if (cliInterface::offerDecryption(decrypt)) {
 				return 1;
 			}
 		}
