@@ -10,9 +10,6 @@
 //Add test func if not a release build
 #ifdef TEST
 int testStuff(std::string cipher) {
-	modularNumber m = 7;
-	m = 6;
-	std::cout << m << std::endl;
 	return 2;
 }
 #endif
