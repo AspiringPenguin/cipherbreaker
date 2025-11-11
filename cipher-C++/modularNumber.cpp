@@ -21,7 +21,7 @@ modularNumber::modularNumber(int n, int m) {
 	update();
 }
 
-modularNumber modularNumber::operator=(int& n) {
+void modularNumber::operator=(int& n) {
 	value = n;
 	update();
 }

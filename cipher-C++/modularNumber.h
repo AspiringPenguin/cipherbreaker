@@ -11,7 +11,7 @@ public:
 	modularNumber();
 	modularNumber(int n);
 	modularNumber(int n, int m);
-	modularNumber operator=(int& n);
+	void operator=(int& n);
 
 	modularNumber operator+(int& n);
 	modularNumber operator+(modularNumber& n);
