@@ -21,22 +21,28 @@ modularNumber modularNumber::operator=(int& n) {
 	update();
 }
 
-modularNumber modularNumber::operator+(int& n) {
-	return modularNumber(value + n);
+modularNumber modularNumber::operator +(int& n) {
+	return modularNumber(value + n, modulus);
 }
 
-modularNumber modularNumber::operator+(modularNumber& n) {
-	return modularNumber(value + n.value);
+modularNumber modularNumber::operator +(modularNumber& n) {
+	return modularNumber(value + n.value, modulus);
 }
 
-modularNumber modularNumber::operator -(int& n)
-{
-	return modularNumber(value - n);
+modularNumber modularNumber::operator -(int& n){
+	return modularNumber(value - n, modulus);
 }
 
-modularNumber modularNumber::operator -(modularNumber& n)
-{
-	return modularNumber(value - n.value);
+modularNumber modularNumber::operator -(modularNumber& n){
+	return modularNumber(value - n.value, modulus);
+}
+
+modularNumber modularNumber::operator *(int& n) {
+	return modularNumber(value * n, modulus);
+}
+
+modularNumber modularNumber::operator *(modularNumber& n) {
+	return modularNumber(value * n.value, modulus);
 }
 
 std::ostream& operator<<(std::ostream& stream, const modularNumber& mNum) {
