@@ -4,6 +4,11 @@ void modularNumber::update() {
 	value = value % modulus;
 }
 
+modularNumber::modularNumber() {
+	value = 0;
+	modulus = 26;
+}
+
 modularNumber::modularNumber(int n) {
 	value = n;
 	modulus = 26;
@@ -27,6 +32,16 @@ modularNumber modularNumber::operator +(int& n) {
 
 modularNumber modularNumber::operator +(modularNumber& n) {
 	return modularNumber(value + n.value, modulus);
+}
+
+void modularNumber::operator+=(int n){
+	value += n;
+	update();
+}
+
+void modularNumber::operator+=(modularNumber n) {
+	value += n.value;
+	update();
 }
 
 modularNumber modularNumber::operator -(int& n){
