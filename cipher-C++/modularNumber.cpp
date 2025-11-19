@@ -44,6 +44,10 @@ void modularNumber::operator+=(modularNumber n) {
 	update();
 }
 
+modularNumber modularNumber::operator -() {
+	return modularNumber(modulus - value, modulus);
+}
+
 modularNumber modularNumber::operator -(int& n){
 	return modularNumber(value - n, modulus);
 }

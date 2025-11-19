@@ -19,6 +19,7 @@ public:
 	void operator+=(int n);
 	void operator+=(modularNumber n);
 
+	modularNumber operator - ();
 	modularNumber operator - (int& n);
 	modularNumber operator - (modularNumber& n);
 
