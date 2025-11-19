@@ -21,4 +21,27 @@ namespace basics {
 		}
 		return map;
 	}
+
+	int lcm(int a, int b)
+	{
+		return a * b / hcf(a, b);
+	}
+
+	int hcf(int a, int b)
+	{
+		int _;
+		while (b != 0) {
+			a = a % b;
+			_ = a;
+			a = b;
+			b = _;
+		}
+
+		return a;
+	}
+
+	bool coprime(int a, int b)
+	{
+		return hcf(a, b) == 1;
+	}
 }

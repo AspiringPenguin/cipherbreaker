@@ -10,6 +10,9 @@
 //Add test func if not a release build
 #ifdef TEST
 int testStuff(std::string cipher) {
+	std::cout << basics::hcf(384, 912) << std::endl;
+	std::cout << basics::lcm(123, 456) << std::endl;
+	std::cout << basics::coprime(77, 57) << std::endl;
 	return 2;
 }
 #endif
