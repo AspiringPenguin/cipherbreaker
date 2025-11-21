@@ -1,4 +1,5 @@
 #include "basics.h"
+#include <iostream>
 
 namespace basics {
 	std::string formatString(std::string inp) {
@@ -43,5 +44,32 @@ namespace basics {
 	bool coprime(int a, int b)
 	{
 		return hcf(a, b) == 1;
+	}
+
+	int multiplicativeInverse(int n, int modulus) {
+		int t = 0;
+		int tPrime = 1;
+		int r = modulus;
+		int rPrime = n;
+		int q;
+		int _;
+
+		while (rPrime != 0) {
+			q = r / rPrime;
+			_ = tPrime;
+			tPrime = t - (q * tPrime);
+			t = _;
+			_ = rPrime;
+			rPrime = r - (q * rPrime);
+			r = _;
+		}
+
+		if (r > 1) {
+			return -1;
+		}
+		if (t < 0) {
+			t += modulus;
+		}
+		return t;
 	}
 }

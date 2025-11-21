@@ -16,4 +16,6 @@ namespace basics {
 	int hcf(int a, int b);
 
 	bool coprime(int a, int b);
+
+	int multiplicativeInverse(int n, int modulus);
 }
