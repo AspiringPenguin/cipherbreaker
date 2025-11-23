@@ -58,7 +58,7 @@ namespace fitness {
 		std::string tetra;
 		for (int i = 0; i < n; i++) {
 			tetra = text.substr(i, 4);
-			tot += corpus::tetragramLogarithms[tetra];
+			tot += corpus::tetragramLogarithms[tetra.c_str()];
 		}
 		tot /= n;
 		return tot;

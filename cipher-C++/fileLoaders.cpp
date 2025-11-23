@@ -73,4 +73,16 @@ namespace fileLoaders {
 		}
 		return map;
 	}
+
+	std::unordered_map<std::string, double> loadMapDoubleCStr(std::string fileName)
+	{
+		auto map = std::unordered_map<std::string, double>();
+		auto lines = loadLines(fileName);
+		map.reserve(lines.size());
+		for (std::string line : lines) {
+			auto items = strings::split(line, ",");
+			map[items[0].c_str()] = std::stod(items[1]);
+		}
+		return map;
+	}
 }
