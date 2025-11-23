@@ -4,6 +4,7 @@
 #include "modularNumber.h"
 #include "monoalphabetic.h"
 #include <iostream>
+#include <random>
 
 namespace monoalphabetic {
 	std::string encrypt(std::string text, std::array<char, 26> key)
@@ -163,5 +164,56 @@ namespace monoalphabetic {
 			}
 		}
 		return 0;
+	}
+
+	std::string hillClimber(std::string cipher, int limit) {
+		auto parentKey = stringToKey("abcdefghijklmnopqrstuvwxyz");
+		auto parentPlain = decrypt(cipher, parentKey, true);
+		double parentFitness = fitness::tetragramFitness(parentPlain);
+		int counter = 0;
+		std::array<char, 26> childKey;
+		std::string childPlain;
+		double childFitness;
+
+		//Set up for random
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<> dist(0, 25);
+
+		int a, b, _;
+
+		while (counter < limit) {
+			childKey = parentKey;
+			childPlain = parentPlain;
+
+			a = dist(gen);
+			b = dist(gen);
+			_ = childKey[a];
+			childKey[a] = childKey[b];
+			childKey[b] = _;
+
+			//childPlain = decrypt(cipher, childKey, true);
+			for (int i = 0; i < childPlain.size(); i++) {
+				if (childPlain[i] == childKey[a]) {
+					childPlain[i] = childKey[b];
+				}
+				else if (childPlain[i] == childKey[b]) {
+					childPlain[i] = childKey[a];
+				}
+			}
+
+			
+			childFitness = fitness::tetragramFitness(childPlain);
+			if (childFitness > parentFitness) {
+				parentFitness = childFitness;
+				parentKey = childKey;
+				parentPlain = childPlain;
+				counter = 0;
+			}
+
+			counter++;
+		}
+		std::cout << parentFitness << std::endl;
+		return parentPlain;
 	}
 }

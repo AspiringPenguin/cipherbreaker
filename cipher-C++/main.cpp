@@ -11,7 +11,7 @@
 #ifdef TEST
 int testStuff(std::string cipher) {
 	std::string text = basics::formatString(cipher);
-	std::cout << monoalphabetic::affineBruteForce(text) << std::endl;
+	std::cout << monoalphabetic::hillClimber(text) << std::endl;
 	return 2;
 }
 #endif

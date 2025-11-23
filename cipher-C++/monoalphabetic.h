@@ -1,6 +1,7 @@
 #pragma once
 #include <array>
 #include <string>
+#include <random>
 
 namespace monoalphabetic {
 	std::string encrypt(std::string text, std::array<char, 26> key);
@@ -36,4 +37,6 @@ namespace monoalphabetic {
 	std::string affineBruteForce(std::string cipher);
 
 	int cliAffineBruteForce(std::string cipher);
+
+	std::string hillClimber(std::string cipher, int limit = 100000);
 }
