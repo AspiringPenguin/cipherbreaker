@@ -105,4 +105,53 @@ namespace monoalphabetic {
 		}
 		return 0;
 	}
+
+	std::string affineEncrypt(std::string text, int a, int b) {
+		std::string result = "";
+		modularNumber n;
+		for (char c : text) {
+			n = basics::alphabetIndex[c];
+			n = n * a;
+			n += b;
+			result += basics::alphabet[n.getValue()];
+		}
+		return result;
+	}
+
+	std::string affineDecrypt(std::string text, int a, int b) {
+		a = basics::multiplicativeInverse(a, 26);
+		std::string result = "";
+		modularNumber n;
+		for (char c : text) {
+			n = basics::alphabetIndex[c];
+			n = n * a;
+			n = n - b;
+			result += basics::alphabet[n.getValue()];
+		}
+		return result;
+	}
+
+	std::string affineBruteForce(std::string cipher) {
+		std::string decryptedText;
+		for (int a : affineKeys) {
+			for (int b = 0; b < 26; b++) {
+				decryptedText = affineDecrypt(cipher, a, b);
+				if (fitness::tetragramFitness(decryptedText) > -15) {
+					return decryptedText;
+				}
+			}
+		}
+		return "";
+	}
+
+	int cliAffineBruteForce(std::string cipher) {
+		cipher = basics::formatString(cipher);
+		auto decryption = affineBruteForce(cipher);
+		if (decryption != "") {
+			if (cliInterface::offerDecryption(decryption)) {
+				return 1;
+			}
+		}
+		return 0;
+	}
 }
