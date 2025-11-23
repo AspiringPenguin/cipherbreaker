@@ -2,6 +2,9 @@
 
 void modularNumber::update() {
 	value = value % modulus;
+	while (value < 0) {
+		value += modulus;
+	}
 }
 
 modularNumber::modularNumber() {
@@ -67,4 +70,8 @@ modularNumber modularNumber::operator *(modularNumber& n) {
 std::ostream& operator<<(std::ostream& stream, const modularNumber& mNum) {
 	stream << mNum.value;
 	return stream;
+}
+
+int modularNumber::getValue() {
+	return value;
 }

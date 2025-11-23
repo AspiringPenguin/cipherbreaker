@@ -26,6 +26,8 @@ public:
 	modularNumber operator*(int& n);
 	modularNumber operator*(modularNumber& n);
 
+	int getValue();
+
 	operator int() {
 		return value;
 	}
