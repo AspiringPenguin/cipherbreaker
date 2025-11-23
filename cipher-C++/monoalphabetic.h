@@ -11,6 +11,8 @@ namespace monoalphabetic {
 
 	std::array<char, 26> stringToKey(std::string key);
 
+	std::string keyToString(std::array<char, 26> key);
+
 	static std::array<char, 26> atbashKey = stringToKey("ZYXWVUTSRQPONMLKJIHGFEDCBA");
 
 	std::string atbash(std::string cipher);

@@ -52,6 +52,16 @@ namespace monoalphabetic {
 		return arr;
 	}
 
+	std::string keyToString(std::array<char, 26> key) {
+		std::string strKey = "";
+
+		for (char c : key) {
+			strKey += c;
+		}
+
+		return strKey;
+	}
+
 	std::string atbash(std::string cipher) { //Reciprocal key
 		return encrypt(cipher, atbashKey);
 	}
