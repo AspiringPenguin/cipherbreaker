@@ -19,6 +19,6 @@ namespace corpus {
 	static auto wordsAlphabetical = fileLoaders::loadVector("D:/cipher-data/wordcountsalphabetical.txt");
 
 	//Tetras
-	static auto tetragramLogarithms = fileLoaders::loadMapDoubleCStr("D:/cipher-data/tetras/nospacesalphabeticallogarithms.txt");
+	static auto tetragramLogarithms = fileLoaders::loadMapDouble("D:/cipher-data/tetras/nospacesalphabeticallogarithms.txt");
 	static auto tetragramArrays = tetragramsAsArray(tetragramLogarithms);
 }

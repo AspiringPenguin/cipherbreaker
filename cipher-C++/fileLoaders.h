@@ -15,5 +15,4 @@ namespace fileLoaders {
 	std::unordered_map<std::string, int> loadMapInt(std::string fileName);
 
 	std::unordered_map<std::string, double> loadMapDouble(std::string fileName);
-	std::unordered_map<std::string, double> loadMapDoubleCStr(std::string fileName);
 }
