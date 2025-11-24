@@ -10,7 +10,7 @@ namespace corpus {
 	static auto frequencies = fileLoaders::loadMapDouble("D:/cipher-data/lettercountsnospaces.txt");
 
 	std::array<double, 26> frequenciesAsArray(std::unordered_map<std::string, double> map);
-	std::vector<std::vector<std::vector<std::vector<double>>>> tetragramsAsArray(std::unordered_map<std::string, double> map);
+	std::vector<double> tetragramsAsArray(std::unordered_map<std::string, double> map);
 	static auto frequencyArray = frequenciesAsArray(frequencies);
 
 	//Word data
