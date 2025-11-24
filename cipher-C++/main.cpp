@@ -11,14 +11,18 @@
 //Add test func if not a release build
 #ifdef TEST
 int testStuff(std::string cipher) {
-	std::string text = basics::formatString(cipher);
-	for (int i = 0; i < 20; i++) {
-		auto start = std::chrono::high_resolution_clock::now();
-		std::cout << monoalphabetic::hillClimber(text) << std::endl;
-		auto end = std::chrono::high_resolution_clock::now();
-		auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-		std::cout << ms_int.count() << std::endl;
-	}
+	//std::string text = basics::formatString(cipher);
+	//for (int i = 0; i < 20; i++) {
+	//	auto start = std::chrono::high_resolution_clock::now();
+	//	//Something slow
+	//	//std::cout << monoalphabetic::hillClimber(text) << std::endl;
+	//	auto end = std::chrono::high_resolution_clock::now();
+	//	auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+	//	std::cout << ms_int.count() << std::endl;
+	//}
+
+	std::cout << strings::blocksToString(strings::getBlocks(basics::formatString(cipher), 4)) << std::endl;
+	std::cout << strings::columnsToString(strings::getColumns(basics::formatString(cipher), 4)) << std::endl;
 	return 2;
 }
 #endif

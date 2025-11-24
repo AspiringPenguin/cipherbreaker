@@ -23,4 +23,51 @@ namespace strings {
 
 		return sections;
 	}
+
+	std::vector<std::string> getBlocks(std::string string, int size) {
+		auto blocks = std::vector<std::string>();
+		int l = string.size();
+		blocks.reserve(l/size);
+		for (int i = 0; i < l; i += size) {
+			blocks.push_back(string.substr(i, size));
+		}
+		return blocks;
+	}
+
+	std::vector<std::string> getColumns(std::string string, int num) {
+		auto blocks = getBlocks(string, num);
+		auto columns = std::vector<std::string>(num, "");
+		for (std::string block : blocks) {
+			for (int i = 0; i < block.size(); i++) {
+				columns[i] += block[i];
+			}
+		}
+		return columns;
+	}
+
+	std::string blocksToString(std::vector<std::string> blocks) {
+		std::string result = "";
+		result.reserve(blocks.size() * blocks[0].size());
+		for (std::string block: blocks) {
+			result += block;
+		}
+		return result;
+	}
+
+	std::string columnsToString(std::vector<std::string> columns) {
+		std::string result = "";
+		int l = columns[0].size() - 1;
+		int m = columns.size();
+		for (int i = 0; i < l; i++) {
+			for (int j = 0; j < m; j++) {
+				result += columns[j][i];
+			}
+		}
+		for (int i = 0; i < m; i++) {
+			if (columns[i].size() == (l + 1)) {
+				result += columns[i][l];
+			}
+		}
+		return result;
+	}
 }
