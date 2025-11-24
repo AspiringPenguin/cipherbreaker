@@ -52,13 +52,13 @@ namespace fitness {
 		return angleBetweenVectors(monogramFrequencies(text), corpus::frequencyArray);
 	}
 
-	double tetragramFitness(std::string text) {
+	double tetragramFitness(std::string* text) {
 		double tot = 0;
-		int n = text.length() - 3;
+		int n = text->length() - 3;
 		std::string tetra;
 		const char *cStr;
 		for (int i = 0; i < n; i++) {
-			tetra = text.substr(i, 4); 
+			tetra = text->substr(i, 4); 
 			cStr = tetra.c_str();
 			tot += corpus::tetragramArrays[(cStr[0] - 97) * 17576 + (cStr[1] - 97) * 676 + (cStr[2] - 97) * 26 + (cStr[3] - 97)];
 		}

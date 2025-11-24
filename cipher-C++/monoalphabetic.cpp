@@ -72,7 +72,7 @@ namespace monoalphabetic {
 
 		auto decrypted = atbash(cipher);
 
-		if (fitness::tetragramFitness(decrypted) > -18) {
+		if (fitness::tetragramFitness(&decrypted) > -18) {
 			if (cliInterface::offerDecryption(decrypted)) {
 				return 1;
 			}
@@ -99,7 +99,7 @@ namespace monoalphabetic {
 		std::string decrypt;
 		for (int i = 1; i < 26; i++) {
 			decrypt = caesarDecrypt(cipher, i);
-			if (fitness::tetragramFitness(decrypt) > -15) {
+			if (fitness::tetragramFitness(&decrypt) > -15) {
 				return decrypt;
 			}
 		}
@@ -147,7 +147,7 @@ namespace monoalphabetic {
 		for (int a : affineKeys) {
 			for (int b = 0; b < 26; b++) {
 				decryptedText = affineDecrypt(cipher, a, b);
-				if (fitness::tetragramFitness(decryptedText) > -15) {
+				if (fitness::tetragramFitness(&decryptedText) > -15) {
 					return decryptedText;
 				}
 			}
@@ -169,7 +169,7 @@ namespace monoalphabetic {
 	std::string hillClimber(std::string cipher, int limit) {
 		auto parentKey = stringToKey("abcdefghijklmnopqrstuvwxyz");
 		auto parentPlain = decrypt(cipher, parentKey, true);
-		double parentFitness = fitness::tetragramFitness(parentPlain);
+		double parentFitness = fitness::tetragramFitness(&parentPlain);
 		int counter = 0;
 		std::array<char, 26> childKey;
 		std::string childPlain;
@@ -203,7 +203,7 @@ namespace monoalphabetic {
 			}
 
 			
-			childFitness = fitness::tetragramFitness(childPlain);
+			childFitness = fitness::tetragramFitness(&childPlain);
 			if (childFitness > parentFitness) {
 				parentFitness = childFitness;
 				parentKey = childKey;
