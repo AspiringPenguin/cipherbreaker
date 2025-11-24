@@ -1,3 +1,4 @@
+#include <chrono>
 #include <iostream>
 #include <string>
 #include "basics.h"
@@ -11,7 +12,13 @@
 #ifdef TEST
 int testStuff(std::string cipher) {
 	std::string text = basics::formatString(cipher);
-	std::cout << monoalphabetic::hillClimber(text) << std::endl;
+	for (int i = 0; i < 20; i++) {
+		auto start = std::chrono::high_resolution_clock::now();
+		std::cout << monoalphabetic::hillClimber(text) << std::endl;
+		auto end = std::chrono::high_resolution_clock::now();
+		auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+		std::cout << ms_int.count() << std::endl;
+	}
 	return 2;
 }
 #endif
