@@ -1,6 +1,7 @@
 #include "basics.h"
 #include "corpus.h"
 #include "fitness.h"
+#include "strings.h"
 
 namespace fitness {
 	std::array<double, 26> monogramFrequencies(std::string text) {
@@ -73,6 +74,30 @@ namespace fitness {
 	}
 
 	double indexOfCoincidence(std::string text) {
-		return indexOfCoincidence(text, 26);
+		return indexOfCoincidence(text, 1);
+	}
+
+	double indexOfCoincidencePeriodic(std::string text, int n, int normalisationFactor) {
+		auto cols = strings::getColumns(text, n);
+		double avg = 0;
+		for (std::string col : cols) {
+			if (col.length() != 0) {
+				avg += indexOfCoincidence(col, normalisationFactor);
+			}
+		}
+		avg /= n;
+		return avg;
+	}
+
+	double indexOfCoincidencePeriodic(std::string text, int n) {
+		auto cols = strings::getColumns(text, n);
+		double avg = 0;
+		for (std::string col : cols) {
+			if (col.length() != 0) {
+				avg += indexOfCoincidence(col);
+			}
+		}
+		avg /= n;
+		return avg;
 	}
 }

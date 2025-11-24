@@ -13,4 +13,6 @@ namespace fitness {
 	double tetragramFitness(std::string* text);
 	double indexOfCoincidence(std::string text, int normalisationFactor);
 	double indexOfCoincidence(std::string text);
+	double indexOfCoincidencePeriodic(std::string text, int n, int normalisationFactor);
+	double indexOfCoincidencePeriodic(std::string text, int n);
 }

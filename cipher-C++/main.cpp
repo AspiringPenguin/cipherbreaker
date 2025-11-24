@@ -3,6 +3,7 @@
 #include <string>
 #include "basics.h"
 #include "fileLoaders.h"
+#include "fitness.h"
 #include "interface.h"
 #include "modularNumber.h"
 #include "monoalphabetic.h"
@@ -20,9 +21,10 @@ int testStuff(std::string cipher) {
 	//	auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 	//	std::cout << ms_int.count() << std::endl;
 	//}
-
-	std::cout << strings::blocksToString(strings::getBlocks(basics::formatString(cipher), 4)) << std::endl;
-	std::cout << strings::columnsToString(strings::getColumns(basics::formatString(cipher), 4)) << std::endl;
+	auto text = basics::formatString(cipher);
+	for (int i = 1; i < 20; i++) {
+		std::cout << i << " " << fitness::indexOfCoincidencePeriodic(text, i) << std::endl;
+	}
 	return 2;
 }
 #endif
