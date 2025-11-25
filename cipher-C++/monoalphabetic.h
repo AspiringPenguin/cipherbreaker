@@ -39,4 +39,5 @@ namespace monoalphabetic {
 	int cliAffineBruteForce(std::string cipher);
 
 	std::string hillClimber(std::string cipher, int limit = 100000);
+	int cliHillClimber(std::string cipher);
 }

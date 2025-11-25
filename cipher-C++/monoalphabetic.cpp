@@ -216,4 +216,15 @@ namespace monoalphabetic {
 		std::cout << parentFitness << std::endl;
 		return parentPlain;
 	}
+
+	int cliHillClimber(std::string cipher) {
+		cipher = basics::formatString(cipher);
+		auto result = hillClimber(cipher);
+		if (fitness::tetragramFitness(&result) > -15) {
+			if (cliInterface::offerDecryption(result)) {
+				return 1;
+			}
+		}
+		return 0;
+	}
 }
