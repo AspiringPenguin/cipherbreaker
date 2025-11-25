@@ -68,15 +68,46 @@ namespace periodic {
 	}
 
 	std::string hillClimber(std::string cipher, int keySize) {
+		//Tidy up the cipher
 		cipher = basics::formatString(cipher);
-		return "";
+
+		//Generate best key
+		auto alphabetKey = monoalphabetic::stringToKey(basics::alphabet);
+		auto bestKey = std::vector<std::array<char, 26>>();
+		for (int i = 0; i < keySize; i++) {
+			bestKey.push_back(alphabetKey);
+		}
+
+		//Set up the outer variables
+		int bigCounter = 0;
+
+		double bestFitness = fitness::tetragramFitness(&polyalphabeticDecrypt(cipher, bestKey, false));
+
+		int limit = (keySize * keySize) * 100000;
+
+		//Set up for vars in loops
+		int littleCounter;
+		std::vector<std::array<char, 26>> parentKey;
+		std::vector<std::array<char, 26>> childKey;
+		double parentFitness;
+		double childFitness;
+		int x, y;
+
+		//Actual loop
+		while (bigCounter < limit) {
+			for (int i = 0; i < keySize; i++) {
+
+			}
+		}
 	}
 
 	std::string hillClimber(std::string cipher) {
+		//Get key size
 		int keySize = getKeySize(cipher);
 		if (keySize == -1) {
 			return "";
 		}
+		
 		return hillClimber(cipher, keySize);
 	}
 }
