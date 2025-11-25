@@ -4,6 +4,7 @@
 #include "monoalphabetic.h"
 #include "periodic.h"
 #include "strings.h"
+#include <iostream>
 
 namespace periodic {
 	int getKeySize(std::string cipher) {
@@ -56,8 +57,19 @@ namespace periodic {
 		return 0;
 	}
 
+	std::string polyalphabeticDecrypt(std::string cipher, std::vector<std::array<char, 26>> key, bool encryptionKey) {
+		int n = key.size();
+		auto cols = strings::getColumns(cipher, n);
+		auto newCols = std::vector<std::string>();
+		for (int i = 0; i < n; i++){
+			newCols.push_back(monoalphabetic::decrypt(cols[i], key[i], encryptionKey));
+		}
+		return strings::columnsToString(newCols);
+	}
+
 	std::string hillClimber(std::string cipher, int keySize) {
 		cipher = basics::formatString(cipher);
+		return "";
 	}
 
 	std::string hillClimber(std::string cipher) {

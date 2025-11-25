@@ -8,6 +8,8 @@ namespace periodic {
 
 	int cliVigenere(std::string cipher);
 
+	std::string polyalphabeticDecrypt(std::string cipher, std::vector<std::array<char, 26>>, bool);
+
 	std::string hillClimber(std::string cipher, int keySize);
 	std::string hillClimber(std::string cipher);
 
