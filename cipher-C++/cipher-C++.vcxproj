@@ -187,6 +187,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="modularNumber.cpp" />
     <ClCompile Include="monoalphabetic.cpp" />
+    <ClCompile Include="periodic.cpp" />
     <ClCompile Include="strings.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -197,6 +198,7 @@
     <ClInclude Include="interface.h" />
     <ClInclude Include="modularNumber.h" />
     <ClInclude Include="monoalphabetic.h" />
+    <ClInclude Include="periodic.h" />
     <ClInclude Include="strings.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
