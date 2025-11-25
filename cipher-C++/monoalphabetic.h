@@ -26,6 +26,8 @@ namespace monoalphabetic {
 
 	std::string caesarBruteForce(std::string cipher);
 
+	std::string caesarMonogramBruteForce(std::string cipher);
+
 	int cliCaesarBruteForce(std::string cipher);
 
 	static int affineKeys[] = { 1, 3, 5, 7, 9, 11, 15, 17, 19, 21, 23, 25 };

@@ -7,6 +7,7 @@
 #include "interface.h"
 #include "modularNumber.h"
 #include "monoalphabetic.h"
+#include "periodic.h"
 #include "strings.h"
 
 //Add test func if not a release build
@@ -41,6 +42,8 @@ int main() {
 	menu.addMenuItem(cliInterface::MenuItem("Caesar", *monoalphabetic::cliCaesarBruteForce));
 	menu.addMenuItem(cliInterface::MenuItem("Affine Shift", *monoalphabetic::cliAffineBruteForce));
 	menu.addMenuItem(cliInterface::MenuItem("Monoalphabetic Hill Climber", *monoalphabetic::cliHillClimber));
+
+	menu.addMenuItem(cliInterface::MenuItem("Vignere", *periodic::cliVignere));
 
 
 	//Add test func if not a release build

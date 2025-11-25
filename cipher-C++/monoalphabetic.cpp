@@ -106,6 +106,17 @@ namespace monoalphabetic {
 		return "";
 	}
 
+	std::string caesarMonogramBruteForce(std::string cipher) {
+		std::string decrypt;
+		for (int i = 1; i < 26; i++) {
+			decrypt = caesarDecrypt(cipher, i);
+			if (fitness::angleBetweenVectorsFitness(decrypt) > 0.9) {
+				return decrypt;
+			}
+		}
+		return "";
+	}
+
 	int cliCaesarBruteForce(std::string cipher) {
 		cipher = basics::formatString(cipher);
 		std::string decrypt = caesarBruteForce(cipher);
