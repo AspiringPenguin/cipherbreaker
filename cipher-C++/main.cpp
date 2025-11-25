@@ -43,7 +43,7 @@ int main() {
 	menu.addMenuItem(cliInterface::MenuItem("Affine Shift", *monoalphabetic::cliAffineBruteForce));
 	menu.addMenuItem(cliInterface::MenuItem("Monoalphabetic Hill Climber", *monoalphabetic::cliHillClimber));
 
-	menu.addMenuItem(cliInterface::MenuItem("Vignere", *periodic::cliVignere));
+	menu.addMenuItem(cliInterface::MenuItem("Vigenere", *periodic::cliVigenere));
 
 
 	//Add test func if not a release build

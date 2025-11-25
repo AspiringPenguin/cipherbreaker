@@ -7,6 +7,7 @@
 
 namespace periodic {
 	std::string vignere(std::string cipher, int keyLen) {
+	std::string vigenere(std::string cipher, int keyLen) {
 		auto columns = strings::getColumns(cipher, keyLen);
 
 		auto decryptedColumns = std::vector<std::string>();
@@ -24,19 +25,19 @@ namespace periodic {
 		return strings::columnsToString(decryptedColumns);
 	}
 
-	std::string vignere(std::string cipher)
+	std::string vigenere(std::string cipher)
 	{
 		for (int i = 2; i < 21; i++) {
 			if (fitness::indexOfCoincidencePeriodic(cipher, i) > 0.06) {
 				return vignere(cipher, i);
 			}
 		}
-		return "";
+		return vigenere(cipher, keySize);
 	}
 
-	int cliVignere(std::string cipher) {
+	int cliVigenere(std::string cipher) {
 		cipher = basics::formatString(cipher);
-		auto result = vignere(cipher);
+		auto result = vigenere(cipher);
 		if (result == "") {
 			return 0;
 		}
