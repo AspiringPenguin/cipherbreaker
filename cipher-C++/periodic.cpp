@@ -6,7 +6,15 @@
 #include "strings.h"
 
 namespace periodic {
-	std::string vignere(std::string cipher, int keyLen) {
+	int getKeySize(std::string cipher) {
+		for (int i = 2; i < 21; i++) {
+			if (fitness::indexOfCoincidencePeriodic(cipher, i) > 0.06) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
 	std::string vigenere(std::string cipher, int keyLen) {
 		auto columns = strings::getColumns(cipher, keyLen);
 
@@ -27,10 +35,9 @@ namespace periodic {
 
 	std::string vigenere(std::string cipher)
 	{
-		for (int i = 2; i < 21; i++) {
-			if (fitness::indexOfCoincidencePeriodic(cipher, i) > 0.06) {
-				return vignere(cipher, i);
-			}
+		int keySize = getKeySize(cipher);
+		if (keySize == -1) {
+			return "";
 		}
 		return vigenere(cipher, keySize);
 	}
@@ -47,5 +54,17 @@ namespace periodic {
 			}
 		}
 		return 0;
+	}
+
+	std::string hillClimber(std::string cipher, int keySize) {
+		cipher = basics::formatString(cipher);
+	}
+
+	std::string hillClimber(std::string cipher) {
+		int keySize = getKeySize(cipher);
+		if (keySize == -1) {
+			return "";
+		}
+		return hillClimber(cipher, keySize);
 	}
 }
