@@ -8,6 +8,7 @@
 #include "modularNumber.h"
 #include "monoalphabetic.h"
 #include "periodic.h"
+#include "polybius.h"
 #include "strings.h"
 
 //Add test func if not a release build
@@ -22,9 +23,18 @@ int testStuff(std::string cipher) {
 	//	auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 	//	std::cout << ms_int.count() << std::endl;
 	//}
-	cipher = basics::formatString(cipher);
-	std::cout << periodic::hillClimber(cipher) << std::endl;
+	/*cipher = basics::formatString(cipher);
+	std::cout << periodic::hillClimber(cipher) << std::endl;*/
 	
+	polybius::polybius key;
+	key[0] = { 'a', 'b', 'c', 'd', 'e' };
+	key[1] = { 'f', 'g', 'h', 'i', 'j' };
+	key[2] = { 'k', 'l', 'm', 'n', 'o' };
+	key[3] = { 'p', 'q', 'r', 's', 't' };
+	key[4] = { 'u', 'v', 'w', 'y', 'z' };
+
+	polybius::playfairDecrypt(cipher, key);
+
 	return 2;
 }
 #endif
