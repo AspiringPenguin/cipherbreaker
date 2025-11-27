@@ -22,22 +22,9 @@ int testStuff(std::string cipher) {
 	//	auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 	//	std::cout << ms_int.count() << std::endl;
 	//}
-
-	/*OPKZVKVRZZKGVTYIMEGWSMIWOLKWPVZFZLHCTMFZVVHEGXZWOIHIYPRWJQT
-JVJKIZVLMSXPXCZKINRUMOZKQNMEIYCTFESBIICTXVPKLZUOHRMXLOMKRUY
-EHMMJWVXJVZXAXNXZSIMGVAIUMOBNIAMTOIISIYITLDNLVRMEHZKNMSJIEW
-TKAUMTLDALVRRTLAWXXUIZRYMIMCLVVVJRIPMGLZZ*/
-	auto text = basics::formatString(cipher);
-	std::vector<std::array<char, 26>> key = std::vector<std::array<char, 26>>();
-	key.push_back(monoalphabetic::stringToKey("VWXYZABCDEFGHIJKLMNOPQRSTU"));
-	key.push_back(monoalphabetic::stringToKey("IJKLMNOPQRSTUVWXYZABCDEFGH"));
-	key.push_back(monoalphabetic::stringToKey("GHIJKLMNOPQRSTUVWXYZABCDEF"));
-	key.push_back(monoalphabetic::stringToKey("EFGHIJKLMNOPQRSTUVWXYZABCD"));
-	key.push_back(monoalphabetic::stringToKey("NOPQRSTUVWXYZABCDEFGHIJKLM"));
-	key.push_back(monoalphabetic::stringToKey("EFGHIJKLMNOPQRSTUVWXYZABCD"));
-	key.push_back(monoalphabetic::stringToKey("RSTUVWXYZABCDEFGHIJKLMNOPQ"));
-	key.push_back(monoalphabetic::stringToKey("EFGHIJKLMNOPQRSTUVWXYZABCD"));
-	std::cout << periodic::polyalphabeticDecrypt(text, key, true) << std::endl;
+	cipher = basics::formatString(cipher);
+	std::cout << periodic::hillClimber(cipher) << std::endl;
+	
 	return 2;
 }
 #endif

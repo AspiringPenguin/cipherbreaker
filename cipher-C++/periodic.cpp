@@ -5,6 +5,7 @@
 #include "periodic.h"
 #include "strings.h"
 #include <iostream>
+#include <random>
 
 namespace periodic {
 	int getKeySize(std::string cipher) {
@@ -81,24 +82,82 @@ namespace periodic {
 		//Set up the outer variables
 		int bigCounter = 0;
 
-		double bestFitness = fitness::tetragramFitness(&polyalphabeticDecrypt(cipher, bestKey, false));
+		auto bestDecrypt = polyalphabeticDecrypt(cipher, bestKey, false);
 
-		int limit = (keySize * keySize) * 100000;
+		double bestFitness = fitness::tetragramFitness(&bestDecrypt);
+
+		int limit = (keySize * keySize) * 1000000;
 
 		//Set up for vars in loops
 		int littleCounter;
 		std::vector<std::array<char, 26>> parentKey;
+		std::array<char, 26> subKey;
 		std::vector<std::array<char, 26>> childKey;
 		double parentFitness;
+		std::string parentDecrypt;
 		double childFitness;
+		std::string childDecrypt;
 		int x, y;
+		char _;
+
+		//Set up for random
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<> dist(0, 25);
 
 		//Actual loop
 		while (bigCounter < limit) {
+			std::cout << bigCounter << std::endl;
 			for (int i = 0; i < keySize; i++) {
-
+				parentKey = bestKey;
+				std::shuffle(std::begin(parentKey[i]), std::end(parentKey[i]), gen);
+				parentDecrypt = polyalphabeticDecrypt(cipher, parentKey, false);
+				parentFitness = fitness::tetragramFitness(&parentDecrypt);
+				littleCounter = 0;
+				while (littleCounter < 1000) {
+					childKey = parentKey;
+					x = dist(gen);
+					y = dist(gen);
+					while (x == y) {
+						y = dist(gen);
+					}
+					_ = childKey[i][x];
+					#pragma warning( push )
+					#pragma warning( disable : 28020 )
+					childKey[i][x] = childKey[i][y]; //warning: ignore
+					#pragma warning( pop )
+					childKey[i][y] = _;
+					childDecrypt = polyalphabeticDecrypt(cipher, childKey, false);
+					childFitness = fitness::tetragramFitness(&childDecrypt);
+					if (childFitness > parentFitness) {
+						parentKey = childKey;
+						parentDecrypt = childDecrypt;
+						parentFitness = childFitness;
+						littleCounter = 0;
+					}
+					littleCounter++;
+					if (childFitness > bestFitness) {
+						std::cout << childFitness << std::endl;
+						bestDecrypt = childDecrypt;
+						bestKey = childKey;
+						bestFitness = childFitness;
+						bigCounter = 0;
+						if (bestFitness > -15) {
+							for (int n = 0; n < keySize; n++) {
+								std::cout << monoalphabetic::keyToString(monoalphabetic::invertKey(bestKey[n])) << std::endl;
+							}
+						}
+					}
+					bigCounter++;
+				}
 			}
 		}
+
+		for (int n = 0; n < keySize; n++) {
+			std::cout << monoalphabetic::keyToString(monoalphabetic::invertKey(bestKey[n])) << std::endl;
+		}
+
+		return polyalphabeticDecrypt(cipher, bestKey, false);
 	}
 
 	std::string hillClimber(std::string cipher) {
