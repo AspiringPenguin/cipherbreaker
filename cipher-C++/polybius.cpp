@@ -11,7 +11,7 @@
 
 namespace polybius {
     polybius makePolybius(std::string key) {
-        polybius result;
+        polybius result{ -1 };
         int y = 0;
         int x = -1;
         for (char c : key) {
@@ -113,7 +113,8 @@ namespace polybius {
     std::string playfairDecrypt(std::string text, polybius key)
     {
         std::string plain = "";
-        auto blocks = strings::getBlocks(text, 2);
+        plain.reserve(text.size());
+        //auto blocks = strings::getBlocks(text, 2);
 
         std::array<std::tuple<int, int>, 26> lookup;
         //Lookup table for char position
@@ -125,9 +126,10 @@ namespace polybius {
         std::tuple<int, int> pos1;
         std::tuple<int, int> newpos0;
         std::tuple<int, int> newpos1;
-        for (auto block : blocks) {
-            pos0 = lookup[block[0] - 97];
-            pos1 = lookup[block[1] - 97];
+        int l = text.size();
+        for (int i = 0; i < l; i+=2) {
+            pos0 = lookup[text[i] - 97];
+            pos1 = lookup[text[i+1] - 97];
             if (std::get<0>(pos0) == std::get<0>(pos1)) {
                 newpos0 = { std::get<0>(pos0), removeFive(std::get<1>(pos0) - 1) };
                 newpos1 = { std::get<0>(pos1), removeFive(std::get<1>(pos1) - 1) };
@@ -198,14 +200,19 @@ namespace polybius {
             switch (changeChoice(gen)) {
             case 1:
                 flipDiag(childKey);
+                break;
             case 2:
                 flipHoriz(childKey);
+                break;
             case 3:
                 flipDiag(childKey);
+                break;
             case 4:
                 swapRows(childKey, &dist, &gen);
+                break;
             case 5:
                 swapCols(childKey, &dist, &gen);
+                break;
             default:
                 swapElems(childKey, &dist, &gen);
             }
@@ -337,12 +344,15 @@ namespace polybius {
         std::mt19937 gen(rd());
 
         //Main loop
+        int n = 0;
         while (result == nullPolybius) {
             auto alphabetCopy = basics::alphabet;
             std::shuffle(alphabetCopy.begin(), alphabetCopy.end(), gen);
             key = makePolybius(alphabetCopy);
             result = playfairBacktracking(cipher, key);
+            n++;
         }
+        std::cout << n << std::endl;
         return result;
     }
 
