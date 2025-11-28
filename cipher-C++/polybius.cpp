@@ -1,5 +1,6 @@
 #include "basics.h"
 #include "fitness.h"
+#include "interface.h"
 #include "polybius.h"
 #include "strings.h"
 #include <array>
@@ -210,4 +211,142 @@ namespace polybius {
 
         return { bestKey, bestDecrypt };
     }
+
+    std::vector<polybius> getAllChildKeys(polybius key) {
+        auto keys = std::vector<polybius>();
+        polybius childKey;
+
+        //Swap two places
+        for (int y1 = 0; y1 < 5; y1++) {
+            for (int y2 = 0; y2 < 5; y2++) {
+                for (int x1 = 0; x1 < 5; x1++) {
+                    for (int x2 = 0; x2 < 5; x2++) {
+                        childKey = key;
+                        char _ = childKey[y1][x1];
+                        childKey[y1][x1] = childKey[y2][x2];
+                        childKey[y2][x2] = _;
+                        keys.push_back(childKey);
+                    }
+                }
+            }
+        }
+
+        //Swap rows
+        for (int y1 = 0; y1 < 5; y1++) {
+            for (int y2 = 0; y2 < 5; y2++) {
+                childKey = key;
+                auto _ = childKey[y1];
+                childKey[y1] = childKey[y2];
+                childKey[y2] = _;
+                keys.push_back(childKey);
+            }
+        }
+
+        //Swap cols
+        for (int x1 = 0; x1 < 5; x1++) {
+            for (int x2 = 0; x2 < 5; x2++) {
+                for (int i = 0; i < 5; i++) {
+                    childKey = key;
+                    auto _ = childKey[i][x1];
+                    childKey[i][x1] = childKey[i][x2];
+                    childKey[i][x2] = _;
+                    keys.push_back(childKey);
+                }
+            }
+        }
+
+        //Flips
+        childKey = key;
+        flipHoriz(childKey);
+        keys.push_back(childKey);
+
+        childKey = key;
+        flipVert(childKey);
+        keys.push_back(childKey);
+
+        childKey = key;
+        flipDiag(childKey);
+        keys.push_back(childKey);
+
+        return keys;
+    }
+
+    polybius playfairBacktracking(std::string cipher, polybius startKey) {
+        std::ios_base::sync_with_stdio(false); //Speed up io
+
+        //Get a starting point
+        auto decrypt = processPlayfairDecrypt(playfairDecrypt(cipher, startKey));
+        double fitness = fitness::tetragramFitness(&decrypt);
+        polybius bestKey = startKey;
+        double bestFitness = fitness;
+        double childFitness;
+
+        std::vector<polybius> children;
+        polybius bestChild;
+
+        while (true) {
+            children = getAllChildKeys(bestKey);
+            fitness = -100;
+            bestChild = nullPolybius;
+            for (polybius child : children) {
+                decrypt = processPlayfairDecrypt(playfairDecrypt(cipher, child));
+                childFitness = fitness::tetragramFitness(&decrypt);
+                if (childFitness > fitness) {
+                    fitness = childFitness;
+                    bestChild = child;
+                }
+            }
+            if (fitness > bestFitness) {
+                bestKey = bestChild;
+                bestFitness = fitness;
+            }
+            else if (bestFitness > -15) {
+                return bestKey;
+            }
+            else {
+                return nullPolybius;
+            }
+        }
+
+        std::ios_base::sync_with_stdio(true); //Speed up io
+        return bestKey;
+    }
+
+    //polybius playfairBacktracking(std::string cipher, polybius key, double rootFitness, int depth, int maxDepth) {
+    //    std::cout << rootFitness << std::endl;
+    //    if (depth == maxDepth) {
+    //        if (rootFitness > -15) {
+    //            return key;
+    //        }
+    //        return nullPolybius;
+    //    }
+    //    auto children = getAllChildKeys(key);
+    //    std::sort(children.begin(), children.end(), [cipher](polybius a, polybius b) -> bool {
+    //        std::string decrypta = processPlayfairDecrypt(playfairDecrypt(cipher, a));
+    //        std::string decryptb = processPlayfairDecrypt(playfairDecrypt(cipher, b));
+    //        return fitness::tetragramFitness(&decrypta) > fitness::tetragramFitness(&decryptb);
+    //    });
+    //    std::string decrypt;
+    //    double fitness;
+    //    polybius result;
+    //    for (const polybius& child : children) {
+    //        decrypt = processPlayfairDecrypt(playfairDecrypt(cipher, child));
+    //        fitness = fitness::tetragramFitness(&decrypt);
+    //        if (fitness > rootFitness) {
+    //            result = playfairBacktracking(cipher, child, fitness, depth+1, maxDepth);
+    //            if (result != nullPolybius) {
+    //                return result;
+    //            }
+    //        }
+    //        else {
+    //            break; //Pre-sorted
+    //        }
+    //    }
+    //    if (rootFitness > -15) {
+    //        return key;
+    //    }
+    //    return nullPolybius;
+    //}
+
+
 }

@@ -45,6 +45,9 @@
     <ClCompile Include="periodic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="polybius.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fileLoaders.h">
@@ -73,6 +76,9 @@
     </ClInclude>
     <ClInclude Include="periodic.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="polybius.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
