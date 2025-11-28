@@ -1,5 +1,6 @@
-#include "polybius.h"
 #include "basics.h"
+#include "fitness.h"
+#include "polybius.h"
 #include "strings.h"
 #include <array>
 #include <iostream>
@@ -62,6 +63,40 @@ namespace polybius {
 
     std::string playfairHillClimber(std::string cipher)
     {
-        return std::string();
+        cipher = basics::formatString(cipher);
+        polybius bestKey;
+        bestKey[0] = { 'p', 'o', 'l', 'y', 'b' };
+        bestKey[1] = { 'i', 'u', 's', 'a', 'c' };
+        bestKey[2] = { 'd', 'e', 'f', 'g', 'h' };
+        bestKey[3] = { 'k', 'm', 'n', 'q', 'r' };
+        bestKey[4] = { 't', 'v', 'w', 'x', 'z' };
+
+        std::string bestDecrypt = playfairDecrypt(cipher, bestKey);
+        double bestFitness = fitness::tetragramFitness(&bestDecrypt);
+
+        polybius childKey;
+        std::string childDecrypt;
+        double childFitness;
+
+        int counter = 0;
+
+        while (counter < 10000) {
+            childKey = bestKey;
+            //Fiddle with the key
+            childDecrypt = playfairDecrypt(cipher, childKey);
+            childFitness = fitness::tetragramFitness(&childDecrypt);
+            if (childFitness > bestFitness) { 
+            updateBest:
+                bestKey = childKey;
+                bestFitness = childFitness;
+                bestDecrypt = childDecrypt;
+                counter = 0;
+                std::cout << childFitness << std::endl;
+            }
+            else if ((childFitness + 0.5) > bestFitness && false /*Random here*/) {
+                goto updateBest;
+            }
+            counter++;
+        }
     }
 }
