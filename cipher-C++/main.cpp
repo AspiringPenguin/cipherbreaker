@@ -25,17 +25,10 @@ int testStuff(std::string cipher) {
 	//}
 	/*cipher = basics::formatString(cipher);
 	std::cout << periodic::hillClimber(cipher) << std::endl;*/
-	
-	polybius::polybius key;
-	key[0] = { 'p', 'o', 'l', 'y', 'b' };
-	key[1] = { 'i', 'u', 's', 'a', 'c' };
-	key[2] = { 'd', 'e', 'f', 'g', 'h' };
-	key[3] = { 'k', 'm', 'n', 'q', 'r' };
-	key[4] = { 't', 'v', 'w', 'x', 'z' };
 
 	cipher = basics::formatString(cipher);
 
-	std::cout << polybius::playfairDecrypt(cipher, key) << std::endl;
+	std::cout << std::get<1>(polybius::playfairHillClimber(cipher)) << std::endl;
 
 	return 2;
 }

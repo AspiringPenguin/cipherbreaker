@@ -4,6 +4,7 @@
 #include "strings.h"
 #include <array>
 #include <iostream>
+#include <random>
 
 namespace polybius {
     std::tuple<int, int> findInPolybius(char c, polybius key)
@@ -16,6 +17,69 @@ namespace polybius {
             }
         }
         return { -1, -1 };
+    }
+
+    void swapElems(polybius& key, std::uniform_int_distribution<>* rd, std::mt19937* gen) {
+        int x1 = (*rd)(*gen);
+        int y1 = (*rd)(*gen);
+        int x2 = (*rd)(*gen);
+        int y2 = (*rd)(*gen);
+
+        char _ = key[y1][x1];
+        key[y1][x1] = key[y2][x2];
+        key[y2][x2] = _;
+    }
+
+    void swapRows(polybius& key, std::uniform_int_distribution<>* rd, std::mt19937* gen) {
+        int y1 = (*rd)(*gen);
+        int y2 = (*rd)(*gen);
+        auto _ = key[y1];
+        key[y1] = key[y2];
+        key[y2] = _;
+    }
+
+    void swapCols(polybius& key, std::uniform_int_distribution<>* rd, std::mt19937* gen) {
+        int x1 = (*rd)(*gen);
+        int x2 = (*rd)(*gen);
+        for (int i = 0; i < 5; i++) {
+            auto _ = key[i][x1];
+            key[i][x1] = key[i][x2];
+            key[i][x2] = _;
+        }
+    }
+
+    void flipDiag(polybius& key) {
+        char _;
+        for (int y = 0; y < 5; y++) {
+            for (int x = 0; x < y; x++) {
+                _ = key[y][x];
+                key[y][x] = key[x][y];
+                key[x][y] = _;
+            }
+        }
+    }
+
+    void flipVert(polybius& key) {
+        std::array<char, 5> _;
+        _ = key[0];
+        key[0] = key[4];
+        key[4] = _;
+        _ = key[1];
+        key[1] = key[3];
+        key[3] = _;
+    }
+
+    void flipHoriz(polybius& key) {
+        char _;
+        for (int i = 0; i < 5; i++) {
+            _ = key[i][0];
+            key[i][0] = key[i][4];
+            key[i][4] = _;
+            _ = key[i][1];
+            key[i][1] = key[i][3];
+            key[i][3] = _;
+            
+        }
     }
 
     int removeFive(int n){
@@ -61,7 +125,26 @@ namespace polybius {
         return plain;
     }
 
-    std::string playfairHillClimber(std::string cipher)
+    std::string processPlayfairDecrypt(std::string decrypt) {
+        int n = 0;
+        while (true) {
+            n = decrypt.find('x', n);
+            if (n == std::string::npos) {
+                return decrypt;
+            }
+            if (n + 1 == decrypt.length()) {
+                return decrypt.substr(0, n);
+            }
+            if (decrypt[n - 1] == decrypt[n + 1]) {
+                decrypt = decrypt.substr(0, n) + decrypt.substr(n + 1);
+            }
+            else {
+                n++;
+            }
+        }
+    }
+
+    std::tuple<polybius, std::string> playfairHillClimber(std::string cipher)
     {
         cipher = basics::formatString(cipher);
         polybius bestKey;
@@ -71,7 +154,7 @@ namespace polybius {
         bestKey[3] = { 'k', 'm', 'n', 'q', 'r' };
         bestKey[4] = { 't', 'v', 'w', 'x', 'z' };
 
-        std::string bestDecrypt = playfairDecrypt(cipher, bestKey);
+        std::string bestDecrypt = processPlayfairDecrypt(playfairDecrypt(cipher, bestKey));
         double bestFitness = fitness::tetragramFitness(&bestDecrypt);
 
         polybius childKey;
@@ -79,24 +162,52 @@ namespace polybius {
         double childFitness;
 
         int counter = 0;
+        int impatience = 0;
 
-        while (counter < 10000) {
+        //For pseudo-random numbers
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> dist(0, 4);
+        std::uniform_int_distribution<> changeChoice(1, 30);
+
+        while (counter < 1000000 && impatience < 10000000) {
             childKey = bestKey;
-            //Fiddle with the key
-            childDecrypt = playfairDecrypt(cipher, childKey);
+            
+            //Change the key with the key here
+            switch (changeChoice(gen)) {
+            case 1:
+                flipDiag(childKey);
+            case 2:
+                flipHoriz(childKey);
+            case 3:
+                flipDiag(childKey);
+            case 4:
+                swapRows(childKey, &dist, &gen);
+            case 5:
+                swapCols(childKey, &dist, &gen);
+            default:
+                swapElems(childKey, &dist, &gen);
+            }
+
+
+            childDecrypt = processPlayfairDecrypt(playfairDecrypt(cipher, childKey));
             childFitness = fitness::tetragramFitness(&childDecrypt);
-            if (childFitness > bestFitness) { 
+            if (childFitness > bestFitness) {
+                impatience = 0;
             updateBest:
+                counter = 0;
                 bestKey = childKey;
                 bestFitness = childFitness;
                 bestDecrypt = childDecrypt;
-                counter = 0;
                 std::cout << childFitness << std::endl;
             }
-            else if ((childFitness + 0.5) > bestFitness && false /*Random here*/) {
+            else if ((childFitness + 0.5) > bestFitness && changeChoice(gen) == 1 && childKey != bestKey) {
                 goto updateBest;
             }
             counter++;
+            impatience++;
         }
+
+        return { bestKey, bestDecrypt };
     }
 }

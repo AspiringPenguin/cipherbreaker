@@ -9,5 +9,5 @@ namespace polybius {
 
 	std::string playfairDecrypt(std::string text, polybius key);
 
-	std::string playfairHillClimber(std::string cipher);
+	std::tuple<polybius, std::string> playfairHillClimber(std::string cipher);
 }
