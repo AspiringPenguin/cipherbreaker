@@ -3,11 +3,31 @@
 #include "interface.h"
 #include "polybius.h"
 #include "strings.h"
+#include <algorithm> //For shuffle
 #include <array>
 #include <iostream>
 #include <random>
+#include <thread>
 
 namespace polybius {
+    polybius makePolybius(std::string key) {
+        polybius result;
+        int y = 0;
+        int x = -1;
+        for (char c : key) {
+            if (c == 'j') {
+                continue;
+            }
+            x++;
+            if (x == 5) {
+                x = 0;
+                y++;
+            }
+            result[y][x] = c;
+        }
+        return result;
+    }
+
     std::tuple<int, int> findInPolybius(char c, polybius key)
     {
         for (int y = 0; y < 5; y++) {
@@ -272,8 +292,6 @@ namespace polybius {
     }
 
     polybius playfairBacktracking(std::string cipher, polybius startKey) {
-        std::ios_base::sync_with_stdio(false); //Speed up io
-
         //Get a starting point
         auto decrypt = processPlayfairDecrypt(playfairDecrypt(cipher, startKey));
         double fitness = fitness::tetragramFitness(&decrypt);
@@ -288,7 +306,7 @@ namespace polybius {
             children = getAllChildKeys(bestKey);
             fitness = -100;
             bestChild = nullPolybius;
-            for (polybius child : children) {
+            for (const polybius& child : children) {
                 decrypt = processPlayfairDecrypt(playfairDecrypt(cipher, child));
                 childFitness = fitness::tetragramFitness(&decrypt);
                 if (childFitness > fitness) {
@@ -307,9 +325,25 @@ namespace polybius {
                 return nullPolybius;
             }
         }
-
-        std::ios_base::sync_with_stdio(true); //Speed up io
         return bestKey;
+    }
+
+    polybius playfairBacktracking(std::string cipher) {
+        polybius result = nullPolybius;
+        polybius key;
+
+        //For pseudo-random numbers
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        //Main loop
+        while (result == nullPolybius) {
+            auto alphabetCopy = basics::alphabet;
+            std::shuffle(alphabetCopy.begin(), alphabetCopy.end(), gen);
+            key = makePolybius(alphabetCopy);
+            result = playfairBacktracking(cipher, key);
+        }
+        return result;
     }
 
     //polybius playfairBacktracking(std::string cipher, polybius key, double rootFitness, int depth, int maxDepth) {
