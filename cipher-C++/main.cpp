@@ -42,7 +42,7 @@ int testStuff(std::string cipher) {
 
 	cipher = basics::formatString(cipher);
 
-	polybius::polybius bestKey = polybius::playfairBacktracking(cipher);
+	polybius::polybius bestKey = polybius::playfairHillClimber(cipher);
 
 	std::cout << polybius::playfairDecrypt(cipher, bestKey) << std::endl;
 

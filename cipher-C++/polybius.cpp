@@ -5,6 +5,7 @@
 #include "strings.h"
 #include <algorithm> //For shuffle
 #include <array>
+#include <future>
 #include <iostream>
 #include <random>
 #include <thread>
@@ -158,8 +159,13 @@ namespace polybius {
             if (n + 1 == decrypt.length()) {
                 return decrypt.substr(0, n);
             }
-            if (decrypt[n - 1] == decrypt[n + 1]) {
-                decrypt = decrypt.substr(0, n) + decrypt.substr(n + 1);
+            if (n + 2 != decrypt.length()) {
+                if (decrypt[n - 1] == decrypt[n + 1]) {
+                    decrypt = decrypt.substr(0, n) + decrypt.substr(n + 1);
+                }
+                else {
+                    n++;
+                }
             }
             else {
                 n++;
@@ -167,7 +173,7 @@ namespace polybius {
         }
     }
 
-    std::tuple<polybius, std::string> playfairHillClimber(std::string cipher)
+    polybius playfairHillClimber(std::string cipher)
     {
         cipher = basics::formatString(cipher);
         polybius bestKey;
@@ -185,15 +191,15 @@ namespace polybius {
         double childFitness;
 
         int counter = 0;
-        int impatience = 0;
+        polybius lastKey = bestKey;
 
         //For pseudo-random numbers
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_int_distribution<> dist(0, 4);
-        std::uniform_int_distribution<> changeChoice(1, 30);
+        std::uniform_int_distribution<> changeChoice(1, 50);
 
-        while (counter < 1000000 && impatience < 10000000) {
+        while (counter < 100000) {
             childKey = bestKey;
             
             //Change the key with the key here
@@ -215,28 +221,23 @@ namespace polybius {
                 break;
             default:
                 swapElems(childKey, &dist, &gen);
+                break;
             }
-
 
             childDecrypt = processPlayfairDecrypt(playfairDecrypt(cipher, childKey));
             childFitness = fitness::tetragramFitness(&childDecrypt);
-            if (childFitness > bestFitness) {
-                impatience = 0;
-            updateBest:
+            if (childFitness > bestFitness || ((childFitness + 1) > bestFitness && changeChoice(gen) < 4 && childKey != bestKey && childKey != lastKey)) {
                 counter = 0;
+                lastKey = bestKey;
                 bestKey = childKey;
                 bestFitness = childFitness;
                 bestDecrypt = childDecrypt;
                 std::cout << childFitness << std::endl;
             }
-            else if ((childFitness + 0.5) > bestFitness && changeChoice(gen) == 1 && childKey != bestKey) {
-                goto updateBest;
-            }
             counter++;
-            impatience++;
         }
 
-        return { bestKey, bestDecrypt };
+        return bestKey;
     }
 
     std::vector<polybius> getAllChildKeys(polybius key) {
@@ -298,7 +299,7 @@ namespace polybius {
         return keys;
     }
 
-    polybius playfairBacktracking(std::string cipher, polybius startKey) {
+    polybius playfairBacktracking(std::string cipher, polybius startKey, bool ignoreBad) {
         //Get a starting point
         auto decrypt = processPlayfairDecrypt(playfairDecrypt(cipher, startKey));
         double fitness = fitness::tetragramFitness(&decrypt);
@@ -325,7 +326,7 @@ namespace polybius {
                 bestKey = bestChild;
                 bestFitness = fitness;
             }
-            else if (bestFitness > -15) {
+            else if (bestFitness > -15 || !ignoreBad) {
                 return bestKey;
             }
             else {
@@ -349,7 +350,28 @@ namespace polybius {
             auto alphabetCopy = basics::alphabet;
             std::shuffle(alphabetCopy.begin(), alphabetCopy.end(), gen);
             key = makePolybius(alphabetCopy);
-            result = playfairBacktracking(cipher, key);
+            result = playfairBacktracking(cipher, key, true);
+            n++;
+        }
+        std::cout << n << std::endl;
+        return result;
+    }
+
+    polybius playfairBacktracking(std::string cipher, bool* flag) {
+        polybius result = nullPolybius;
+        polybius key;
+
+        //For pseudo-random numbers
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        //Main loop
+        int n = 0;
+        while (result == nullPolybius and !*flag) {
+            auto alphabetCopy = basics::alphabet;
+            std::shuffle(alphabetCopy.begin(), alphabetCopy.end(), gen);
+            key = makePolybius(alphabetCopy);
+            result = playfairBacktracking(cipher, key, true);
             n++;
         }
         std::cout << n << std::endl;

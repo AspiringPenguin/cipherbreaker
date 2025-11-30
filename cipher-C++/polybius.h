@@ -14,9 +14,8 @@ namespace polybius {
 
 	std::string playfairDecrypt(std::string text, polybius key);
 
-	std::tuple<polybius, std::string> playfairHillClimber(std::string cipher);
+	polybius playfairHillClimber(std::string cipher);
 
-	polybius playfairBacktracking(std::string cipher, polybius startKey);
+	polybius playfairBacktracking(std::string cipher, polybius startKey, bool ignoreBad);
 	polybius playfairBacktracking(std::string cipher);
-	std::string playfairGPUBrute(std::string cipher);
 }
