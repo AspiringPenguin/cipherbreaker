@@ -175,6 +175,8 @@ namespace polybius {
 
     polybius playfairHillClimber(std::string cipher)
     {
+        std::ios_base::sync_with_stdio(false);
+
         cipher = basics::formatString(cipher);
         polybius bestKey;
         bestKey[0] = { 'p', 'o', 'l', 'y', 'b' };
@@ -182,16 +184,20 @@ namespace polybius {
         bestKey[2] = { 'd', 'e', 'f', 'g', 'h' };
         bestKey[3] = { 'k', 'm', 'n', 'q', 'r' };
         bestKey[4] = { 't', 'v', 'w', 'x', 'z' };
+        polybius currentKey = bestKey;
 
         std::string bestDecrypt = processPlayfairDecrypt(playfairDecrypt(cipher, bestKey));
         double bestFitness = fitness::tetragramFitness(&bestDecrypt);
+        double currentFitness = bestFitness;
 
         polybius childKey;
         std::string childDecrypt;
         double childFitness;
 
         int counter = 0;
-        polybius lastKey = bestKey;
+        int impatience = 0;
+
+        bool improved;
 
         //For pseudo-random numbers
         std::random_device rd;
@@ -199,8 +205,10 @@ namespace polybius {
         std::uniform_int_distribution<> dist(0, 4);
         std::uniform_int_distribution<> changeChoice(1, 50);
 
-        while (counter < 100000) {
-            childKey = bestKey;
+        double chance;
+
+        while (counter < 2000000) {
+            childKey = currentKey;
             
             //Change the key with the key here
             switch (changeChoice(gen)) {
@@ -226,16 +234,73 @@ namespace polybius {
 
             childDecrypt = processPlayfairDecrypt(playfairDecrypt(cipher, childKey));
             childFitness = fitness::tetragramFitness(&childDecrypt);
-            if (childFitness > bestFitness || ((childFitness + 1) > bestFitness && changeChoice(gen) < 4 && childKey != bestKey && childKey != lastKey)) {
-                counter = 0;
-                lastKey = bestKey;
+
+            improved = false;
+
+            playfairEvaluate:
+            if (childFitness > bestFitness) {
+                childKey = playfairBacktracking(cipher, childKey, false);
+
+                childDecrypt = processPlayfairDecrypt(playfairDecrypt(cipher, childKey));
+                childFitness = fitness::tetragramFitness(&childDecrypt);
+
+                std::cout << childFitness << std::endl;
+
+                //Because of the recursive improver
+                if (childFitness > -13) {
+                    return childKey;
+                }
+
                 bestKey = childKey;
                 bestFitness = childFitness;
                 bestDecrypt = childDecrypt;
-                std::cout << childFitness << std::endl;
+                currentKey = childKey;
+                currentFitness = childFitness;
+                counter = 0;
+                impatience = 0;
             }
+
+            else if (childFitness == bestFitness) {
+                impatience = 0;
+                goto playfairChildFitnessGreater;
+            }
+
+            else if (childFitness > currentFitness) {
+                playfairChildFitnessGreater:
+                if (!improved) {
+                    improved = true;
+
+                    childKey = playfairBacktracking(cipher, childKey, false);
+
+                    childDecrypt = processPlayfairDecrypt(playfairDecrypt(cipher, childKey));
+                    childFitness = fitness::tetragramFitness(&childDecrypt);
+
+                    goto playfairEvaluate;
+                }
+
+                currentKey = childKey;
+                currentFitness = childFitness;
+            }
+
+            else if (counter > 5000) {
+                chance = -(((-childFitness / 8) - 1) / (childFitness - bestFitness)) + 2;
+                if (changeChoice(gen) < chance) {
+                    currentKey = childKey;
+                    currentFitness = childFitness;
+                }
+            }
+
             counter++;
+            impatience++;
+
+            if (impatience > 2000) {
+                currentKey = bestKey;
+                currentFitness = bestFitness;
+                impatience = 0;
+            }
         }
+
+        std::ios_base::sync_with_stdio(true);
 
         return bestKey;
     }
@@ -356,63 +421,4 @@ namespace polybius {
         std::cout << n << std::endl;
         return result;
     }
-
-    polybius playfairBacktracking(std::string cipher, bool* flag) {
-        polybius result = nullPolybius;
-        polybius key;
-
-        //For pseudo-random numbers
-        std::random_device rd;
-        std::mt19937 gen(rd());
-
-        //Main loop
-        int n = 0;
-        while (result == nullPolybius and !*flag) {
-            auto alphabetCopy = basics::alphabet;
-            std::shuffle(alphabetCopy.begin(), alphabetCopy.end(), gen);
-            key = makePolybius(alphabetCopy);
-            result = playfairBacktracking(cipher, key, true);
-            n++;
-        }
-        std::cout << n << std::endl;
-        return result;
-    }
-
-    //polybius playfairBacktracking(std::string cipher, polybius key, double rootFitness, int depth, int maxDepth) {
-    //    std::cout << rootFitness << std::endl;
-    //    if (depth == maxDepth) {
-    //        if (rootFitness > -15) {
-    //            return key;
-    //        }
-    //        return nullPolybius;
-    //    }
-    //    auto children = getAllChildKeys(key);
-    //    std::sort(children.begin(), children.end(), [cipher](polybius a, polybius b) -> bool {
-    //        std::string decrypta = processPlayfairDecrypt(playfairDecrypt(cipher, a));
-    //        std::string decryptb = processPlayfairDecrypt(playfairDecrypt(cipher, b));
-    //        return fitness::tetragramFitness(&decrypta) > fitness::tetragramFitness(&decryptb);
-    //    });
-    //    std::string decrypt;
-    //    double fitness;
-    //    polybius result;
-    //    for (const polybius& child : children) {
-    //        decrypt = processPlayfairDecrypt(playfairDecrypt(cipher, child));
-    //        fitness = fitness::tetragramFitness(&decrypt);
-    //        if (fitness > rootFitness) {
-    //            result = playfairBacktracking(cipher, child, fitness, depth+1, maxDepth);
-    //            if (result != nullPolybius) {
-    //                return result;
-    //            }
-    //        }
-    //        else {
-    //            break; //Pre-sorted
-    //        }
-    //    }
-    //    if (rootFitness > -15) {
-    //        return key;
-    //    }
-    //    return nullPolybius;
-    //}
-
-
 }
