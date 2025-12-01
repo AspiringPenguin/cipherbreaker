@@ -16,6 +16,8 @@ namespace polybius {
 
 	polybius playfairHillClimber(std::string cipher);
 
+	//These are used in the above
 	polybius playfairBacktracking(std::string cipher, polybius startKey, bool ignoreBad);
-	polybius playfairBacktracking(std::string cipher);
+
+	int cliPlayfairHillClimber(std::string cipher);
 }

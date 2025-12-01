@@ -283,7 +283,7 @@ namespace polybius {
             }
 
             else if (counter > 5000) {
-                chance = -(((-childFitness / 8) - 1) / (childFitness - bestFitness)) * 3;
+                chance = -(((-childFitness / 8) - 1) / (childFitness - bestFitness)) * 3 + 0.5;
                 if (changeChoice(gen) < chance) {
                     currentKey = childKey;
                     currentFitness = childFitness;
@@ -401,24 +401,15 @@ namespace polybius {
         return bestKey;
     }
 
-    polybius playfairBacktracking(std::string cipher) {
-        polybius result = nullPolybius;
-        polybius key;
-
-        //For pseudo-random numbers
-        std::random_device rd;
-        std::mt19937 gen(rd());
-
-        //Main loop
-        int n = 0;
-        while (result == nullPolybius) {
-            auto alphabetCopy = basics::alphabet;
-            std::shuffle(alphabetCopy.begin(), alphabetCopy.end(), gen);
-            key = makePolybius(alphabetCopy);
-            result = playfairBacktracking(cipher, key, true);
-            n++;
+    int cliPlayfairHillClimber(std::string cipher) {
+        cipher = basics::formatString(cipher);
+        polybius bestKey = playfairHillClimber(cipher);
+        std::string decrypt = processPlayfairDecrypt(playfairDecrypt(cipher, bestKey));
+        if (fitness::tetragramFitness(&decrypt) > -15) {
+            if (cliInterface::offerDecryption(decrypt)) {
+                return 1;
+            }
         }
-        std::cout << n << std::endl;
-        return result;
+        return 0;
     }
 }

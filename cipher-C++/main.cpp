@@ -23,28 +23,10 @@ int testStuff(std::string cipher) {
 	//	auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 	//	std::cout << ms_int.count() << std::endl;
 	//}
-	/*cipher = basics::formatString(cipher);
-	std::cout << periodic::hillClimber(cipher) << std::endl;*/
 
 	cipher = basics::formatString(cipher);
 
-	/*polybius::polybius key;
-	key[0] = { 'o', 'r', 'm', 'g', 'e' };
-	key[1] = { 'i', 's', 'a', 'b', 'k' };
-	key[2] = { 'f', 'h', 'd', 'l', 'c' };
-	key[3] = { 'n', 'p', 'q', 't', 'u' };
-	key[4] = { 'v', 'w', 'x', 'y', 'z' };
-
-	
-	polybius::polybius bestKey = polybius::playfairBacktracking(cipher, key);
-
-	std::cout << polybius::playfairDecrypt(cipher, bestKey) << std::endl;*/
-
-	cipher = basics::formatString(cipher);
-
-	polybius::polybius bestKey = polybius::playfairHillClimber(cipher);
-
-	std::cout << polybius::playfairDecrypt(cipher, bestKey) << std::endl;
+	std::cout << periodic::hillClimber(cipher) << std::endl;
 
 	return 2;
 }
@@ -65,6 +47,7 @@ int main() {
 
 	menu.addMenuItem(cliInterface::MenuItem("Vigenere", *periodic::cliVigenere));
 
+	menu.addMenuItem(cliInterface::MenuItem("Playfair", *polybius::cliPlayfairHillClimber));
 
 	//Add test func if not a release build
 	#ifdef TEST
