@@ -105,6 +105,8 @@ namespace periodic {
 		std::mt19937 gen(rd());
 		std::uniform_int_distribution<> dist(0, 25);
 
+		std::ios_base::sync_with_stdio(false);
+
 		//Actual loop
 		while (bigCounter < limit) {
 			std::cout << bigCounter << std::endl;
@@ -152,6 +154,8 @@ namespace periodic {
 				}
 			}
 		}
+
+		std::ios_base::sync_with_stdio(true);
 
 		for (int n = 0; n < keySize; n++) {
 			std::cout << monoalphabetic::keyToString(monoalphabetic::invertKey(bestKey[n])) << std::endl;
