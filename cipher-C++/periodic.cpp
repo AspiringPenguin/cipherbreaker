@@ -72,6 +72,8 @@ namespace periodic {
 		//Tidy up the cipher
 		cipher = basics::formatString(cipher);
 
+		int l = cipher.length();
+
 		//Generate best key
 		auto alphabetKey = monoalphabetic::stringToKey(basics::alphabet);
 		auto bestKey = std::vector<std::array<char, 26>>();
@@ -86,7 +88,7 @@ namespace periodic {
 
 		double bestFitness = fitness::tetragramFitness(&bestDecrypt);
 
-		int limit = (keySize * keySize) * 1000000;
+		int limit = (keySize * keySize) * 100000000 / l;
 
 		//Set up for vars in loops
 		int littleCounter;
@@ -106,6 +108,8 @@ namespace periodic {
 		std::uniform_int_distribution<> dist(0, 25);
 
 		std::ios_base::sync_with_stdio(false);
+
+		std::cout << limit << std::endl;
 
 		//Actual loop
 		while (bigCounter < limit) {
