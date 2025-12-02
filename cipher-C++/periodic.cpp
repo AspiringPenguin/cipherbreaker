@@ -69,9 +69,6 @@ namespace periodic {
 	}
 
 	std::string hillClimber(std::string cipher, int keySize) {
-		//Tidy up the cipher
-		cipher = basics::formatString(cipher);
-
 		int l = cipher.length();
 
 		//Generate best key
@@ -176,5 +173,16 @@ namespace periodic {
 		}
 		
 		return hillClimber(cipher, keySize);
+	}
+
+	int cliHillClimber(std::string cipher) {
+		cipher = basics::formatString(cipher);
+		std::string decrypt = hillClimber(cipher);
+		if (fitness::tetragramFitness(&decrypt) > -15) {
+			if (cliInterface::offerDecryption(decrypt)) {
+				return 1;
+			}
+		}
+		return 0;
 	}
 }

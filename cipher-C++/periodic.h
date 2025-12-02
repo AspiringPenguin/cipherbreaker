@@ -13,4 +13,5 @@ namespace periodic {
 	std::string hillClimber(std::string cipher, int keySize);
 	std::string hillClimber(std::string cipher);
 
+	int cliHillClimber(std::string cipher);
 }

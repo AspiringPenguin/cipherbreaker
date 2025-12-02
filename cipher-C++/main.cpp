@@ -46,6 +46,7 @@ int main() {
 	menu.addMenuItem(cliInterface::MenuItem("Monoalphabetic Hill Climber", *monoalphabetic::cliHillClimber));
 
 	menu.addMenuItem(cliInterface::MenuItem("Vigenere", *periodic::cliVigenere));
+	menu.addMenuItem(cliInterface::MenuItem("Polyalphabetic Substitution Cipher", *periodic::cliHillClimber));
 
 	menu.addMenuItem(cliInterface::MenuItem("Playfair", *polybius::cliPlayfairHillClimber));
 
