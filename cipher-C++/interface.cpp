@@ -1,4 +1,5 @@
 #include "basics.h"
+#include "fitness.h"
 #include "interface.h"
 #include <iostream>
 
@@ -84,6 +85,27 @@ namespace cliInterface {
 
 	int exit(std::string cipher) {
 		return -2;
+	}
+
+	int analysis(std::string cipher) {
+		auto formatted = basics::formatString(cipher);
+
+		std::cout << "----------Statistics----------" << std::endl;
+		std::cout << "Number of characters: " << cipher.length() << std::endl;
+		std::cout << "Number of characters - formatted: " << formatted.length() << std::endl;
+
+		if (formatted.length() > 0) {
+			std::cout << "Monogram angle: " << fitness::angleBetweenVectorsFitness(formatted) << std::endl;
+			std::cout << "Tetragram Fitness: " << fitness::tetragramFitness(&formatted) << std::endl;
+			std::cout << "Index of Coincidence: " << fitness::indexOfCoincidence(formatted) << std::endl << std::endl;
+
+			std::cout << "Periodic IOC:" << std::endl;
+			for (int n = 2; n < 17; n++) {
+				std::cout << "  Period " << n << ": " << fitness::indexOfCoincidencePeriodic(formatted, n) << std::endl;
+			}
+		}
+
+		return 2;
 	}
 
 	void showMenu(Menu menu) {

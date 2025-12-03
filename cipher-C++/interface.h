@@ -8,6 +8,8 @@ namespace cliInterface {
 	int outputCipher(std::string cipher);
 	int exit(std::string cipher);
 
+	int analysis(std::string cipher);
+
 	class MenuItem {
 		int (*func) (std::string);
 	public:

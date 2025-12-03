@@ -39,6 +39,7 @@ int main() {
 
 	//Add menu options
 	menu.addMenuItem(cliInterface::MenuItem("Show cipher", *cliInterface::outputCipher));
+	menu.addMenuItem(cliInterface::MenuItem("Analysis", *cliInterface::analysis));
 
 	menu.addMenuItem(cliInterface::MenuItem("Atbash", *monoalphabetic::cliAtbash));
 	menu.addMenuItem(cliInterface::MenuItem("Caesar", *monoalphabetic::cliCaesarBruteForce));
