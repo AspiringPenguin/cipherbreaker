@@ -24,4 +24,29 @@ namespace corpus {
 		}
 		return arrays;
 	}
+
+	std::vector<double> precombineTetragrams(std::vector<double>& tetragrams) {
+		auto vec = std::vector<double>();
+		
+		double subtot;
+
+		for (int i = 0; i < 26; i++) {
+			for (int j = 0; j < 26; j++) {
+				for (int k = 0; k < 26; k++) {
+					for (int l = 0; l < 26; l++) {
+						for (int m = 0; m < 26; m++) {
+							for (int n = 0; n < 26; n++) {
+								subtot = 0;
+								subtot += tetragrams[i * 17576 + j * 676 + k * 26 + l];
+								subtot += tetragrams[j * 17576 + k * 676 + l * 26 + m];
+								subtot += tetragrams[k * 17576 + l * 676 + m * 26 + n];
+								vec.push_back(subtot);
+							}
+						}
+					}
+				}
+			}
+		}
+		return vec;
+	}
 }

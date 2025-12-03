@@ -11,6 +11,8 @@ namespace corpus {
 
 	std::array<double, 26> frequenciesAsArray(std::unordered_map<std::string, double> map);
 	std::vector<double> tetragramsAsArray(std::unordered_map<std::string, double> map);
+	std::vector<double> precombineTetragrams(std::vector<double>& tetragrams);
+
 	static auto frequencyArray = frequenciesAsArray(frequencies);
 
 	//Word data
@@ -21,4 +23,6 @@ namespace corpus {
 	//Tetras
 	static auto tetragramLogarithms = fileLoaders::loadMapDouble("D:/cipher-data/tetras/nospacesalphabeticallogarithms.txt");
 	static auto tetragramArrays = tetragramsAsArray(tetragramLogarithms);
+
+	static auto combinedTetragrams = precombineTetragrams(tetragramArrays);
 }
