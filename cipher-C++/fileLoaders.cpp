@@ -62,9 +62,9 @@ namespace fileLoaders {
 		return map;
 	}
 
-	std::unordered_map<std::string, double> loadMapDouble(std::string fileName)
+	std::unordered_map<std::string, float> loadMapDouble(std::string fileName)
 	{
-		auto map = std::unordered_map<std::string, double>();
+		auto map = std::unordered_map<std::string, float>();
 		auto lines = loadLines(fileName);
 		map.reserve(lines.size());
 		for (std::string line : lines) {

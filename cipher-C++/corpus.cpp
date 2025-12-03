@@ -1,8 +1,8 @@
 #include "corpus.h"
 
 namespace corpus {
-	std::array<double, 26> frequenciesAsArray(std::unordered_map<std::string, double> map) {
-		std::array<double, 26> array;
+	std::array<float, 26> frequenciesAsArray(std::unordered_map<std::string, float> map) {
+		std::array<float, 26> array;
 		char c;
 		for (int i = 0; i < 26; i++) {
 			c = char(i + 97);
@@ -11,8 +11,8 @@ namespace corpus {
 		return array;
 	}
 
-	std::vector<double> tetragramsAsArray(std::unordered_map<std::string, double> map) {
-		auto arrays = std::vector<double>();
+	std::vector<float> tetragramsAsArray(std::unordered_map<std::string, float> map) {
+		auto arrays = std::vector<float>();
 		for (char i = 0; i < 26; i++) {
 			for (char j = 0; j < 26; j++) {
 				for (char k = 0; k < 26; k++) {
@@ -25,10 +25,10 @@ namespace corpus {
 		return arrays;
 	}
 
-	std::vector<double> precombineTetragrams(std::vector<double>& tetragrams) {
-		auto vec = std::vector<double>();
+	std::vector<float> precombineTetragrams(std::vector<float>& tetragrams) {
+		auto vec = std::vector<float>();
 		
-		double subtot;
+		float subtot;
 
 		for (int i = 0; i < 26; i++) {
 			for (int j = 0; j < 26; j++) {

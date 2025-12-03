@@ -83,7 +83,7 @@ namespace periodic {
 
 		auto bestDecrypt = polyalphabeticDecrypt(cipher, bestKey, false);
 
-		double bestFitness = fitness::tetragramFitness(&bestDecrypt);
+		float bestFitness = fitness::tetragramFitness(&bestDecrypt);
 
 		int limit = (keySize * keySize) * 100000000 / l;
 
@@ -92,9 +92,9 @@ namespace periodic {
 		std::vector<std::array<char, 26>> parentKey;
 		std::array<char, 26> subKey;
 		std::vector<std::array<char, 26>> childKey;
-		double parentFitness;
+		float parentFitness;
 		std::string parentDecrypt;
-		double childFitness;
+		float childFitness;
 		std::string childDecrypt;
 		int x, y;
 		char _;

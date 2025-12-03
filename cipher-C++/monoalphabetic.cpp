@@ -180,11 +180,11 @@ namespace monoalphabetic {
 	std::string hillClimber(std::string cipher, int limit) {
 		auto parentKey = stringToKey("abcdefghijklmnopqrstuvwxyz");
 		auto parentPlain = decrypt(cipher, parentKey, true);
-		double parentFitness = fitness::tetragramFitness(&parentPlain);
+		float parentFitness = fitness::tetragramFitness(&parentPlain);
 		int counter = 0;
 		std::array<char, 26> childKey;
 		std::string childPlain;
-		double childFitness;
+		float childFitness;
 
 		//Set up for random
 		std::random_device rd;

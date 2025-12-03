@@ -9,9 +9,9 @@ namespace corpus {
 	//Monogram frequencies 
 	static auto frequencies = fileLoaders::loadMapDouble("D:/cipher-data/lettercountsnospaces.txt");
 
-	std::array<double, 26> frequenciesAsArray(std::unordered_map<std::string, double> map);
-	std::vector<double> tetragramsAsArray(std::unordered_map<std::string, double> map);
-	std::vector<double> precombineTetragrams(std::vector<double>& tetragrams);
+	std::array<float, 26> frequenciesAsArray(std::unordered_map<std::string, float> map);
+	std::vector<float> tetragramsAsArray(std::unordered_map<std::string, float> map);
+	std::vector<float> precombineTetragrams(std::vector<float>& tetragrams);
 
 	static auto frequencyArray = frequenciesAsArray(frequencies);
 

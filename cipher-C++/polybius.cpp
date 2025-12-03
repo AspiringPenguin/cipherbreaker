@@ -187,12 +187,12 @@ namespace polybius {
         polybius currentKey = bestKey;
 
         std::string bestDecrypt = processPlayfairDecrypt(playfairDecrypt(cipher, bestKey));
-        double bestFitness = fitness::tetragramFitness(&bestDecrypt);
-        double currentFitness = bestFitness;
+        float bestFitness = fitness::tetragramFitness(&bestDecrypt);
+        float currentFitness = bestFitness;
 
         polybius childKey;
         std::string childDecrypt;
-        double childFitness;
+        float childFitness;
 
         int counter = 0;
         int impatience = 0;
@@ -205,7 +205,7 @@ namespace polybius {
         std::uniform_int_distribution<> dist(0, 4);
         std::uniform_int_distribution<> changeChoice(1, 50);
 
-        double chance;
+        float chance;
 
         while (counter < 2000000) {
             childKey = currentKey;
@@ -367,10 +367,10 @@ namespace polybius {
     polybius playfairBacktracking(std::string cipher, polybius startKey, bool ignoreBad) {
         //Get a starting point
         auto decrypt = processPlayfairDecrypt(playfairDecrypt(cipher, startKey));
-        double fitness = fitness::tetragramFitness(&decrypt);
+        float fitness = fitness::tetragramFitness(&decrypt);
         polybius bestKey = startKey;
-        double bestFitness = fitness;
-        double childFitness;
+        float bestFitness = fitness;
+        float childFitness;
 
         std::vector<polybius> children;
         polybius bestChild;

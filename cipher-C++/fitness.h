@@ -3,16 +3,16 @@
 #include <string>
 
 namespace fitness {
-	std::array<double, 26> monogramFrequencies(std::string text);
-	std::array<double, 26> monogramFrequencies(std::string text, int divisor);
-	double chi2(std::array<double, 26> expected, std::array<double, 26> actual);
-	double chi2Fitness(std::string text);
-	double dotProduct(std::array<double, 26> vec1, std::array<double, 26> vec2);
-	double angleBetweenVectors(std::array<double, 26> vec1, std::array<double, 26> vec2);
-	double angleBetweenVectorsFitness(std::string text);
-	double tetragramFitness(std::string* text);
-	double indexOfCoincidence(std::string text, int normalisationFactor);
-	double indexOfCoincidence(std::string text);
-	double indexOfCoincidencePeriodic(std::string text, int n, int normalisationFactor);
-	double indexOfCoincidencePeriodic(std::string text, int n);
+	std::array<float, 26> monogramFrequencies(std::string text);
+	std::array<float, 26> monogramFrequencies(std::string text, int divisor);
+	float chi2(std::array<float, 26> expected, std::array<float, 26> actual);
+	float chi2Fitness(std::string text);
+	float dotProduct(std::array<float, 26> vec1, std::array<float, 26> vec2);
+	float angleBetweenVectors(std::array<float, 26> vec1, std::array<float, 26> vec2);
+	float angleBetweenVectorsFitness(std::string text);
+	float tetragramFitness(std::string* text);
+	float indexOfCoincidence(std::string text, int normalisationFactor);
+	float indexOfCoincidence(std::string text);
+	float indexOfCoincidencePeriodic(std::string text, int n, int normalisationFactor);
+	float indexOfCoincidencePeriodic(std::string text, int n);
 }
