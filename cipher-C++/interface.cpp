@@ -113,6 +113,7 @@ namespace cliInterface {
 		if (exitCode == -2) {
 			return; //Exit here
 		}
+		std::cout << std::endl;
 		if (exitCode == 0) {
 			std::cout << "FAILURE" << std::endl << std::endl;
 			showMenu(menu);
