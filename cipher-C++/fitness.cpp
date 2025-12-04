@@ -56,8 +56,13 @@ namespace fitness {
 	float tetragramFitness(std::string* text) {
 		float tot = 0;
 		int n = text->length() - 3;
-		for (int i = 0; i < n; i++) {
-			tot += corpus::tetragramArrays[(text->at(i) - 97) * 17576 + (text->at(i+1) - 97) * 676 + (text->at(i+2) - 97) * 26 + (text->at(i+3) - 97)];
+		int l = n - 1;
+		bool flag = (n % 2) != 0; //Needs a final tetragram
+		for (int i = 0; i < l; i+=2) {
+			tot += corpus::combinedTetragrams[(text->at(i) - 97) * 456976 + (text->at(i + 1) - 97) * 17576 + (text->at(i + 2) - 97) * 676 + (text->at(i + 3) - 97) * 26 + (text->at(i + 4) - 97)];
+		}
+		if (flag) {
+			tot += corpus::tetragramArrays[(text->at(n-1) - 97) * 17576 + (text->at(n) - 97) * 676 + (text->at(n + 1) - 97) * 26 + (text->at(n + 2) - 97)];
 		}
 		tot /= n;
 		return tot;
