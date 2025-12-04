@@ -404,6 +404,12 @@ namespace polybius {
     int cliPlayfairHillClimber(std::string cipher) {
         cipher = basics::formatString(cipher);
         polybius bestKey = playfairHillClimber(cipher);
+        for (const auto& row : bestKey) {
+            for (const auto& item : row) {
+                std::cout << item << " ";
+            }
+            std::cout << std::endl;
+        }
         std::string decrypt = processPlayfairDecrypt(playfairDecrypt(cipher, bestKey));
         if (fitness::tetragramFitness(&decrypt) > -15) {
             if (cliInterface::offerDecryption(decrypt)) {
