@@ -283,7 +283,7 @@ namespace polybius {
             }
 
             else if (counter > 5000) {
-                chance = -(((-childFitness / 8) - 1) / (childFitness - bestFitness)) * 3 + 0.5;
+                chance = -(((-childFitness / 8.0f) - 1.0f) / (childFitness - bestFitness)) * 3.0f + 0.5f;
                 if (changeChoice(gen) < chance) {
                     currentKey = childKey;
                     currentFitness = childFitness;

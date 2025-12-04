@@ -90,7 +90,6 @@ namespace periodic {
 		//Set up for vars in loops
 		int littleCounter;
 		std::vector<std::array<char, 26>> parentKey;
-		std::array<char, 26> subKey;
 		std::vector<std::array<char, 26>> childKey;
 		float parentFitness;
 		std::string parentDecrypt;
