@@ -410,9 +410,12 @@ namespace polybius {
             }
             std::cout << std::endl;
         }
-        std::string decrypt = processPlayfairDecrypt(playfairDecrypt(cipher, bestKey));
+        std::string rawDecrypt = playfairDecrypt(cipher, bestKey);
+        std::string decrypt = processPlayfairDecrypt(rawDecrypt);
         if (fitness::tetragramFitness(&decrypt) > -15) {
             if (cliInterface::offerDecryption(decrypt)) {
+                std::cout << "Raw Decrypt: " << std::endl;
+                std::cout << rawDecrypt << std::endl;
                 return 1;
             }
         }
