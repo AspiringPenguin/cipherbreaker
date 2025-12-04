@@ -69,7 +69,7 @@ namespace fileLoaders {
 		map.reserve(lines.size());
 		for (std::string line : lines) {
 			auto items = strings::split(line, ",");
-			map[items[0]] = std::stod(items[1]);
+			map[items[0]] = std::stof(items[1]);
 		}
 		return map;
 	}
