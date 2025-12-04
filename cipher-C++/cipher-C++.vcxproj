@@ -192,6 +192,7 @@
     <ClCompile Include="periodic.cpp" />
     <ClCompile Include="polybius.cpp" />
     <ClCompile Include="strings.cpp" />
+    <ClCompile Include="transpositions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="basics.h" />
@@ -204,6 +205,7 @@
     <ClInclude Include="periodic.h" />
     <ClInclude Include="polybius.h" />
     <ClInclude Include="strings.h" />
+    <ClInclude Include="transpositions.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

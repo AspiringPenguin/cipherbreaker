@@ -48,6 +48,9 @@
     <ClCompile Include="polybius.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="transpositions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fileLoaders.h">
@@ -79,6 +82,9 @@
     </ClInclude>
     <ClInclude Include="polybius.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="transpositions.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

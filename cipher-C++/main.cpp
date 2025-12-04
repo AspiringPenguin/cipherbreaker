@@ -10,6 +10,7 @@
 #include "periodic.h"
 #include "polybius.h"
 #include "strings.h"
+#include "transpositions.h"
 
 //Add test func if not a release build
 #ifdef TEST
@@ -18,15 +19,18 @@ int testStuff(std::string cipher) {
 	//for (int i = 0; i < 20; i++) {
 	//	auto start = std::chrono::high_resolution_clock::now();
 	//	//Something slow
-	//	//std::cout << monoalphabetic::hillClimber(text) << std::endl;
+	//	std::cout << monoalphabetic::hillClimber(text) << std::endl;
 	//	auto end = std::chrono::high_resolution_clock::now();
 	//	auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 	//	std::cout << ms_int.count() << std::endl;
 	//}
 
-	cipher = basics::formatString(cipher);
-
-	std::cout << periodic::hillClimber(cipher) << std::endl;
+	for (const auto& perm : transpositions::heapsPerms(5)) {
+		for (const auto& item: perm) {
+			std::cout << item << " ";
+		}
+		std::cout << std::endl;
+	}
 
 	return 2;
 }
