@@ -25,12 +25,15 @@ int testStuff(std::string cipher) {
 	//	std::cout << ms_int.count() << std::endl;
 	//}
 
+	int n = 0;
 	for (const auto& perm : transpositions::heapsPerms(5)) {
 		for (const auto& item: perm) {
 			std::cout << item << " ";
 		}
 		std::cout << std::endl;
+		n++;
 	}
+	std::cout << n << std::endl;
 
 	return 2;
 }
