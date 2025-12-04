@@ -26,7 +26,7 @@ namespace monoalphabetic {
 
 	std::string caesarBruteForce(std::string cipher);
 
-	std::string caesarMonogramBruteForce(std::string cipher, float limit=0.9);
+	std::string caesarMonogramBruteForce(std::string cipher);
 
 	int cliCaesarBruteForce(std::string cipher);
 

@@ -106,15 +106,20 @@ namespace monoalphabetic {
 		return "";
 	}
 
-	std::string caesarMonogramBruteForce(std::string cipher, float limit) {
+	std::string caesarMonogramBruteForce(std::string cipher) {
 		std::string decrypt;
-		for (int i = 1; i < 26; i++) {
+		std::string bestDecrypt;
+		float fitness;
+		float bestFitness = -100;
+		for (int i = 0; i < 26; i++) {
 			decrypt = caesarDecrypt(cipher, i);
-			if (fitness::angleBetweenVectorsFitness(decrypt) > limit) {
-				return decrypt;
+			fitness = fitness::angleBetweenVectorsFitness(decrypt);
+			if (fitness > bestFitness) {
+				bestFitness = fitness;
+				bestDecrypt = decrypt;
 			}
 		}
-		return "";
+		return bestDecrypt;
 	}
 
 	int cliCaesarBruteForce(std::string cipher) {

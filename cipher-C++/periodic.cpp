@@ -55,6 +55,9 @@ namespace periodic {
 				return 1;
 			}
 		}
+		else {
+			std::cout << fitness::tetragramFitness(&result) << std::endl;
+		}
 		return 0;
 	}
 
