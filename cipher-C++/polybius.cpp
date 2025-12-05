@@ -421,4 +421,169 @@ namespace polybius {
         }
         return 0;
     }
+
+    //Same process to encrypt
+    std::string vertTwoSquareDecrypt(std::string cipher, polybius top, polybius bottom, int flips) {
+        std::string plain = "";
+        plain.reserve(cipher.size());
+
+        //Lookup table for char position
+        std::array<std::tuple<int, int>, 26> topLookup;
+        for (char c = 97; c < 123; c++) {
+            topLookup[c - 97] = findInPolybius(c, top);
+        }
+        std::array<std::tuple<int, int>, 26> bottomLookup;
+        for (char c = 97; c < 123; c++) {
+            bottomLookup[c - 97] = findInPolybius(c, bottom);
+        }
+
+        std::tuple<int, int> pos0;
+        std::tuple<int, int> pos1;
+        int newX;
+        int newY;
+        int l = cipher.size();
+        for (int i = 0; i < l; i += 2) {
+            pos0 = topLookup[cipher[i] - 97];
+            pos1 = bottomLookup[cipher[i + 1] - 97];
+            if (std::get<1>(pos0) == std::get<1>(pos1)) { //Same column
+                if (flips & 1) {
+                    plain += cipher[i + 1];
+                    plain += cipher[i];
+                }
+                else {
+                    plain += cipher[i];
+                    plain += cipher[i + 1];
+                }
+            }
+            else {
+                if (flips & 2) {
+                    newX = std::get<1>(pos0);
+                    newY = std::get<0>(pos1);
+                    plain += bottom[newY][newX];
+                    newX = std::get<1>(pos1);
+                    newY = std::get<0>(pos0);
+                    plain += top[newY][newX];
+                }
+                else {
+                    newX = std::get<1>(pos1);
+                    newY = std::get<0>(pos0);
+                    plain += top[newY][newX];
+                    newX = std::get<1>(pos0);
+                    newY = std::get<0>(pos1);
+                    plain += bottom[newY][newX];
+                }
+            }
+        }
+        return plain;
+    }
+
+    std::string horizTwoSquareEncrypt(std::string cipher, polybius left, polybius right, int flips) {
+        std::string plain = "";
+        plain.reserve(cipher.size());
+
+        //Lookup table for char position
+        std::array<std::tuple<int, int>, 26> leftLookup;
+        for (char c = 97; c < 123; c++) {
+            leftLookup[c - 97] = findInPolybius(c, left);
+        }
+        std::array<std::tuple<int, int>, 26> rightLookup;
+        for (char c = 97; c < 123; c++) {
+            rightLookup[c - 97] = findInPolybius(c, right);
+        }
+
+        std::tuple<int, int> pos0;
+        std::tuple<int, int> pos1;
+        int newX;
+        int newY;
+        int l = cipher.size();
+        for (int i = 0; i < l; i += 2) {
+            pos0 = leftLookup[cipher[i] - 97];
+            pos1 = rightLookup[cipher[i + 1] - 97];
+            if (std::get<0>(pos0) == std::get<0>(pos1)) { //Same row
+                if (flips & 1) {
+                    plain += cipher[i + 1];
+                    plain += cipher[i];
+                }
+                else {
+                    plain += cipher[i];
+                    plain += cipher[i + 1];
+                }
+            }
+            else {
+                if (flips & 2) {
+                    newX = std::get<1>(pos0);
+                    newY = std::get<0>(pos1);
+                    plain += right[newY][newX];
+                    newX = std::get<1>(pos1);
+                    newY = std::get<0>(pos0);
+                    plain += left[newY][newX];
+                }
+                else {
+                    newX = std::get<1>(pos1);
+                    newY = std::get<0>(pos0);
+                    plain += right[newY][newX];
+                    newX = std::get<1>(pos0);
+                    newY = std::get<0>(pos1);
+                    plain += left[newY][newX];
+                }
+            }
+        }
+        return plain;
+    }
+
+
+
+    std::string horizTwoSquareDecrypt(std::string cipher, polybius left, polybius right, int flips) {
+        std::string plain = "";
+        plain.reserve(cipher.size());
+
+        //Lookup table for char position
+        std::array<std::tuple<int, int>, 26> leftLookup;
+        for (char c = 97; c < 123; c++) {
+            leftLookup[c - 97] = findInPolybius(c, left);
+        }
+        std::array<std::tuple<int, int>, 26> rightLookup;
+        for (char c = 97; c < 123; c++) {
+            rightLookup[c - 97] = findInPolybius(c, right);
+        }
+
+        std::tuple<int, int> pos0;
+        std::tuple<int, int> pos1;
+        int newX;
+        int newY;
+        int l = cipher.size();
+        for (int i = 0; i < l; i += 2) {
+            pos0 = rightLookup[cipher[i] - 97];
+            pos1 = leftLookup[cipher[i + 1] - 97];
+            if (std::get<0>(pos0) == std::get<0>(pos1)) { //Same row
+                if (flips & 1) {
+                    plain += cipher[i + 1];
+                    plain += cipher[i];
+                }
+                else {
+                    plain += cipher[i];
+                    plain += cipher[i + 1];
+                }
+            }
+            else {
+                if (flips & 2) {
+                    newX = std::get<1>(pos0);
+                    newY = std::get<0>(pos1);
+                    plain += left[newY][newX] ;
+                    newX = std::get<1>(pos1);
+                    newY = std::get<0>(pos0);
+                    plain += right[newY][newX];
+                }
+                else {
+                    newX = std::get<1>(pos1);
+                    newY = std::get<0>(pos0);
+                    plain += left[newY][newX];
+                    newX = std::get<1>(pos0);
+                    newY = std::get<0>(pos1);
+                    plain += right[newY][newX];
+                }
+            }
+        }
+        return plain;
+    }
 }

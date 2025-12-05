@@ -12,12 +12,17 @@ namespace polybius {
 
 	std::tuple<int, int> findInPolybius(char c, polybius key);
 
+	//Playfair
 	std::string playfairDecrypt(std::string text, polybius key);
 
 	polybius playfairHillClimber(std::string cipher);
-
-	//These are used in the above
+	//This is used in the above
 	polybius playfairBacktracking(std::string cipher, polybius startKey, bool ignoreBad);
 
 	int cliPlayfairHillClimber(std::string cipher);
+
+	//Two-square ciphers
+	std::string vertTwoSquareDecrypt(std::string cipher, polybius top, polybius bottom, int flips=0);
+	std::string horizTwoSquareEncrypt(std::string cipher, polybius left, polybius right, int flips);
+	std::string horizTwoSquareDecrypt(std::string cipher, polybius left, polybius right, int flips=1);
 }

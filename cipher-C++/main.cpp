@@ -25,7 +25,14 @@ int testStuff(std::string cipher) {
 	//	std::cout << ms_int.count() << std::endl;
 	//}
 
-	std::cout << transpositions::permutationBruteForce(cipher) << std::endl;
+	polybius::polybius top = polybius::makePolybius("polybiusacdefghkmnqrtvwxz");
+	polybius::polybius bottom = polybius::makePolybius("segmvqbhnwucioxadkpyrfltz");
+
+	cipher = basics::formatString(cipher);
+
+	std::string result = polybius::horizTwoSquareDecrypt(cipher, top, bottom);
+
+	std::cout << result << std::endl;
 
 	return 2;
 }
