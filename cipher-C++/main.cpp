@@ -25,15 +25,7 @@ int testStuff(std::string cipher) {
 	//	std::cout << ms_int.count() << std::endl;
 	//}
 
-	int n = 0;
-	for (const auto& perm : transpositions::heapsPerms(5)) {
-		for (const auto& item: perm) {
-			std::cout << item << " ";
-		}
-		std::cout << std::endl;
-		n++;
-	}
-	std::cout << n << std::endl;
+	std::cout << transpositions::permutationBruteForce(cipher) << std::endl;
 
 	return 2;
 }
@@ -55,6 +47,8 @@ int main() {
 
 	menu.addMenuItem(cliInterface::MenuItem("Vigenere", *periodic::cliVigenere));
 	menu.addMenuItem(cliInterface::MenuItem("Polyalphabetic Substitution Cipher", *periodic::cliHillClimber));
+
+	menu.addMenuItem(cliInterface::MenuItem("Permutation Cipher", *transpositions::cliPermutationBruteForce));
 
 	menu.addMenuItem(cliInterface::MenuItem("Playfair", *polybius::cliPlayfairHillClimber));
 
