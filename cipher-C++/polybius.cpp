@@ -531,8 +531,6 @@ namespace polybius {
         return plain;
     }
 
-
-
     std::string horizTwoSquareDecrypt(std::string cipher, polybius left, polybius right, int flips) {
         std::string plain = "";
         plain.reserve(cipher.size());
@@ -585,5 +583,98 @@ namespace polybius {
             }
         }
         return plain;
+    }
+    
+    std::tuple<polybius, polybius> vertHillClimber(std::string cipher) {
+        polybius bestTopKey = alphabetPolybius;
+        polybius bestBottomKey = alphabetPolybius;
+
+        cipher = basics::formatString(cipher);
+
+        std::string bestDecrypt = vertTwoSquareDecrypt(cipher, bestTopKey, bestBottomKey);
+
+        float bestFitness = fitness::tetragramFitness(&bestDecrypt);
+        
+        polybius currentTopKey = bestTopKey;
+        polybius currentBottomKey = bestBottomKey;
+        std::string currentDecrypt = bestDecrypt;
+        float currentFitness = bestFitness;
+
+        polybius childTopKey;
+        polybius childBottomKey;
+        std::string childDecrypt;
+        float childFitness;
+
+        //Random numbers
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> squareChoice(0, 1);
+        std::uniform_int_distribution<> dist(0, 4);
+        std::uniform_int_distribution<> changeChoice(1, 3);
+
+        int counter = 0;
+        int impatience = 0;
+        
+        while (counter < 1000000) {
+            childTopKey = currentTopKey;
+            childBottomKey = currentBottomKey;
+
+            if (squareChoice(gen) == 0) {
+                swapElems(childTopKey, &dist, &gen);
+            }
+            else {
+                swapElems(childBottomKey, &dist, &gen);
+            }
+
+            childDecrypt = vertTwoSquareDecrypt(cipher, childTopKey, childBottomKey);
+            childFitness = fitness::tetragramFitness(&childDecrypt);
+
+            if (childFitness > bestFitness) {
+                bestFitness = childFitness;
+                currentFitness = childFitness;
+
+                bestDecrypt = childDecrypt;
+                currentDecrypt = childDecrypt;
+
+                bestTopKey = childTopKey;
+                currentTopKey = childTopKey;
+                bestBottomKey = childBottomKey;
+                currentBottomKey = childBottomKey;
+
+                counter = 0;
+                impatience = 0;
+                std::cout << bestFitness << std::endl;
+            }
+            else if (childFitness == bestFitness) {
+                impatience = 0;
+                currentFitness = childFitness;
+                currentDecrypt = childDecrypt;
+                currentTopKey = childTopKey;
+                currentBottomKey = childBottomKey;
+            }
+            else if (childFitness > currentFitness) {
+                currentFitness = childFitness;
+                currentDecrypt = childDecrypt;
+                currentTopKey = childTopKey;
+                currentBottomKey = childBottomKey;
+            }
+            else if (childFitness > (bestFitness - 3) && changeChoice(gen) == 1 && counter > 1000) {
+                currentTopKey = childTopKey;
+                currentBottomKey = childBottomKey;
+                currentFitness = childFitness;
+                currentDecrypt = childDecrypt;
+            }
+
+            if (impatience > 1000) {
+                currentTopKey = bestTopKey;
+                currentBottomKey = bestBottomKey;
+                impatience = 0;
+            }
+
+            counter++;
+            impatience++;
+        }
+
+        return { bestTopKey, bestBottomKey };
     }
 }

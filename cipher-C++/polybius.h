@@ -6,9 +6,11 @@
 namespace polybius {
 	typedef std::array<std::array<char, 5>, 5> polybius;
 
-	static polybius nullPolybius { -1 };
+	static polybius nullPolybius{ -1 };
 
 	polybius makePolybius(std::string key);
+
+	static polybius alphabetPolybius = makePolybius("abcdefghijklmnopqrstuvwxyz");
 
 	std::tuple<int, int> findInPolybius(char c, polybius key);
 
@@ -22,7 +24,9 @@ namespace polybius {
 	int cliPlayfairHillClimber(std::string cipher);
 
 	//Two-square ciphers
-	std::string vertTwoSquareDecrypt(std::string cipher, polybius top, polybius bottom, int flips=0);
+	std::string vertTwoSquareDecrypt(std::string cipher, polybius top, polybius bottom, int flips = 0);
 	std::string horizTwoSquareEncrypt(std::string cipher, polybius left, polybius right, int flips);
-	std::string horizTwoSquareDecrypt(std::string cipher, polybius left, polybius right, int flips=1);
+	std::string horizTwoSquareDecrypt(std::string cipher, polybius left, polybius right, int flips = 1);
+
+	std::tuple<polybius, polybius> vertHillClimber(std::string cipher);
 }
