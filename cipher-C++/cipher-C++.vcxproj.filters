@@ -83,13 +83,13 @@
     <ClInclude Include="periodic.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="polybius.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="transpositions.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="solitaire.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="polybius.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
