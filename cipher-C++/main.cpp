@@ -55,6 +55,7 @@ int main() {
 	menu.addMenuItem(cliInterface::MenuItem("Permutation Cipher", *transpositions::cliPermutationBruteForce));
 
 	menu.addMenuItem(cliInterface::MenuItem("Playfair", *polybius::cliPlayfairHillClimber));
+	menu.addMenuItem(cliInterface::MenuItem("Playfair 2025 Variation", *polybius::cliPlayfair2025VariationHillClimber));
 
 	//Add test func if not a release build
 	#ifdef TEST

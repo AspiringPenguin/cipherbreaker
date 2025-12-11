@@ -16,12 +16,16 @@ namespace polybius {
 
 	//Playfair
 	std::string playfairDecrypt(std::string text, polybius key);
+	std::string playfair2025VariationDecrypt(std::string text, polybius key);
 
 	polybius playfairHillClimber(std::string cipher);
-	//This is used in the above
+	polybius playfair2025VariationHillClimber(std::string cipher);
+	//These is used in the above
 	polybius playfairBacktracking(std::string cipher, polybius startKey, bool ignoreBad);
+	polybius playfair2025VariationBacktracking(std::string cipher, polybius startKey, bool ignoreBad);
 
 	int cliPlayfairHillClimber(std::string cipher);
+	int cliPlayfair2025VariationHillClimber(std::string cipher);
 
 	//Two-square ciphers
 	std::string vertTwoSquareDecrypt(std::string cipher, polybius top, polybius bottom, int flips = 0);

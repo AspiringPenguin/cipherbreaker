@@ -131,15 +131,55 @@ namespace polybius {
         for (int i = 0; i < l; i+=2) {
             pos0 = lookup[text[i] - 97];
             pos1 = lookup[text[i+1] - 97];
-            if (std::get<0>(pos0) == std::get<0>(pos1)) {
+            if (std::get<0>(pos0) == std::get<0>(pos1)) { //Same row
                 newpos0 = { std::get<0>(pos0), removeFive(std::get<1>(pos0) - 1) };
                 newpos1 = { std::get<0>(pos1), removeFive(std::get<1>(pos1) - 1) };
             }
-            else if (std::get<1>(pos0) == std::get<1>(pos1)) {
+            else if (std::get<1>(pos0) == std::get<1>(pos1)) { //Same column
                 newpos0 = { removeFive(std::get<0>(pos0) - 1), std::get<1>(pos0) };
                 newpos1 = { removeFive(std::get<0>(pos1) - 1), std::get<1>(pos1) };
             }
-            else {
+            else { //Main case
+                newpos0 = { std::get<0>(pos0) , std::get<1>(pos1) };
+                newpos1 = { std::get<0>(pos1) , std::get<1>(pos0) };
+            }
+            plain += key[std::get<0>(newpos0)][std::get<1>(newpos0)];
+            plain += key[std::get<0>(newpos1)][std::get<1>(newpos1)];
+        }
+        return plain;
+    }
+
+
+
+    std::string playfair2025VariationDecrypt(std::string text, polybius key)
+    {
+        std::string plain = "";
+        plain.reserve(text.size());
+        //auto blocks = strings::getBlocks(text, 2);
+
+        std::array<std::tuple<int, int>, 26> lookup;
+        //Lookup table for char position
+        for (char c = 97; c < 123; c++) {
+            lookup[c - 97] = findInPolybius(c, key); //Stored in {y, x} form
+        }
+
+        std::tuple<int, int> pos0;
+        std::tuple<int, int> pos1;
+        std::tuple<int, int> newpos0;
+        std::tuple<int, int> newpos1;
+        int l = text.size();
+        for (int i = 0; i < l; i += 2) {
+            pos0 = lookup[text[i] - 97];
+            pos1 = lookup[text[i + 1] - 97];
+            if (std::get<0>(pos0) == std::get<0>(pos1)) { //Same row
+                newpos0 = { std::get<0>(pos0), removeFive(std::get<1>(pos0) - 1) };
+                newpos1 = { std::get<0>(pos1), removeFive(std::get<1>(pos1) - 1) };
+            }
+            else if (std::get<1>(pos0) == std::get<1>(pos1)) { //Same column, shift to the left instead, with wrapping 
+                newpos0 = { std::get<0>(pos0), removeFive(std::get<1>(pos0) - 1) };
+                newpos1 = { std::get<0>(pos1), removeFive(std::get<1>(pos1) - 1) };
+            }
+            else { //Normal case
                 newpos0 = { std::get<0>(pos0) , std::get<1>(pos1) };
                 newpos1 = { std::get<0>(pos1) , std::get<1>(pos0) };
             }
@@ -246,6 +286,16 @@ namespace polybius {
 
                 std::cout << childFitness << std::endl;
 
+                if (childFitness > -22) {
+                    for (auto row : childKey) {
+                        for (auto item : row) {
+                            std::cout << item;
+                        }
+                        std::cout << std::endl;
+                    }
+                    std::cout << childDecrypt << std::endl;
+                }
+
                 //Because of the recursive improver
                 if (childFitness > -13) {
                     return childKey;
@@ -273,6 +323,147 @@ namespace polybius {
                     childKey = playfairBacktracking(cipher, childKey, false);
 
                     childDecrypt = processPlayfairDecrypt(playfairDecrypt(cipher, childKey));
+                    childFitness = fitness::tetragramFitness(&childDecrypt);
+
+                    goto playfairEvaluate;
+                }
+
+                currentKey = childKey;
+                currentFitness = childFitness;
+            }
+
+            else if (counter > 5000) {
+                chance = -(((-childFitness / 8.0f) - 1.0f) / (childFitness - bestFitness)) * 3.0f + 0.5f;
+                if (changeChoice(gen) < chance) {
+                    currentKey = childKey;
+                    currentFitness = childFitness;
+                }
+            }
+
+            counter++;
+            impatience++;
+
+            if (impatience > 2000) {
+                currentKey = bestKey;
+                currentFitness = bestFitness;
+                impatience = 0;
+            }
+        }
+
+        std::ios_base::sync_with_stdio(true);
+
+        return bestKey;
+    }
+
+    polybius playfair2025VariationHillClimber(std::string cipher)
+    {
+        std::ios_base::sync_with_stdio(false);
+
+        cipher = basics::formatString(cipher);
+        polybius bestKey;
+        bestKey[0] = { 'p', 'o', 'l', 'y', 'b' };
+        bestKey[1] = { 'i', 'u', 's', 'a', 'c' };
+        bestKey[2] = { 'd', 'e', 'f', 'g', 'h' };
+        bestKey[3] = { 'k', 'm', 'n', 'q', 'r' };
+        bestKey[4] = { 't', 'v', 'w', 'x', 'z' };
+        polybius currentKey = bestKey;
+
+        std::string bestDecrypt = processPlayfairDecrypt(playfair2025VariationDecrypt(cipher, bestKey));
+        float bestFitness = fitness::tetragramFitness(&bestDecrypt);
+        float currentFitness = bestFitness;
+
+        polybius childKey;
+        std::string childDecrypt;
+        float childFitness;
+
+        int counter = 0;
+        int impatience = 0;
+
+        bool improved;
+
+        //For pseudo-random numbers
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> dist(0, 4);
+        std::uniform_int_distribution<> changeChoice(1, 50);
+
+        float chance;
+
+        while (counter < 2000000) {
+            childKey = currentKey;
+
+            //Change the key with the key here
+            switch (changeChoice(gen)) {
+            case 1:
+                flipDiag(childKey);
+                break;
+            case 2:
+                flipHoriz(childKey);
+                break;
+            case 3:
+                flipDiag(childKey);
+                break;
+            case 4:
+                swapRows(childKey, &dist, &gen);
+                break;
+            case 5:
+                swapCols(childKey, &dist, &gen);
+                break;
+            default:
+                swapElems(childKey, &dist, &gen);
+                break;
+            }
+
+            childDecrypt = processPlayfairDecrypt(playfair2025VariationDecrypt(cipher, childKey));
+            childFitness = fitness::tetragramFitness(&childDecrypt);
+
+            improved = false;
+
+        playfairEvaluate:
+            if (childFitness > bestFitness) {
+                childKey = playfair2025VariationBacktracking(cipher, childKey, false);
+
+                childDecrypt = processPlayfairDecrypt(playfair2025VariationDecrypt(cipher, childKey));
+                childFitness = fitness::tetragramFitness(&childDecrypt);
+                std::cout << childFitness << std::endl;
+
+                if (childFitness > -32) {
+                    for (auto const& row : childKey) {
+                        for (auto item : row) {
+                            std::cout << item;
+                        }
+                        std::cout << std::endl;
+                    }
+                    std::cout << childDecrypt << std::endl;
+                }
+
+                //Because of the recursive improver
+                if (childFitness > -13) {
+                    return childKey;
+                }
+
+                bestKey = childKey;
+                bestFitness = childFitness;
+                bestDecrypt = childDecrypt;
+                currentKey = childKey;
+                currentFitness = childFitness;
+                counter = 0;
+                impatience = 0;
+            }
+
+            else if (childFitness == bestFitness) {
+                impatience = 0;
+                goto playfairChildFitnessGreater;
+            }
+
+            else if (childFitness > currentFitness) {
+            playfairChildFitnessGreater:
+                if (!improved) {
+                    improved = true;
+
+                    childKey = playfair2025VariationBacktracking(cipher, childKey, false);
+
+                    childDecrypt = processPlayfairDecrypt(playfair2025VariationDecrypt(cipher, childKey));
                     childFitness = fitness::tetragramFitness(&childDecrypt);
 
                     goto playfairEvaluate;
@@ -401,6 +592,43 @@ namespace polybius {
         return bestKey;
     }
 
+    polybius playfair2025VariationBacktracking(std::string cipher, polybius startKey, bool ignoreBad) {
+        //Get a starting point
+        auto decrypt = processPlayfairDecrypt(playfair2025VariationDecrypt(cipher, startKey));
+        float fitness = fitness::tetragramFitness(&decrypt);
+        polybius bestKey = startKey;
+        float bestFitness = fitness;
+        float childFitness;
+
+        std::vector<polybius> children;
+        polybius bestChild;
+
+        while (true) {
+            children = getAllChildKeys(bestKey);
+            fitness = -100;
+            bestChild = nullPolybius;
+            for (const polybius& child : children) {
+                decrypt = processPlayfairDecrypt(playfair2025VariationDecrypt(cipher, child));
+                childFitness = fitness::tetragramFitness(&decrypt);
+                if (childFitness > fitness) {
+                    fitness = childFitness;
+                    bestChild = child;
+                }
+            }
+            if (fitness > bestFitness) {
+                bestKey = bestChild;
+                bestFitness = fitness;
+            }
+            else if (bestFitness > -15 || !ignoreBad) {
+                return bestKey;
+            }
+            else {
+                return nullPolybius;
+            }
+        }
+        return bestKey;
+    }
+
     int cliPlayfairHillClimber(std::string cipher) {
         cipher = basics::formatString(cipher);
         polybius bestKey = playfairHillClimber(cipher);
@@ -411,6 +639,27 @@ namespace polybius {
             std::cout << std::endl;
         }
         std::string rawDecrypt = playfairDecrypt(cipher, bestKey);
+        std::string decrypt = processPlayfairDecrypt(rawDecrypt);
+        if (fitness::tetragramFitness(&decrypt) > -15) {
+            if (cliInterface::offerDecryption(decrypt)) {
+                std::cout << "Raw Decrypt: " << std::endl;
+                std::cout << rawDecrypt << std::endl;
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    int cliPlayfair2025VariationHillClimber(std::string cipher) {
+        cipher = basics::formatString(cipher);
+        polybius bestKey = playfair2025VariationHillClimber(cipher);
+        for (const auto& row : bestKey) {
+            for (const auto& item : row) {
+                std::cout << item << " ";
+            }
+            std::cout << std::endl;
+        }
+        std::string rawDecrypt = playfair2025VariationDecrypt(cipher, bestKey);
         std::string decrypt = processPlayfairDecrypt(rawDecrypt);
         if (fitness::tetragramFitness(&decrypt) > -15) {
             if (cliInterface::offerDecryption(decrypt)) {
