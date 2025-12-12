@@ -286,16 +286,6 @@ namespace polybius {
 
                 std::cout << childFitness << std::endl;
 
-                if (childFitness > -22) {
-                    for (auto row : childKey) {
-                        for (auto item : row) {
-                            std::cout << item;
-                        }
-                        std::cout << std::endl;
-                    }
-                    std::cout << childDecrypt << std::endl;
-                }
-
                 //Because of the recursive improver
                 if (childFitness > -13) {
                     return childKey;
@@ -426,16 +416,6 @@ namespace polybius {
                 childDecrypt = processPlayfairDecrypt(playfair2025VariationDecrypt(cipher, childKey));
                 childFitness = fitness::tetragramFitness(&childDecrypt);
                 std::cout << childFitness << std::endl;
-
-                if (childFitness > -32) {
-                    for (auto const& row : childKey) {
-                        for (auto item : row) {
-                            std::cout << item;
-                        }
-                        std::cout << std::endl;
-                    }
-                    std::cout << childDecrypt << std::endl;
-                }
 
                 //Because of the recursive improver
                 if (childFitness > -13) {
