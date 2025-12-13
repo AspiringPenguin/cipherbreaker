@@ -409,7 +409,7 @@ namespace polybius {
 
             improved = false;
 
-        playfairEvaluate:
+        playfair2025VariationEvaluate:
             if (childFitness > bestFitness) {
                 childKey = playfair2025VariationBacktracking(cipher, childKey, false);
 
@@ -433,11 +433,11 @@ namespace polybius {
 
             else if (childFitness == bestFitness) {
                 impatience = 0;
-                goto playfairChildFitnessGreater;
+                goto playfair2025VariationChildFitnessGreater;
             }
 
             else if (childFitness > currentFitness) {
-            playfairChildFitnessGreater:
+            playfair2025VariationChildFitnessGreater:
                 if (!improved) {
                     improved = true;
 
@@ -446,7 +446,7 @@ namespace polybius {
                     childDecrypt = processPlayfairDecrypt(playfair2025VariationDecrypt(cipher, childKey));
                     childFitness = fitness::tetragramFitness(&childDecrypt);
 
-                    goto playfairEvaluate;
+                    goto playfair2025VariationEvaluate;
                 }
 
                 currentKey = childKey;
