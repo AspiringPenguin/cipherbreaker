@@ -978,6 +978,10 @@ namespace polybius {
                 if (wandering) {
                     impatience++;
                 }
+
+                if (bestFitness > -12 && counter > 10000) {
+                    break;
+                }
             }
 
             if (fitness::tetragramFitness(&bestDecrypt) > -15) {
