@@ -815,19 +815,21 @@ namespace polybius {
     }
     
     std::tuple<polybius, polybius> vertHillClimber(std::string cipher) {
-        polybius bestTopKey = alphabetPolybius;
-        polybius bestBottomKey = alphabetPolybius;
-
         cipher = basics::formatString(cipher);
 
-        std::string bestDecrypt = vertTwoSquareDecrypt(cipher, bestTopKey, bestBottomKey);
+        auto alphabetCopy = basics::alphabet;
 
-        float bestFitness = fitness::tetragramFitness(&bestDecrypt);
+        polybius bestTopKey;
+        polybius bestBottomKey;
+
+        std::string bestDecrypt;
+
+        float bestFitness;
         
-        polybius currentTopKey = bestTopKey;
-        polybius currentBottomKey = bestBottomKey;
-        std::string currentDecrypt = bestDecrypt;
-        float currentFitness = bestFitness;
+        polybius currentTopKey;
+        polybius currentBottomKey;
+        std::string currentDecrypt;
+        float currentFitness;
 
         polybius childTopKey;
         polybius childBottomKey;
@@ -846,104 +848,146 @@ namespace polybius {
 
         int counter = 0;
         int impatience = 0;
+
+        bool wandering;
         
-        while (counter < 10000) {
-            childTopKey = currentTopKey;
-            childBottomKey = currentBottomKey;
+        int N = 0;
+        while (N < 1000) {
+            std::cout << std::endl << "Restart " << N << std::endl;
 
-            if (squareChoice(gen) == 0) {
-                swapElems(childTopKey, &dist, &gen);
-            }
-            else {
-                swapElems(childBottomKey, &dist, &gen);
-            }
+            std::shuffle(alphabetCopy.begin(), alphabetCopy.end(), gen);
+            bestTopKey = makePolybius(alphabetCopy);
 
-            childDecrypt = vertTwoSquareDecrypt(cipher, childTopKey, childBottomKey);
-            childFitness = fitness::tetragramFitness(&childDecrypt);
+            std::shuffle(alphabetCopy.begin(), alphabetCopy.end(), gen);
+            bestBottomKey = makePolybius(alphabetCopy);
 
-            improved = false;
+            bestDecrypt = vertTwoSquareDecrypt(cipher, bestTopKey, bestBottomKey);
 
-            vertTwoSquareEvaluate:
-            if (childFitness > bestFitness) {
-                //Improve by default, don't need to reevaluate as already the best key seen
-                improvedKey = vertTwoSquareBacktracking(cipher, childTopKey, childBottomKey, false);
-                childTopKey = std::get<0>(improvedKey);
-                childBottomKey = std::get<1>(improvedKey);
+            bestFitness = fitness::tetragramFitness(&bestDecrypt);
+
+            currentTopKey = bestTopKey;
+            currentBottomKey = bestBottomKey;
+            currentDecrypt = bestDecrypt;
+            currentFitness = bestFitness;
+
+            counter = 0;
+            impatience = 0;
+
+            wandering = false;
+
+            while (counter < 20000 || (bestFitness > -37 && counter < (20000 + ((37 + bestFitness) * 10000)))) {
+                childTopKey = currentTopKey;
+                childBottomKey = currentBottomKey;
+
+                if (squareChoice(gen) == 0) {
+                    swapElems(childTopKey, &dist, &gen);
+                }
+                else {
+                    swapElems(childBottomKey, &dist, &gen);
+                }
 
                 childDecrypt = vertTwoSquareDecrypt(cipher, childTopKey, childBottomKey);
                 childFitness = fitness::tetragramFitness(&childDecrypt);
 
-                bestFitness = childFitness;
-                currentFitness = childFitness;
+                improved = false;
 
-                bestDecrypt = childDecrypt;
-                currentDecrypt = childDecrypt;
+            vertTwoSquareEvaluate:
+                if (childFitness > bestFitness) {
+                    //Improve if not already improved, don't need to reevaluate as already the best key seen
+                    if (!improved){
+                        improvedKey = vertTwoSquareBacktracking(cipher, childTopKey, childBottomKey, false);
+                        childTopKey = std::get<0>(improvedKey);
+                        childBottomKey = std::get<1>(improvedKey);
 
-                bestTopKey = childTopKey;
-                currentTopKey = childTopKey;
-                bestBottomKey = childBottomKey;
-                currentBottomKey = childBottomKey;
+                        childDecrypt = vertTwoSquareDecrypt(cipher, childTopKey, childBottomKey);
+                        childFitness = fitness::tetragramFitness(&childDecrypt);
+                    }
 
-                std::cout << bestFitness << " " << counter << std::endl;
+                    wandering = false;
 
-                counter = 0;
-                impatience = 0;
-            }
-            else if (childFitness == bestFitness) {
-                if (!improved) {
-                    improvedKey = vertTwoSquareBacktracking(cipher, childTopKey, childBottomKey, false);
-                    childTopKey = std::get<0>(improvedKey);
-                    childBottomKey = std::get<1>(improvedKey);
+                    bestFitness = childFitness;
+                    currentFitness = childFitness;
 
-                    childDecrypt = vertTwoSquareDecrypt(cipher, childTopKey, childBottomKey);
-                    childFitness = fitness::tetragramFitness(&childDecrypt);
-                    
-                    improved = true; //Don't loop infinitely
-                    goto vertTwoSquareEvaluate; //Re-evaluate now its improved
+                    bestDecrypt = childDecrypt;
+                    currentDecrypt = childDecrypt;
+
+                    bestTopKey = childTopKey;
+                    currentTopKey = childTopKey;
+                    bestBottomKey = childBottomKey;
+                    currentBottomKey = childBottomKey;
+
+                    std::cout << bestFitness << " " << counter << std::endl;
+
+                    counter = 0;
+                    impatience = 0;
+                }
+                else if (childFitness == bestFitness) {
+                    if (!improved) {
+                        improvedKey = vertTwoSquareBacktracking(cipher, childTopKey, childBottomKey, false);
+                        childTopKey = std::get<0>(improvedKey);
+                        childBottomKey = std::get<1>(improvedKey);
+
+                        childDecrypt = vertTwoSquareDecrypt(cipher, childTopKey, childBottomKey);
+                        childFitness = fitness::tetragramFitness(&childDecrypt);
+
+                        improved = true; //Don't loop infinitely
+                        goto vertTwoSquareEvaluate; //Re-evaluate now its improved
+                    }
+
+                    impatience = 0;
+                    wandering = false;
+                    currentFitness = childFitness;
+                    currentDecrypt = childDecrypt;
+                    currentTopKey = childTopKey;
+                    currentBottomKey = childBottomKey;
+                }
+                else if (childFitness > currentFitness) {
+                    if (!improved) {
+                        improvedKey = vertTwoSquareBacktracking(cipher, childTopKey, childBottomKey, false);
+                        childTopKey = std::get<0>(improvedKey);
+                        childBottomKey = std::get<1>(improvedKey);
+
+                        childDecrypt = vertTwoSquareDecrypt(cipher, childTopKey, childBottomKey);
+                        childFitness = fitness::tetragramFitness(&childDecrypt);
+
+                        improved = true; //Don't loop infinitely
+                        goto vertTwoSquareEvaluate; //Re-evaluate now its improved
+                    }
+
+                    currentFitness = childFitness;
+                    currentDecrypt = childDecrypt;
+                    currentTopKey = childTopKey;
+                    currentBottomKey = childBottomKey;
+                }
+                else if (counter > 100 && childFitness > (bestFitness + (bestFitness/6)) && changeChoice(gen) == 1) {
+                    currentTopKey = childTopKey;
+                    currentBottomKey = childBottomKey;
+                    currentFitness = childFitness;
+                    currentDecrypt = childDecrypt;
+                    wandering = true;
                 }
 
-                impatience = 0;
-                currentFitness = childFitness;
-                currentDecrypt = childDecrypt;
-                currentTopKey = childTopKey;
-                currentBottomKey = childBottomKey;
-            }
-            else if (childFitness > currentFitness) {
-                if (!improved) {
-                    improvedKey = vertTwoSquareBacktracking(cipher, childTopKey, childBottomKey, false);
-                    childTopKey = std::get<0>(improvedKey);
-                    childBottomKey = std::get<1>(improvedKey);
-
-                    childDecrypt = vertTwoSquareDecrypt(cipher, childTopKey, childBottomKey);
-                    childFitness = fitness::tetragramFitness(&childDecrypt);
-
-                    improved = true; //Don't loop infinitely
-                    goto vertTwoSquareEvaluate; //Re-evaluate now its improved
+                if (impatience > 2000) {
+                    currentTopKey = bestTopKey;
+                    currentBottomKey = bestBottomKey;
+                    impatience = 0;
+                    wandering = false;
                 }
 
-                currentFitness = childFitness;
-                currentDecrypt = childDecrypt;
-                currentTopKey = childTopKey;
-                currentBottomKey = childBottomKey;
-            }
-            else if (childFitness > (bestFitness + (bestFitness/(8 - counter/20000.5f))) && changeChoice(gen) == 1) {
-                currentTopKey = childTopKey;
-                currentBottomKey = childBottomKey;
-                currentFitness = childFitness;
-                currentDecrypt = childDecrypt;
+                counter++;
+                if (wandering) {
+                    impatience++;
+                }
             }
 
-            if (impatience > 1000) {
-                currentTopKey = bestTopKey;
-                currentBottomKey = bestBottomKey;
-                impatience = 0;
+            if (fitness::tetragramFitness(&bestDecrypt) > -15) {
+                return { bestTopKey, bestBottomKey };
             }
 
-            counter++;
-            impatience++;
+            N++;
         }
 
-        return { bestTopKey, bestBottomKey };
+        return { nullPolybius, nullPolybius };
     }
 
     std::vector<std::tuple<polybius, polybius>> getAllChildKeysTwoSquare(polybius key1, polybius key2) {
