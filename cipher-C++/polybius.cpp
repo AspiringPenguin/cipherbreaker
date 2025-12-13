@@ -476,7 +476,7 @@ namespace polybius {
         return bestKey;
     }
 
-    std::vector<polybius> getAllChildKeys(polybius key) {
+    std::vector<polybius> getAllChildKeysPlayfair(polybius key) {
         auto keys = std::vector<polybius>();
         polybius childKey;
 
@@ -547,7 +547,7 @@ namespace polybius {
         polybius bestChild;
 
         while (true) {
-            children = getAllChildKeys(bestKey);
+            children = getAllChildKeysPlayfair(bestKey);
             fitness = -100;
             bestChild = nullPolybius;
             for (const polybius& child : children) {
@@ -584,7 +584,7 @@ namespace polybius {
         polybius bestChild;
 
         while (true) {
-            children = getAllChildKeys(bestKey);
+            children = getAllChildKeysPlayfair(bestKey);
             fitness = -100;
             bestChild = nullPolybius;
             for (const polybius& child : children) {
@@ -834,6 +834,9 @@ namespace polybius {
         std::string childDecrypt;
         float childFitness;
 
+        std::tuple<polybius, polybius> improvedKey;
+        bool improved;
+
         //Random numbers
         std::random_device rd;
         std::mt19937 gen(rd());
@@ -844,7 +847,7 @@ namespace polybius {
         int counter = 0;
         int impatience = 0;
         
-        while (counter < 1000000) {
+        while (counter < 10000) {
             childTopKey = currentTopKey;
             childBottomKey = currentBottomKey;
 
@@ -858,7 +861,18 @@ namespace polybius {
             childDecrypt = vertTwoSquareDecrypt(cipher, childTopKey, childBottomKey);
             childFitness = fitness::tetragramFitness(&childDecrypt);
 
+            improved = false;
+
+            vertTwoSquareEvaluate:
             if (childFitness > bestFitness) {
+                //Improve by default, don't need to reevaluate as already the best key seen
+                improvedKey = vertTwoSquareBacktracking(cipher, childTopKey, childBottomKey, false);
+                childTopKey = std::get<0>(improvedKey);
+                childBottomKey = std::get<1>(improvedKey);
+
+                childDecrypt = vertTwoSquareDecrypt(cipher, childTopKey, childBottomKey);
+                childFitness = fitness::tetragramFitness(&childDecrypt);
+
                 bestFitness = childFitness;
                 currentFitness = childFitness;
 
@@ -870,11 +884,24 @@ namespace polybius {
                 bestBottomKey = childBottomKey;
                 currentBottomKey = childBottomKey;
 
+                std::cout << bestFitness << " " << counter << std::endl;
+
                 counter = 0;
                 impatience = 0;
-                std::cout << bestFitness << std::endl;
             }
             else if (childFitness == bestFitness) {
+                if (!improved) {
+                    improvedKey = vertTwoSquareBacktracking(cipher, childTopKey, childBottomKey, false);
+                    childTopKey = std::get<0>(improvedKey);
+                    childBottomKey = std::get<1>(improvedKey);
+
+                    childDecrypt = vertTwoSquareDecrypt(cipher, childTopKey, childBottomKey);
+                    childFitness = fitness::tetragramFitness(&childDecrypt);
+                    
+                    improved = true; //Don't loop infinitely
+                    goto vertTwoSquareEvaluate; //Re-evaluate now its improved
+                }
+
                 impatience = 0;
                 currentFitness = childFitness;
                 currentDecrypt = childDecrypt;
@@ -882,12 +909,24 @@ namespace polybius {
                 currentBottomKey = childBottomKey;
             }
             else if (childFitness > currentFitness) {
+                if (!improved) {
+                    improvedKey = vertTwoSquareBacktracking(cipher, childTopKey, childBottomKey, false);
+                    childTopKey = std::get<0>(improvedKey);
+                    childBottomKey = std::get<1>(improvedKey);
+
+                    childDecrypt = vertTwoSquareDecrypt(cipher, childTopKey, childBottomKey);
+                    childFitness = fitness::tetragramFitness(&childDecrypt);
+
+                    improved = true; //Don't loop infinitely
+                    goto vertTwoSquareEvaluate; //Re-evaluate now its improved
+                }
+
                 currentFitness = childFitness;
                 currentDecrypt = childDecrypt;
                 currentTopKey = childTopKey;
                 currentBottomKey = childBottomKey;
             }
-            else if (childFitness > (bestFitness - 3) && changeChoice(gen) == 1 && counter > 1000) {
+            else if (childFitness > (bestFitness + (bestFitness/(8 - counter/20000.5f))) && changeChoice(gen) == 1) {
                 currentTopKey = childTopKey;
                 currentBottomKey = childBottomKey;
                 currentFitness = childFitness;
@@ -905,5 +944,79 @@ namespace polybius {
         }
 
         return { bestTopKey, bestBottomKey };
+    }
+
+    std::vector<std::tuple<polybius, polybius>> getAllChildKeysTwoSquare(polybius key1, polybius key2) {
+        auto keys = std::vector<std::tuple<polybius, polybius>>();
+        polybius childKey;
+
+        //Swap two places in first square
+        for (int y1 = 0; y1 < 5; y1++) {
+            for (int y2 = 0; y2 < 5; y2++) {
+                for (int x1 = 0; x1 < 5; x1++) {
+                    for (int x2 = 0; x2 < 5; x2++) {
+                        childKey = key1;
+                        char _ = childKey[y1][x1];
+                        childKey[y1][x1] = childKey[y2][x2];
+                        childKey[y2][x2] = _;
+                        keys.push_back({ childKey, key2 });
+                    }
+                }
+            }
+        }
+
+        //Swap two places in second square
+        for (int y1 = 0; y1 < 5; y1++) {
+            for (int y2 = 0; y2 < 5; y2++) {
+                for (int x1 = 0; x1 < 5; x1++) {
+                    for (int x2 = 0; x2 < 5; x2++) {
+                        childKey = key2;
+                        char _ = childKey[y1][x1];
+                        childKey[y1][x1] = childKey[y2][x2];
+                        childKey[y2][x2] = _;
+                        keys.push_back({ key1, childKey });
+                    }
+                }
+            }
+        }
+
+        return keys;
+    }
+
+    std::tuple<polybius, polybius> vertTwoSquareBacktracking(std::string cipher, polybius startTop, polybius startBottom, bool ignoreBad) {
+        //Get a starting point
+        auto decrypt = vertTwoSquareDecrypt(cipher, startTop, startBottom);
+        float fitness = fitness::tetragramFitness(&decrypt);
+        std::tuple<polybius, polybius> bestKey = { startTop, startBottom };
+        float bestFitness = fitness;
+        float childFitness;
+
+        std::vector<std::tuple<polybius, polybius>> children;
+        std::tuple<polybius, polybius> bestChild;
+
+        while (true) {
+            children = getAllChildKeysTwoSquare(startTop, startBottom);
+            fitness = -100;
+            bestChild = { nullPolybius, nullPolybius };
+            for (const std::tuple<polybius, polybius>& child : children) {
+                decrypt = vertTwoSquareDecrypt(cipher, std::get<0>(child), std::get<1>(child));
+                childFitness = fitness::tetragramFitness(&decrypt);
+                if (childFitness > fitness) {
+                    fitness = childFitness;
+                    bestChild = child;
+                }
+            }
+            if (fitness > bestFitness) {
+                bestKey = bestChild;
+                bestFitness = fitness;
+            }
+            else if (bestFitness > -15 || !ignoreBad) {
+                return bestKey;
+            }
+            else {
+                return { nullPolybius, nullPolybius };
+            }
+        }
+        return bestKey;
     }
 }

@@ -33,4 +33,6 @@ namespace polybius {
 	std::string horizTwoSquareDecrypt(std::string cipher, polybius left, polybius right, int flips = 1);
 
 	std::tuple<polybius, polybius> vertHillClimber(std::string cipher);
+	//Used in the above
+	std::tuple<polybius, polybius> vertTwoSquareBacktracking(std::string cipher, polybius startTop, polybius startBottom, bool ignoreBad);
 }
