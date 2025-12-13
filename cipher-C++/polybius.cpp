@@ -813,8 +813,45 @@ namespace polybius {
         }
         return plain;
     }
+
+    std::vector<std::tuple<polybius, polybius>> getAllChildKeysTwoSquare(polybius key1, polybius key2) {
+        auto keys = std::vector<std::tuple<polybius, polybius>>();
+        polybius childKey;
+
+        //Swap two places in first square
+        for (int y1 = 0; y1 < 5; y1++) {
+            for (int y2 = 0; y2 < 5; y2++) {
+                for (int x1 = 0; x1 < 5; x1++) {
+                    for (int x2 = 0; x2 < 5; x2++) {
+                        childKey = key1;
+                        char _ = childKey[y1][x1];
+                        childKey[y1][x1] = childKey[y2][x2];
+                        childKey[y2][x2] = _;
+                        keys.push_back({ childKey, key2 });
+                    }
+                }
+            }
+        }
+
+        //Swap two places in second square
+        for (int y1 = 0; y1 < 5; y1++) {
+            for (int y2 = 0; y2 < 5; y2++) {
+                for (int x1 = 0; x1 < 5; x1++) {
+                    for (int x2 = 0; x2 < 5; x2++) {
+                        childKey = key2;
+                        char _ = childKey[y1][x1];
+                        childKey[y1][x1] = childKey[y2][x2];
+                        childKey[y2][x2] = _;
+                        keys.push_back({ key1, childKey });
+                    }
+                }
+            }
+        }
+
+        return keys;
+    }
     
-    std::tuple<polybius, polybius> vertHillClimber(std::string cipher) {
+    std::tuple<polybius, polybius> vertHillClimber(std::string cipher) { //Not the best, but it works for fair-sized texts
         cipher = basics::formatString(cipher);
 
         auto alphabetCopy = basics::alphabet;
@@ -844,7 +881,7 @@ namespace polybius {
         std::mt19937 gen(rd());
         std::uniform_int_distribution<> squareChoice(0, 1);
         std::uniform_int_distribution<> dist(0, 4);
-        std::uniform_int_distribution<> changeChoice(1, 3);
+        std::uniform_int_distribution<> changeChoice(1, 5);
 
         int counter = 0;
         int impatience = 0;
@@ -992,43 +1029,6 @@ namespace polybius {
         }
 
         return { nullPolybius, nullPolybius };
-    }
-
-    std::vector<std::tuple<polybius, polybius>> getAllChildKeysTwoSquare(polybius key1, polybius key2) {
-        auto keys = std::vector<std::tuple<polybius, polybius>>();
-        polybius childKey;
-
-        //Swap two places in first square
-        for (int y1 = 0; y1 < 5; y1++) {
-            for (int y2 = 0; y2 < 5; y2++) {
-                for (int x1 = 0; x1 < 5; x1++) {
-                    for (int x2 = 0; x2 < 5; x2++) {
-                        childKey = key1;
-                        char _ = childKey[y1][x1];
-                        childKey[y1][x1] = childKey[y2][x2];
-                        childKey[y2][x2] = _;
-                        keys.push_back({ childKey, key2 });
-                    }
-                }
-            }
-        }
-
-        //Swap two places in second square
-        for (int y1 = 0; y1 < 5; y1++) {
-            for (int y2 = 0; y2 < 5; y2++) {
-                for (int x1 = 0; x1 < 5; x1++) {
-                    for (int x2 = 0; x2 < 5; x2++) {
-                        childKey = key2;
-                        char _ = childKey[y1][x1];
-                        childKey[y1][x1] = childKey[y2][x2];
-                        childKey[y2][x2] = _;
-                        keys.push_back({ key1, childKey });
-                    }
-                }
-            }
-        }
-
-        return keys;
     }
 
     std::tuple<polybius, polybius> vertTwoSquareBacktracking(std::string cipher, polybius startTop, polybius startBottom, bool ignoreBad) {
