@@ -851,7 +851,7 @@ namespace polybius {
         return keys;
     }
     
-    std::tuple<polybius, polybius> vertHillClimber(std::string cipher) { //Not the best, but it works for fair-sized texts
+    std::tuple<polybius, polybius> polybius::vertTwoSquareHillClimber(std::string cipher) { //Not the best, but it works for fair-sized texts
         cipher = basics::formatString(cipher);
 
         auto alphabetCopy = basics::alphabet;
@@ -1066,5 +1066,17 @@ namespace polybius {
             }
         }
         return bestKey;
+    }
+
+    int cliVertTwoSquareHillClimber(std::string cipher) {
+        cipher = basics::formatString(cipher);
+        auto bestKeys = vertTwoSquareHillClimber(cipher);
+        std::string decrypt = vertTwoSquareDecrypt(cipher, std::get<0>(bestKeys), std::get<1>(bestKeys));
+        if (fitness::tetragramFitness(&decrypt) > -15) {
+            if (cliInterface::offerDecryption(decrypt)) {
+                return 1;
+            }
+        }
+        return 0;
     }
 }
