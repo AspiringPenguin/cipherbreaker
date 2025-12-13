@@ -36,4 +36,9 @@ namespace polybius {
 	//Used in the above
 	std::tuple<polybius, polybius> vertTwoSquareBacktracking(std::string cipher, polybius startTop, polybius startBottom, bool ignoreBad);
 	int cliVertTwoSquareHillClimber(std::string cipher);
+
+	std::tuple<polybius, polybius> horizTwoSquareHillClimber(std::string cipher);
+	//Used in the above
+	std::tuple<polybius, polybius> horizTwoSquareBacktracking(std::string cipher, polybius startTop, polybius startBottom, bool ignoreBad);
+	int cliHorizTwoSquareHillClimber(std::string cipher);
 }

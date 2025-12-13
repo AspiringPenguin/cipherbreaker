@@ -851,7 +851,7 @@ namespace polybius {
         return keys;
     }
     
-    std::tuple<polybius, polybius> polybius::vertTwoSquareHillClimber(std::string cipher) { //Not the best, but it works for fair-sized texts
+    std::tuple<polybius, polybius> vertTwoSquareHillClimber(std::string cipher) { //Not the best, but it works for fair-sized texts
         cipher = basics::formatString(cipher);
 
         auto alphabetCopy = basics::alphabet;
@@ -1072,6 +1072,235 @@ namespace polybius {
         cipher = basics::formatString(cipher);
         auto bestKeys = vertTwoSquareHillClimber(cipher);
         std::string decrypt = vertTwoSquareDecrypt(cipher, std::get<0>(bestKeys), std::get<1>(bestKeys));
+        if (fitness::tetragramFitness(&decrypt) > -15) {
+            if (cliInterface::offerDecryption(decrypt)) {
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    std::tuple<polybius, polybius> horizTwoSquareHillClimber(std::string cipher) { //Not the best, but it works for fair-sized texts
+        cipher = basics::formatString(cipher);
+
+        auto alphabetCopy = basics::alphabet;
+
+        polybius bestTopKey;
+        polybius bestBottomKey;
+
+        std::string bestDecrypt;
+
+        float bestFitness;
+
+        polybius currentTopKey;
+        polybius currentBottomKey;
+        std::string currentDecrypt;
+        float currentFitness;
+
+        polybius childTopKey;
+        polybius childBottomKey;
+        std::string childDecrypt;
+        float childFitness;
+
+        std::tuple<polybius, polybius> improvedKey;
+        bool improved;
+
+        //Random numbers
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> squareChoice(0, 1);
+        std::uniform_int_distribution<> dist(0, 4);
+        std::uniform_int_distribution<> changeChoice(1, 5);
+
+        int counter = 0;
+        int impatience = 0;
+
+        bool wandering;
+
+        int N = 0;
+        while (N < 1000) {
+            std::cout << std::endl << "Restart " << N << std::endl;
+
+            std::shuffle(alphabetCopy.begin(), alphabetCopy.end(), gen);
+            bestTopKey = makePolybius(alphabetCopy);
+
+            std::shuffle(alphabetCopy.begin(), alphabetCopy.end(), gen);
+            bestBottomKey = makePolybius(alphabetCopy);
+
+            bestDecrypt = horizTwoSquareDecrypt(cipher, bestTopKey, bestBottomKey);
+
+            bestFitness = fitness::tetragramFitness(&bestDecrypt);
+
+            currentTopKey = bestTopKey;
+            currentBottomKey = bestBottomKey;
+            currentDecrypt = bestDecrypt;
+            currentFitness = bestFitness;
+
+            counter = 0;
+            impatience = 0;
+
+            wandering = false;
+
+            while (counter < 20000 || (bestFitness > -37 && counter < (20000 + ((37 + bestFitness) * 10000)))) {
+                childTopKey = currentTopKey;
+                childBottomKey = currentBottomKey;
+
+                if (squareChoice(gen) == 0) {
+                    swapElems(childTopKey, &dist, &gen);
+                }
+                else {
+                    swapElems(childBottomKey, &dist, &gen);
+                }
+
+                childDecrypt = horizTwoSquareDecrypt(cipher, childTopKey, childBottomKey);
+                childFitness = fitness::tetragramFitness(&childDecrypt);
+
+                improved = false;
+
+            horizTwoSquareEvaluate:
+                if (childFitness > bestFitness) {
+                    //Improve if not already improved, don't need to reevaluate as already the best key seen
+                    if (!improved) {
+                        improvedKey = horizTwoSquareBacktracking(cipher, childTopKey, childBottomKey, false);
+                        childTopKey = std::get<0>(improvedKey);
+                        childBottomKey = std::get<1>(improvedKey);
+
+                        childDecrypt = horizTwoSquareDecrypt(cipher, childTopKey, childBottomKey);
+                        childFitness = fitness::tetragramFitness(&childDecrypt);
+                    }
+
+                    wandering = false;
+
+                    bestFitness = childFitness;
+                    currentFitness = childFitness;
+
+                    bestDecrypt = childDecrypt;
+                    currentDecrypt = childDecrypt;
+
+                    bestTopKey = childTopKey;
+                    currentTopKey = childTopKey;
+                    bestBottomKey = childBottomKey;
+                    currentBottomKey = childBottomKey;
+
+                    std::cout << bestFitness << " " << counter << std::endl;
+
+                    counter = 0;
+                    impatience = 0;
+                }
+                else if (childFitness == bestFitness) {
+                    if (!improved) {
+                        improvedKey = horizTwoSquareBacktracking(cipher, childTopKey, childBottomKey, false);
+                        childTopKey = std::get<0>(improvedKey);
+                        childBottomKey = std::get<1>(improvedKey);
+
+                        childDecrypt = horizTwoSquareDecrypt(cipher, childTopKey, childBottomKey);
+                        childFitness = fitness::tetragramFitness(&childDecrypt);
+
+                        improved = true; //Don't loop infinitely
+                        goto horizTwoSquareEvaluate; //Re-evaluate now its improved
+                    }
+
+                    impatience = 0;
+                    wandering = false;
+                    currentFitness = childFitness;
+                    currentDecrypt = childDecrypt;
+                    currentTopKey = childTopKey;
+                    currentBottomKey = childBottomKey;
+                }
+                else if (childFitness > currentFitness) {
+                    if (!improved) {
+                        improvedKey = horizTwoSquareBacktracking(cipher, childTopKey, childBottomKey, false);
+                        childTopKey = std::get<0>(improvedKey);
+                        childBottomKey = std::get<1>(improvedKey);
+
+                        childDecrypt = horizTwoSquareDecrypt(cipher, childTopKey, childBottomKey);
+                        childFitness = fitness::tetragramFitness(&childDecrypt);
+
+                        improved = true; //Don't loop infinitely
+                        goto horizTwoSquareEvaluate; //Re-evaluate now its improved
+                    }
+
+                    currentFitness = childFitness;
+                    currentDecrypt = childDecrypt;
+                    currentTopKey = childTopKey;
+                    currentBottomKey = childBottomKey;
+                }
+                else if (counter > 100 && childFitness > (bestFitness + (bestFitness / 6)) && changeChoice(gen) == 1) {
+                    currentTopKey = childTopKey;
+                    currentBottomKey = childBottomKey;
+                    currentFitness = childFitness;
+                    currentDecrypt = childDecrypt;
+                    wandering = true;
+                }
+
+                if (impatience > 2000) {
+                    currentTopKey = bestTopKey;
+                    currentBottomKey = bestBottomKey;
+                    impatience = 0;
+                    wandering = false;
+                }
+
+                counter++;
+                if (wandering) {
+                    impatience++;
+                }
+
+                if (bestFitness > -12 && counter > 10000) {
+                    break;
+                }
+            }
+
+            if (fitness::tetragramFitness(&bestDecrypt) > -15) {
+                return { bestTopKey, bestBottomKey };
+            }
+
+            N++;
+        }
+
+        return { nullPolybius, nullPolybius };
+    }
+
+    std::tuple<polybius, polybius> horizTwoSquareBacktracking(std::string cipher, polybius startTop, polybius startBottom, bool ignoreBad) {
+        //Get a starting point
+        auto decrypt = horizTwoSquareDecrypt(cipher, startTop, startBottom);
+        float fitness = fitness::tetragramFitness(&decrypt);
+        std::tuple<polybius, polybius> bestKey = { startTop, startBottom };
+        float bestFitness = fitness;
+        float childFitness;
+
+        std::vector<std::tuple<polybius, polybius>> children;
+        std::tuple<polybius, polybius> bestChild;
+
+        while (true) {
+            children = getAllChildKeysTwoSquare(startTop, startBottom);
+            fitness = -100;
+            bestChild = { nullPolybius, nullPolybius };
+            for (const std::tuple<polybius, polybius>& child : children) {
+                decrypt = horizTwoSquareDecrypt(cipher, std::get<0>(child), std::get<1>(child));
+                childFitness = fitness::tetragramFitness(&decrypt);
+                if (childFitness > fitness) {
+                    fitness = childFitness;
+                    bestChild = child;
+                }
+            }
+            if (fitness > bestFitness) {
+                bestKey = bestChild;
+                bestFitness = fitness;
+            }
+            else if (bestFitness > -15 || !ignoreBad) {
+                return bestKey;
+            }
+            else {
+                return { nullPolybius, nullPolybius };
+            }
+        }
+        return bestKey;
+    }
+
+    int cliHorizTwoSquareHillClimber(std::string cipher) {
+        cipher = basics::formatString(cipher);
+        auto bestKeys = horizTwoSquareHillClimber(cipher);
+        std::string decrypt = horizTwoSquareDecrypt(cipher, std::get<0>(bestKeys), std::get<1>(bestKeys));
         if (fitness::tetragramFitness(&decrypt) > -15) {
             if (cliInterface::offerDecryption(decrypt)) {
                 return 1;

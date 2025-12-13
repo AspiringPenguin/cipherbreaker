@@ -57,6 +57,7 @@ int main() {
 	menu.addMenuItem(cliInterface::MenuItem("Playfair", *polybius::cliPlayfairHillClimber));
 	menu.addMenuItem(cliInterface::MenuItem("Playfair 2025 Variation", *polybius::cliPlayfair2025VariationHillClimber));
 	menu.addMenuItem(cliInterface::MenuItem("Vertical Two Square", *polybius::cliVertTwoSquareHillClimber));
+	menu.addMenuItem(cliInterface::MenuItem("Horizontal Two Square", *polybius::cliHorizTwoSquareHillClimber));
 
 	//Add test func if not a release build
 	#ifdef TEST
