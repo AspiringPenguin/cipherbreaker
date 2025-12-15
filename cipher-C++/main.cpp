@@ -72,3 +72,11 @@ int main() {
 
 	return 0;
 }
+
+//Priorities:
+//1. Stream ciphers
+//2. inc. solitaire
+//3. Double playfair?
+//4. Hill, as per forum post attack?
+//5a. More tranpositions
+//5b. More polybius-derived stuff
