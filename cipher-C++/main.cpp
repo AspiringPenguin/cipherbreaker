@@ -28,7 +28,7 @@ int testStuff(std::string cipher) {
 
 	cipher = basics::formatString(cipher);
 
-	std::cout << stream::progressiveVigenereAsVigenere(cipher, 6, 2);
+	std::cout << stream::progressiveVigenereSubBruteForce(cipher, 6, 2);
 
 	return 2;
 }
@@ -60,6 +60,7 @@ int main() {
 	menu.addMenuItem(cliInterface::MenuItem("Four Square (Wandering Hill Climber)", *polybius::cliFourSquareHillClimber));
 
 	menu.addMenuItem(cliInterface::MenuItem("Autokey (Hill Climber)", *stream::cliAutokeyHillClimber));
+	menu.addMenuItem(cliInterface::MenuItem("Progressive Vigenere (Brute Force -> Multiple Caesar Shifts)", *stream::cliProgressiveVigenereBruteForce));
 
 	//Add test func if not a release build
 	#ifdef TEST

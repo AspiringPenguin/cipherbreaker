@@ -16,4 +16,7 @@ namespace stream {
 	int cliAutokeyHillClimber(std::string cipher);
 
 	std::string progressiveVigenereAsVigenere(std::string cipher, int l, int prog);
+	std::string progressiveVigenereSubBruteForce(std::string cipher, int l, int prog);
+	std::string progressiveVigenereBruteForce(std::string cipher);
+	int cliProgressiveVigenereBruteForce(std::string cipher);
 }

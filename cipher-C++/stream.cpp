@@ -3,6 +3,7 @@
 #include "basics.h"
 #include "fitness.h"
 #include "interface.h"
+#include "periodic.h"
 #include <queue>
 #include <random>
 
@@ -153,5 +154,30 @@ namespace stream {
 			vigenere += decombineChars(cipher[i], (((i/l)*prog)%26)+97, add);
 		}
 		return vigenere;
+	}
+
+	std::string progressiveVigenereSubBruteForce(std::string cipher, int l, int prog) {
+		return periodic::vigenere(progressiveVigenereAsVigenere(cipher, l, prog), l);
+	}
+
+	std::string progressiveVigenereBruteForce(std::string cipher) {
+		cipher = basics::formatString(cipher);
+		for (int l = 2; l < 21; l++) {
+			for (int prog = 1;prog < 26;prog++) {
+				std::string text = progressiveVigenereSubBruteForce(cipher, l, prog);
+				if (fitness::tetragramFitness(&text) > -15) {
+					return text;
+				}
+			}
+		}
+		return "";
+	}
+
+	int cliProgressiveVigenereBruteForce(std::string cipher) {
+		std::string decrypt = progressiveVigenereBruteForce(cipher);
+		if (cliInterface::offerDecryption(decrypt)) {
+			return 1;
+		}
+		return 0;
 	}
 }
