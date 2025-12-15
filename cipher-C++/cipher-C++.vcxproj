@@ -202,6 +202,7 @@
     <ClCompile Include="periodic.cpp" />
     <ClCompile Include="polybius.cpp" />
     <ClCompile Include="solitaire.cpp" />
+    <ClCompile Include="stream.cpp" />
     <ClCompile Include="strings.cpp" />
     <ClCompile Include="transpositions.cpp" />
   </ItemGroup>
@@ -216,6 +217,7 @@
     <ClInclude Include="periodic.h" />
     <ClInclude Include="polybius.h" />
     <ClInclude Include="solitaire.h" />
+    <ClInclude Include="stream.h" />
     <ClInclude Include="strings.h" />
     <ClInclude Include="transpositions.h" />
   </ItemGroup>

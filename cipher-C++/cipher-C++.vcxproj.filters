@@ -54,6 +54,9 @@
     <ClCompile Include="solitaire.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="stream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fileLoaders.h">
@@ -90,6 +93,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="polybius.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stream.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
