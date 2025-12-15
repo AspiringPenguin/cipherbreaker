@@ -7,6 +7,9 @@ namespace stream {
 		switch (m) {
 		case add:
 			val = (p + s - 194) % 26;
+			if (val >= 26) {
+				val -= 26;
+			}
 			break;
 		case subtractKey:
 			val = (p - s);
@@ -35,6 +38,9 @@ namespace stream {
 			break;
 		case subtractKey:
 			val = (p + s - 194);
+			if (val >= 26) {
+				val -= 26;
+			}
 			break;
 		case subtractText:
 			val = (s - p);
