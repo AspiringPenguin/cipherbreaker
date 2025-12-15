@@ -26,6 +26,10 @@ int testStuff(std::string cipher) {
 	//	std::cout << ms_int.count() << std::endl;
 	//}
 
+	cipher = basics::formatString(cipher);
+
+	std::cout << stream::autokeyDecrypt(cipher, "cataclysmic", stream::add) << std::endl;
+
 	return 2;
 }
 #endif

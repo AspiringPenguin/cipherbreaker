@@ -1,4 +1,5 @@
 #include "stream.h"
+#include <queue>
 
 namespace stream {
 	char combineChars(char p, char s, mode m) {
@@ -43,5 +44,24 @@ namespace stream {
 			break;
 		}
 		return 97 + val;
+	}
+
+	std::string autokeyDecrypt(std::string cipher, std::string key, mode m) {
+		std::string plain = "";
+		std::queue<char> stream;
+		for (char c : key) {
+			stream.push(c);
+		}
+
+		char pChar;
+
+		for (char c : cipher) {
+			pChar = decombineChars(c, stream.front(), m);
+			stream.pop(); //Have to read then remove from the queue
+			stream.push(pChar);
+			plain += pChar;
+		}
+
+		return plain;
 	}
 }
