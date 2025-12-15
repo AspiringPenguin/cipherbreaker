@@ -1308,4 +1308,216 @@ namespace polybius {
         }
         return 0;
     }
+
+    std::string fourSquareDecrypt(std::string text, polybius topRight, polybius bottomLeft) {
+        auto blocks = strings::getBlocks(text, 2);
+
+        std::string newText = "";
+        newText.reserve(text.size());
+
+        //Lookup table for char position
+        std::array<std::tuple<int, int>, 26> topRightLookup;
+        for (char c = 97; c < 123; c++) {
+            topRightLookup[c - 97] = findInPolybius(c, topRight);
+        }
+        std::array<std::tuple<int, int>, 26> bottomLeftLookup;
+        for (char c = 97; c < 123; c++) {
+            bottomLeftLookup[c - 97] = findInPolybius(c, bottomLeft);
+        }
+
+        std::tuple<int, int> pos0;
+        std::tuple<int, int> pos1;
+
+        for (const auto& block : blocks) {
+            pos0 = topRightLookup[block[0]-97];
+            pos1 = bottomLeftLookup[block[1]-97];
+
+            newText += alphabetPolybius[std::get<0>(pos0)][std::get<1>(pos1)];
+            newText += alphabetPolybius[std::get<0>(pos1)][std::get<1>(pos0)];
+        }
+
+        return newText;
+    }
+
+    std::tuple<polybius, polybius> fourSquareHillClimber(std::string cipher) {
+        cipher = basics::formatString(cipher);
+
+        //Random numbers
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> squareChoice(0, 1);
+        std::uniform_int_distribution<> dist(0, 4);
+        std::uniform_int_distribution<> changeChoice(1, 50);
+
+        auto alphabetCopy = basics::alphabet;
+
+        polybius bestTopKey, bestRightKey, currentTopKey, currentRightKey;
+
+        std::string bestDecrypt;
+        std::string currentDecrypt;
+        float bestFitness;
+        float currentFitness;
+
+        polybius childTopKey, childRightKey;
+        std::string childDecrypt;
+        float childFitness;
+
+        int counter;
+        int impatience;
+
+        bool wandering;
+
+        for (int i = 0; i < 20; i++) { //It can take a few attempts
+            std::shuffle(alphabetCopy.begin(), alphabetCopy.end(), gen);
+            bestTopKey = makePolybius(alphabetCopy);
+            std::shuffle(alphabetCopy.begin(), alphabetCopy.end(), gen);
+            bestRightKey = makePolybius(alphabetCopy);
+
+            bestDecrypt = fourSquareDecrypt(cipher, bestTopKey, bestRightKey);
+
+            bestFitness = fitness::tetragramFitness(&bestDecrypt);
+
+            currentTopKey = bestTopKey;
+            currentRightKey = bestRightKey;
+            currentDecrypt = bestDecrypt;
+            currentFitness = bestFitness;
+
+            counter = 0;
+            impatience = 0;
+            wandering = false;
+
+            std::cout << "Iteration " << i << std::endl;
+
+            while (counter < 200000) {
+                childTopKey = currentTopKey;
+                childRightKey = currentRightKey;
+
+                if (squareChoice(gen) == 0) {
+                    switch (changeChoice(gen)) {
+                    case 1:
+                        flipDiag(childTopKey);
+                        break;
+                    case 2:
+                        flipHoriz(childTopKey);
+                        break;
+                    case 3:
+                        flipDiag(childTopKey);
+                        break;
+                    case 4:
+                        swapRows(childTopKey, &dist, &gen);
+                        break;
+                    case 5:
+                        swapCols(childTopKey, &dist, &gen);
+                        break;
+                    default:
+                        swapElems(childTopKey, &dist, &gen);
+                        break;
+                    }
+                }
+                else {
+                    switch (changeChoice(gen)) {
+                    case 1:
+                        flipDiag(childRightKey);
+                        break;
+                    case 2:
+                        flipHoriz(childRightKey);
+                        break;
+                    case 3:
+                        flipDiag(childRightKey);
+                        break;
+                    case 4:
+                        swapRows(childRightKey, &dist, &gen);
+                        break;
+                    case 5:
+                        swapCols(childRightKey, &dist, &gen);
+                        break;
+                    default:
+                        swapElems(childRightKey, &dist, &gen);
+                        break;
+                    }
+                }
+
+                childDecrypt = fourSquareDecrypt(cipher, childTopKey, childRightKey);
+                childFitness = fitness::tetragramFitness(&childDecrypt);
+
+                if (childFitness > bestFitness) {
+                    wandering = false;
+
+                    bestFitness = childFitness;
+                    currentFitness = childFitness;
+
+                    bestDecrypt = childDecrypt;
+                    currentDecrypt = childDecrypt;
+
+                    bestTopKey = childTopKey;
+                    currentTopKey = childTopKey;
+                    bestRightKey = childRightKey;
+                    currentRightKey = childRightKey;
+
+                    std::cout << bestFitness << " " << counter << std::endl;
+
+                    counter = 0;
+                    impatience = 0;
+                }
+                else if (childFitness == bestFitness) {
+                    impatience = 0;
+                    wandering = false;
+                    currentFitness = childFitness;
+                    currentDecrypt = childDecrypt;
+                    currentTopKey = childTopKey;
+                    currentRightKey = childRightKey;
+                }
+                else if (childFitness > currentFitness) {
+                    currentFitness = childFitness;
+                    currentDecrypt = childDecrypt;
+                    currentTopKey = childTopKey;
+                    currentRightKey = childRightKey;
+                }
+                else if (counter > 100 && childFitness > (bestFitness + (bestFitness / 6)) && changeChoice(gen) < 5) {
+                    currentTopKey = childTopKey;
+                    currentRightKey = childRightKey;
+                    currentFitness = childFitness;
+                    currentDecrypt = childDecrypt;
+                    wandering = true;
+                }
+
+                if (impatience > 2000) {
+                    currentTopKey = bestTopKey;
+                    currentRightKey = bestRightKey;
+                    impatience = 0;
+                    wandering = false;
+                }
+
+                counter++;
+                if (wandering) {
+                    impatience++;
+                }
+
+                if (bestFitness > -12 && counter > 10000) {
+                    return { bestTopKey, bestRightKey };
+                }
+            }
+
+            if (i != 19) {
+                std::cout << std::endl;
+            }
+        }
+
+        return { nullPolybius, nullPolybius };
+    }
+
+    int cliFourSquareHillClimber(std::string cipher) {
+        cipher = basics::formatString(cipher);
+
+        std::tuple<polybius, polybius> result = fourSquareHillClimber(cipher);
+
+        if (std::get<0>(result) != nullPolybius) {
+            std::string decrypt = fourSquareDecrypt(cipher, std::get<0>(result), std::get<1>(result));
+            if (cliInterface::offerDecryption(decrypt)) { //Can skip fitness here as filtering in hill-climber
+                return 1;
+            }
+        }
+
+        return 0;
+    }
 }

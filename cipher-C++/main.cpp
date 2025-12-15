@@ -27,9 +27,9 @@ int testStuff(std::string cipher) {
 
 	cipher = basics::formatString(cipher);
 
-	std::tuple<polybius::polybius, polybius::polybius> result = polybius::vertTwoSquareHillClimber(cipher);
+	auto result = polybius::fourSquareHillClimber(cipher);
 
-	std::cout << polybius::vertTwoSquareDecrypt(cipher, std::get<0>(result), std::get<1>(result)) << std::endl;
+	std::cout << polybius::fourSquareDecrypt(cipher, std::get<0>(result), std::get<1>(result)) << std::endl;
 
 	return 2;
 }
@@ -58,6 +58,7 @@ int main() {
 	menu.addMenuItem(cliInterface::MenuItem("Playfair 2025 Variation", *polybius::cliPlayfair2025VariationHillClimber));
 	menu.addMenuItem(cliInterface::MenuItem("Vertical Two Square", *polybius::cliVertTwoSquareHillClimber));
 	menu.addMenuItem(cliInterface::MenuItem("Horizontal Two Square", *polybius::cliHorizTwoSquareHillClimber));
+	menu.addMenuItem(cliInterface::MenuItem("Four Square", *polybius::cliFourSquareHillClimber));
 
 	//Add test func if not a release build
 	#ifdef TEST
