@@ -105,8 +105,9 @@ namespace polybius {
     }
 
     int removeFive(int n){
-        if (n == -1) {
-            return 4;
+        n = n % 5;
+        if (n < 0) {
+            return n + 5;
         }
         return n;
     }
@@ -171,15 +172,15 @@ namespace polybius {
         for (int i = 0; i < l; i += 2) {
             pos0 = lookup[text[i] - 97];
             pos1 = lookup[text[i + 1] - 97];
-            if (std::get<0>(pos0) == std::get<0>(pos1)) { //Same row
-                newpos0 = { std::get<0>(pos0), removeFive(std::get<1>(pos0) - 1) };
-                newpos1 = { std::get<0>(pos1), removeFive(std::get<1>(pos1) - 1) };
+            if (std::get<0>(pos0) == std::get<0>(pos1)) { //Same row, shift to the right instead, with wrapping
+                newpos0 = { std::get<0>(pos0), removeFive(std::get<1>(pos0) + 1) };
+                newpos1 = { std::get<0>(pos1), removeFive(std::get<1>(pos1) + 1) };
             }
-            else if (std::get<1>(pos0) == std::get<1>(pos1)) { //Same column, shift to the left instead, with wrapping 
-                newpos0 = { std::get<0>(pos0), removeFive(std::get<1>(pos0) - 1) };
-                newpos1 = { std::get<0>(pos1), removeFive(std::get<1>(pos1) - 1) };
+            else if (std::get<1>(pos0) == std::get<1>(pos1)) { //Same column, shift to the right instead, with wrapping 
+                newpos0 = { std::get<0>(pos0), removeFive(std::get<1>(pos0) + 1) };
+                newpos1 = { std::get<0>(pos1), removeFive(std::get<1>(pos1) + 1) };
             }
-            else { //Normal case
+            else { //Normal case, unchanged
                 newpos0 = { std::get<0>(pos0) , std::get<1>(pos1) };
                 newpos1 = { std::get<0>(pos1) , std::get<1>(pos0) };
             }
