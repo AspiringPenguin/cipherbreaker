@@ -28,7 +28,9 @@ int testStuff(std::string cipher) {
 
 	cipher = basics::formatString(cipher);
 
-	std::cout << stream::autokeyDecrypt(cipher, "cataclysmic", stream::add) << std::endl;
+	auto res = stream::autokeyHillClimber(cipher);
+
+	std::cout << stream::autokeyDecrypt(cipher, std::get<0>(res), std::get<1>(res));
 
 	return 2;
 }
@@ -58,6 +60,8 @@ int main() {
 	menu.addMenuItem(cliInterface::MenuItem("Vertical Two Square", *polybius::cliVertTwoSquareHillClimber));
 	menu.addMenuItem(cliInterface::MenuItem("Horizontal Two Square", *polybius::cliHorizTwoSquareHillClimber));
 	menu.addMenuItem(cliInterface::MenuItem("Four Square", *polybius::cliFourSquareHillClimber));
+
+	menu.addMenuItem(cliInterface::MenuItem("Autokey", *stream::cliAutokeyHillClimber));
 
 	//Add test func if not a release build
 	#ifdef TEST
