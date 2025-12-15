@@ -76,9 +76,9 @@ int main() {
 }
 
 //Priorities:
-//1. Stream ciphers
-//2. inc. solitaire
-//3. Double playfair
-//4a. Hill, as per forum post attack?
-//4b. More tranpositions
-//4c. More polybius-derived stuff
+//1. Solitaire - WIP
+//2. Double playfair
+//3a. Hill, as per forum post attack?
+//3b. More tranpositions
+//3c. More polybius-derived stuff
+//3d. IOCn stats
