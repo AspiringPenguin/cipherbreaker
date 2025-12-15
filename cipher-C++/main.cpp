@@ -28,7 +28,7 @@ int testStuff(std::string cipher) {
 
 	cipher = basics::formatString(cipher);
 
-	std::cout << stream::progressiveVigenereSubBruteForce(cipher, 6, 2);
+	std::cout << stream::decombineChars('a', 'x', stream::solitaire);
 
 	return 2;
 }

@@ -4,7 +4,7 @@
 
 namespace stream {
 	enum mode {
-		add, subtractKey, subtractText
+		add, subtractKey, subtractText, solitaire
 	};
 
 	char combineChars(char p, char s, mode m);

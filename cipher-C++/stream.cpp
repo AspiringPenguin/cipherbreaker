@@ -29,6 +29,15 @@ namespace stream {
 				val += 26;
 			}
 			break;
+		case solitaire:
+			char pConv = p - 96;
+			char sConv = s - 96;
+			val = pConv + sConv;
+			if (val > 26) {
+				val -= 26;
+			}
+			val--;
+			break;
 		}
 		return 97 + val;
 	}
@@ -53,6 +62,15 @@ namespace stream {
 			if (val < 0) {
 				val += 26;
 			}
+			break;
+		case solitaire:
+			char pConv = p - 96;
+			char sConv = s - 96;
+			val = pConv - sConv;
+			if (val < 1) {
+				val += 26;
+			}
+			val--;
 			break;
 		}
 		return 97 + val;
