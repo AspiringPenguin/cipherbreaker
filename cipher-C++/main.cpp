@@ -46,22 +46,22 @@ int main() {
 	menu.addMenuItem(cliInterface::MenuItem("Analysis", *cliInterface::analysis));
 
 	menu.addMenuItem(cliInterface::MenuItem("Atbash", *monoalphabetic::cliAtbash));
-	menu.addMenuItem(cliInterface::MenuItem("Caesar", *monoalphabetic::cliCaesarBruteForce));
-	menu.addMenuItem(cliInterface::MenuItem("Affine Shift", *monoalphabetic::cliAffineBruteForce));
-	menu.addMenuItem(cliInterface::MenuItem("Monoalphabetic Hill Climber", *monoalphabetic::cliHillClimber));
+	menu.addMenuItem(cliInterface::MenuItem("Caesar (Brute Force)", *monoalphabetic::cliCaesarBruteForce));
+	menu.addMenuItem(cliInterface::MenuItem("Affine Shift (Brute Force)", *monoalphabetic::cliAffineBruteForce));
+	menu.addMenuItem(cliInterface::MenuItem("Monoalphabetic (Hill Climber)", *monoalphabetic::cliHillClimber));
 
-	menu.addMenuItem(cliInterface::MenuItem("Vigenere", *periodic::cliVigenere));
-	menu.addMenuItem(cliInterface::MenuItem("Polyalphabetic Substitution Cipher", *periodic::cliHillClimber));
+	menu.addMenuItem(cliInterface::MenuItem("Vigenere (Multiple Caesar Shifts)", *periodic::cliVigenere));
+	menu.addMenuItem(cliInterface::MenuItem("Polyalphabetic Substitution (Hill Climber)", *periodic::cliHillClimber));
 
-	menu.addMenuItem(cliInterface::MenuItem("Permutation Cipher", *transpositions::cliPermutationBruteForce));
+	menu.addMenuItem(cliInterface::MenuItem("Permutation (Brute Force)", *transpositions::cliPermutationBruteForce));
 
-	menu.addMenuItem(cliInterface::MenuItem("Playfair", *polybius::cliPlayfairHillClimber));
-	menu.addMenuItem(cliInterface::MenuItem("Playfair 2025 Variation", *polybius::cliPlayfair2025VariationHillClimber));
-	menu.addMenuItem(cliInterface::MenuItem("Vertical Two Square", *polybius::cliVertTwoSquareHillClimber));
-	menu.addMenuItem(cliInterface::MenuItem("Horizontal Two Square", *polybius::cliHorizTwoSquareHillClimber));
-	menu.addMenuItem(cliInterface::MenuItem("Four Square", *polybius::cliFourSquareHillClimber));
+	menu.addMenuItem(cliInterface::MenuItem("Playfair (Wandering Hill Climber)", *polybius::cliPlayfairHillClimber));
+	menu.addMenuItem(cliInterface::MenuItem("Playfair 2025 Variation (Wandering Hill Climber)", *polybius::cliPlayfair2025VariationHillClimber));
+	menu.addMenuItem(cliInterface::MenuItem("Vertical Two Square (Wandering Hill Climber)", *polybius::cliVertTwoSquareHillClimber));
+	menu.addMenuItem(cliInterface::MenuItem("Horizontal Two Square (Wandering Hill Climber)", *polybius::cliHorizTwoSquareHillClimber));
+	menu.addMenuItem(cliInterface::MenuItem("Four Square (Wandering Hill Climber)", *polybius::cliFourSquareHillClimber));
 
-	menu.addMenuItem(cliInterface::MenuItem("Autokey", *stream::cliAutokeyHillClimber));
+	menu.addMenuItem(cliInterface::MenuItem("Autokey (Hill Climber)", *stream::cliAutokeyHillClimber));
 
 	//Add test func if not a release build
 	#ifdef TEST
