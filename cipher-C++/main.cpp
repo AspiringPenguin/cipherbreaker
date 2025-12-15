@@ -28,9 +28,7 @@ int testStuff(std::string cipher) {
 
 	cipher = basics::formatString(cipher);
 
-	auto res = stream::autokeyHillClimber(cipher);
-
-	std::cout << stream::autokeyDecrypt(cipher, std::get<0>(res), std::get<1>(res));
+	std::cout << stream::progressiveVigenereAsVigenere(cipher, 6, 2);
 
 	return 2;
 }
@@ -79,7 +77,7 @@ int main() {
 //Priorities:
 //1. Stream ciphers
 //2. inc. solitaire
-//3. Double playfair?
-//4. Hill, as per forum post attack?
-//5a. More tranpositions
-//5b. More polybius-derived stuff
+//3. Double playfair
+//4a. Hill, as per forum post attack?
+//4b. More tranpositions
+//4c. More polybius-derived stuff

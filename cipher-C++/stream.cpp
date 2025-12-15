@@ -146,4 +146,12 @@ namespace stream {
 		}
 		return 0;
 	}
+
+	std::string progressiveVigenereAsVigenere(std::string cipher, int l, int prog) {
+		std::string vigenere = "";
+		for (int i = 0; i < cipher.length(); i++) {
+			vigenere += decombineChars(cipher[i], (((i/l)*prog)%26)+97, add);
+		}
+		return vigenere;
+	}
 }
