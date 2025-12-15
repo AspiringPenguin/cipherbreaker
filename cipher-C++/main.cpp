@@ -9,6 +9,7 @@
 #include "monoalphabetic.h"
 #include "periodic.h"
 #include "polybius.h"
+#include "stream.h"
 #include "strings.h"
 #include "transpositions.h"
 
@@ -24,12 +25,6 @@ int testStuff(std::string cipher) {
 	//	auto ms_int = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 	//	std::cout << ms_int.count() << std::endl;
 	//}
-
-	cipher = basics::formatString(cipher);
-
-	auto result = polybius::fourSquareHillClimber(cipher);
-
-	std::cout << polybius::fourSquareDecrypt(cipher, std::get<0>(result), std::get<1>(result)) << std::endl;
 
 	return 2;
 }
