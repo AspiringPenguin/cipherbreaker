@@ -100,7 +100,7 @@ namespace cliInterface {
 			std::cout << "Index of Coincidence: " << fitness::indexOfCoincidence(formatted) << std::endl << std::endl;
 
 			std::cout << "Periodic IOC:" << std::endl;
-			for (int n = 2; n < 17; n++) {
+			for (int n = 2; n < 27; n++) {
 				std::cout << "  Period " << n << ": " << fitness::indexOfCoincidencePeriodic(formatted, n) << std::endl;
 			}
 		}

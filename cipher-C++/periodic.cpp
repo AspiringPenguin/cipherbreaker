@@ -9,7 +9,7 @@
 
 namespace periodic {
 	int getKeySize(std::string cipher) {
-		for (int i = 2; i < 21; i++) {
+		for (int i = 2; i < 27; i++) {
 			if (fitness::indexOfCoincidencePeriodic(cipher, i) > 0.06) {
 				return i;
 			}
