@@ -60,7 +60,6 @@ int main() {
 
 	menu.addMenuItem(cliInterface::MenuItem("Autokey (Hill Climber)", *stream::cliAutokeyHillClimber));
 	menu.addMenuItem(cliInterface::MenuItem("Progressive Vigenere (Brute Force -> Multiple Caesar Shifts)", *stream::cliProgressiveVigenereBruteForce));
-	menu.addMenuItem(cliInterface::MenuItem("Solitaire (Hill Climber for part-known key)", nullptr));
 
 	//Add test func if not a release build
 	#ifdef TEST
