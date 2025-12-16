@@ -24,5 +24,7 @@ namespace solitaire {
 
 	std::string decrypt(std::string cipher, std::array<int, 54> deck);
 
+	int stringToCardNum(std::string card);
+
 	std::array<int, 54> cliGetDeck();
 }

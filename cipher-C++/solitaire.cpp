@@ -1,5 +1,6 @@
 #include "solitaire.h"
 #include <algorithm>
+#include <iostream>
 
 namespace solitaire {
 	char combineCharacters(char p, int s) { //P between 97 and 122, S between 1 and 26
@@ -120,7 +121,55 @@ namespace solitaire {
 		return plain;
 	}
 
-	std::array<int, 54> cliGetDeck() {
+	int charToNum(char c) {
+		if (std::isdigit(c)) {
+			return c - 48;
+		}
+		switch (c) {
+		case 'A':
+			return 1;
+		case 'T':
+			return 10;
+		case 'J':
+			return 11;
+		case 'Q':
+			return 12;
+		case 'K':
+			return 13;
+		}
+	}
 
+	int stringToCardNum(std::string card) { //J1, J2, JC, JD, JH, JS, Q, K, A etc.
+		std::transform(card.begin(), card.end(), card.begin(), ::toupper); //Avoid lowercase cases
+		switch (card[1]) {
+		case 'A': //Joker
+			return 53;
+		case 'B': //Also joker
+			return 54;
+		case 'C': //Clubs
+			return charToNum(card[0]);
+		case 'D': //Diamonds
+			return charToNum(card[0]) + 13;
+		case 'H': //Hearts
+			return charToNum(card[0]) + 26;
+		case 'S': //Spades
+			return charToNum(card[0]) + 39;
+		}
+	}
+
+	std::array<int, 54> cliGetDeck() {
+		std::array<int, 54> deck{ -1, 54 };
+		std::string input;
+		for (int i = 0; i < 54; i++) {
+			std::cout << i << ". ";
+			std::cin >> input;
+			if (input == "?") {
+				deck[i] = 0; //Unknown
+			}
+			else {
+				deck[i] = stringToCardNum(input);
+			}
+		}
+		return deck;
 	}
 }

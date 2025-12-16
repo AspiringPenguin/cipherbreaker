@@ -29,12 +29,13 @@ int testStuff(std::string cipher) {
 
 	cipher = basics::formatString(cipher);
 
-	//C D H S
+	std::string s;
 
-	std::array<int, 54> deck = {21,22,29,26,27,11,31,32,33,34,35,36,6,39,17,25,41,10,14,44,49,53,13,43,46,52,
-				12,48,37,38,28,7,42,45,8,51,15,16,30,18,19,40,50,54,4,5,1,9,2,23,24,47,20,3 };
-
-	std::cout << solitaire::decyrpt(cipher, deck);
+	std::cin >> s;
+	while (s != "end") {
+		std::cout << solitaire::stringToCardNum(s) << std::endl;
+		std::cin >> s;
+	}
 
 	return 2;
 }
