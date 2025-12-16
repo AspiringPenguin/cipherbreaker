@@ -27,7 +27,9 @@ int testStuff(std::string cipher) {
 	//	std::cout << ms_int.count() << std::endl;
 	//}
 
-	std::cout << fitness::indexOfCoincidenceTrigrams(corpus::corpus) << std::endl;
+	cipher = basics::formatString(cipher);
+
+	std::cout << transpositions::columnarDecrypt(cipher, {0, 2, 4, 5, 1, 6, 3}) << std::endl;
 
 	return 2;
 }

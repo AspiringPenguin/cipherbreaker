@@ -3,6 +3,8 @@
 #include "strings.h"
 #include "interface.h"
 #include "transpositions.h"
+#include <algorithm>
+#include <cmath>
 #include <iostream>
 
 namespace transpositions{
@@ -83,5 +85,52 @@ namespace transpositions{
 			}
 		}
 		return 0;
+	}
+
+	std::string columnarDecrypt(std::string cipher, std::vector<int> key) { //Doesn't work
+		//Get keyLen and number of columns that are shorter
+		int keyLen = key.size();
+		int cipherLen = cipher.length();
+		int numGaps = keyLen - (cipherLen % keyLen);
+		if (numGaps == keyLen) {
+			numGaps = 0;
+		}
+
+		//Get column lengths
+		float fColumnLen = static_cast<float>(cipherLen) / keyLen;
+		#pragma warning(push)
+		#pragma warning(disable:4244) //Intentional behaviour to narrow cast
+		int columnLen = fColumnLen;
+		#pragma warning(pop)
+		if (std::fmod(cipherLen, 1) != 0) {
+			columnLen++;
+		}
+
+		//Find blocks which need extra spaces
+		std::vector<int> needsGaps = std::vector<int>();
+		for (int i = 0; i < keyLen; i++) {
+			if (key[i] >= (keyLen - numGaps)) {
+				needsGaps.push_back(i);
+			}
+		}
+		std::sort(needsGaps.begin(), needsGaps.end());
+
+		for (int i = 0; i < numGaps; i++) {
+			cipher = cipher.substr(0, columnLen * (needsGaps[i] + 1) - 1) + " " + cipher.substr(columnLen * (needsGaps[i] + 1) - 1);
+		}
+
+		std::vector<std::string> blocks = strings::getBlocks(cipher, columnLen);
+		for (const int& index : key) {
+			blocks.push_back(blocks[index]);
+		}
+
+		std::string plain = "";
+		for (int x = 0; x < columnLen; x++) {
+			for (int y = 0; y < keyLen; y++) {
+				plain += blocks[y][x];
+			}
+		}
+
+		return basics::formatString(plain);
 	}
 }
