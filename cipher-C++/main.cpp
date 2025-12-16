@@ -27,15 +27,15 @@ int testStuff(std::string cipher) {
 	//	std::cout << ms_int.count() << std::endl;
 	//}
 
-	std::array<int, 54> deck = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
-								29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54 };
+	cipher = basics::formatString(cipher);
 
-	solitaire::moveJokerB(deck);
+	//C D H S
 
-	for (auto card : deck) {
-		std::cout << card << " ";
-	}
-	std::cout << std::endl;
+	std::array<int, 54> deck = { 18, 19, 20, 21, 22, 23, 24, 25, 26, 9, 53, 7, 5, 11, 12,
+		37, 38, 54, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 48, 39, 40, 41, 42, 43, 44, 45, 46,
+	47, 48, 49, 50, 51, 3, 4, 1, 8, 2, 52, 13, 14, 15, 16, 17, 6};
+
+	std::cout << solitaire::decyrpt(cipher, deck);
 
 	return 2;
 }

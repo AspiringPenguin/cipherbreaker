@@ -55,12 +55,61 @@ namespace solitaire {
 	}
 
 	void jokerTripleCut(std::array<int, 54>& deck) {
+		std::array<int, 54> buffer{ -1 };
+		auto jokerA = std::distance(deck.begin(), std::find(deck.begin(), deck.end(), 53));
+		auto jokerB = std::distance(deck.begin(), std::find(deck.begin(), deck.end(), 54));
+		auto first = jokerA > jokerB ? jokerB : jokerA;
+		auto firstVal = jokerA > jokerB ? 54 : 53;
+		auto second = jokerA > jokerB ? jokerA : jokerB;
+		auto secondVal = jokerA > jokerB ? 53 : 54;
+
+		std::copy(deck.begin() + second + 1, deck.end(), buffer.begin()); //Copy after second joker to start of new deck
+		std::copy(deck.begin() + first, deck.begin() + second + 1, buffer.begin() + 53 - second); //Copy middle section
+		std::copy(deck.begin(), deck.begin() + first, buffer.begin() + 53 - first + 1); //Copy front of old to end of new
+
+		deck = buffer;
 	}
 
 	void bottomCountCut(std::array<int, 54>& deck) {
+		int val = deck[53];
+		if (val > 52) { //A Joker
+			return;
+		}
+		//Else its a normal card 1-52
+		std::array<int, 54> buffer{ -1 };
+
+		std::copy(deck.begin(), deck.begin() + val, buffer.end() - val - 1); //Copy the section being moved
+		buffer[53] = deck[53]; //Move the bottom card
+		std::copy(deck.begin() + val, deck.end() - 1, buffer.begin()); //Move the rest
+
+		deck = buffer;
 	}
 
-	int generateKeyStreamNum(std::array<int, 54>& deck) {
-		 return 0;
+	int getKeyStreamNum(std::array<int, 54>& deck) {
+		int val = deck[deck[0]];
+		if (val > 52) { //Joker
+			return -1; //So skip
+		}
+		return val % 26;
+	}
+
+	int getNextKeyStreamNum(std::array<int, 54>& deck) {
+		int val = -1;
+		while (val == -1) {
+			moveJokerA(deck);
+			moveJokerB(deck);
+			jokerTripleCut(deck);
+			bottomCountCut(deck);
+			val = getKeyStreamNum(deck);
+		}
+		return val;
+	}
+
+	std::string decyrpt(std::string cipher, std::array<int, 54> deck) {
+		std::string plain = "";
+		for (char c : cipher) {
+			plain += decombineCharacters(c, getNextKeyStreamNum(deck));
+		}
+		return plain;
 	}
 }
