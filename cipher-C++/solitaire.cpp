@@ -85,8 +85,15 @@ namespace solitaire {
 		deck = buffer;
 	}
 
+	int rem54(int val) {
+		if (val == 54) {
+			return 53;
+		}
+		return val;
+	}
+
 	int getKeyStreamNum(std::array<int, 54>& deck) {
-		int val = deck[deck[0]];
+		int val = deck[rem54(deck[0])];
 		if (val > 52) { //Joker
 			return -1; //So skip
 		}
