@@ -9,6 +9,7 @@
 #include "monoalphabetic.h"
 #include "periodic.h"
 #include "polybius.h"
+#include "solitaire.h"
 #include "stream.h"
 #include "strings.h"
 #include "transpositions.h"
@@ -28,7 +29,7 @@ int testStuff(std::string cipher) {
 
 	cipher = basics::formatString(cipher);
 
-	std::cout << stream::decombineChars('a', 'x', stream::solitaire);
+	std::cout << solitaire::decombineCharacters('y', 25) << std::endl;
 
 	return 2;
 }
@@ -61,6 +62,7 @@ int main() {
 
 	menu.addMenuItem(cliInterface::MenuItem("Autokey (Hill Climber)", *stream::cliAutokeyHillClimber));
 	menu.addMenuItem(cliInterface::MenuItem("Progressive Vigenere (Brute Force -> Multiple Caesar Shifts)", *stream::cliProgressiveVigenereBruteForce));
+	menu.addMenuItem(cliInterface::MenuItem("Solitaire (Hill Climber for part-known key)", nullptr));
 
 	//Add test func if not a release build
 	#ifdef TEST

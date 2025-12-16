@@ -6,4 +6,17 @@ namespace solitaire {
 	// 53 = Joker A
 	// 54 = Joker B
 	// For value of card purposes 54 -> 53
+	// 0 For an unknown card if needed in an attack
+
+	void moveJokerA(std::array<int, 54>& deck); //Setps 1 and 2
+	void moveJokerB(std::array<int, 54>& deck);
+
+	void jokerTripleCut(std::array<int, 54>& deck); //Step 3
+
+	void bottomCountCut(std::array<int, 54>& deck); //Step 4
+
+	int generateKeyStreamNum(std::array<int, 54>& deck); //Step 5 & 6, returns -1 if its a joker
+
+	char combineCharacters(char p, int s);
+	char decombineCharacters(char p, int s);
 }
