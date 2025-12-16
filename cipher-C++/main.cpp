@@ -83,9 +83,10 @@ int main() {
 }
 
 //Priorities:
-//1. Solitaire - WIP
-//2. Double playfair
-//3a. Hill, as per forum post attack?
-//3b. More tranpositions
-//3c. More polybius-derived stuff
-//3d. IOCn stats
+// Double playfair
+// IOCn stats
+// Solitaire deck entry
+// Hill, as per forum post attack?
+// More tranpositions
+// More polybius-derived stuff
+// Solitaire hill-climber
