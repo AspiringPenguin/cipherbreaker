@@ -22,5 +22,7 @@ namespace solitaire {
 
 	int getNextKeyStreamNum(std::array<int, 54>& deck);
 
-	std::string decyrpt(std::string cipher, std::array<int, 54> deck);
+	std::string decrypt(std::string cipher, std::array<int, 54> deck);
+
+	std::array<int, 54> cliGetDeck();
 }

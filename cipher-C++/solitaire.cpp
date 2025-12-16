@@ -112,11 +112,15 @@ namespace solitaire {
 		return val;
 	}
 
-	std::string decyrpt(std::string cipher, std::array<int, 54> deck) {
+	std::string decrypt(std::string cipher, std::array<int, 54> deck) {
 		std::string plain = "";
 		for (char c : cipher) {
 			plain += decombineCharacters(c, getNextKeyStreamNum(deck));
 		}
 		return plain;
+	}
+
+	std::array<int, 54> cliGetDeck() {
+
 	}
 }
