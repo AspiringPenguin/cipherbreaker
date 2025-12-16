@@ -75,7 +75,8 @@ int main() {
 }
 
 //Priorities:
-// Double playfair
+// More ways of filling out a polybius square, and a mixed alphabet generator
+// Double playfair?
 // Hill, as per forum post attack?
 // More tranpositions
 // More polybius-derived stuff
