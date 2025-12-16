@@ -15,4 +15,6 @@ namespace fitness {
 	float indexOfCoincidence(std::string text);
 	float indexOfCoincidencePeriodic(std::string text, int n, int normalisationFactor);
 	float indexOfCoincidencePeriodic(std::string text, int n);
+	float indexOfCoincidenceBigrams(std::string text);
+	float indexOfCoincidenceTrigrams(std::string text);
 }

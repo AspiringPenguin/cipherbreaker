@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 #include "basics.h"
-#include "fileLoaders.h"
+#include "corpus.h"
 #include "fitness.h"
 #include "interface.h"
 #include "modularNumber.h"
@@ -27,15 +27,7 @@ int testStuff(std::string cipher) {
 	//	std::cout << ms_int.count() << std::endl;
 	//}
 
-	cipher = basics::formatString(cipher);
-
-	std::string s;
-
-	std::cin >> s;
-	while (s != "end") {
-		std::cout << solitaire::stringToCardNum(s) << std::endl;
-		std::cin >> s;
-	}
+	std::cout << fitness::indexOfCoincidenceTrigrams(corpus::corpus) << std::endl;
 
 	return 2;
 }
@@ -85,8 +77,6 @@ int main() {
 
 //Priorities:
 // Double playfair
-// IOCn stats
-// Solitaire deck entry
 // Hill, as per forum post attack?
 // More tranpositions
 // More polybius-derived stuff

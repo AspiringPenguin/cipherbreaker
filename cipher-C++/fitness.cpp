@@ -28,7 +28,7 @@ namespace fitness {
 	float chi2(std::array<float, 26> actual, std::array<float, 26> expected) {
 		float tot = 0.0;
 		for (int i = 0; i < 26; i++) {
-			tot += (pow(actual[i] - expected[i], 2) / expected[i]);
+			tot += (powf(actual[i] - expected[i], 2) / expected[i]);
 		}
 		return tot;
 	}
@@ -104,5 +104,51 @@ namespace fitness {
 		}
 		avg /= n;
 		return avg;
+	}
+
+	float indexOfCoincidenceBigrams(std::string text) {
+		text = basics::formatString(text);
+		float tot = 0;
+		int count;
+		int len = text.length();
+		int subLen = len / 2;
+
+		for (char c = 97; c < 123; c++) {
+			for (char d = 97; d < 123; d++) {
+				count = 0;
+				for (int i = 1; i < len; i+=2) {
+					if (text[i - 1] == c && text[i] == d) {
+						count++;
+					}
+				}
+				tot += (count * (count - 1.0f)) / (subLen * (subLen - 1.0f));
+			}
+		}
+
+		return tot;
+	}
+
+	float indexOfCoincidenceTrigrams(std::string text) {
+		text = basics::formatString(text);
+		float tot = 0;
+		int count;
+		int len = text.length();
+		int subLen = len / 3;
+
+		for (char c = 97; c < 123; c++) {
+			for (char d = 97; d < 123; d++) {
+				for (char e = 97; e < 123; e++) {
+					count = 0;
+					for (int i = 2; i < len; i += 3) {
+						if (text[i - 2] == c && text[i - 1] == d && text[i] == e) {
+							count++;
+						}
+					}
+					tot += (count * (count - 1.0f)) / (subLen * (subLen - 1.0f));
+				}
+			}
+		}
+
+		return tot;
 	}
 }
