@@ -141,6 +141,9 @@ namespace solitaire {
 
 	int stringToCardNum(std::string card) { //J1, J2, JC, JD, JH, JS, Q, K, A etc.
 		std::transform(card.begin(), card.end(), card.begin(), ::toupper); //Avoid lowercase cases
+		if (card[0] == '1' && card[1] == '0') { //Fix 10H for example
+			card = std::string({ 'T', card[2]});
+		}
 		switch (card[1]) {
 		case 'A': //Joker
 			return 53;
@@ -160,6 +163,7 @@ namespace solitaire {
 	std::array<int, 54> cliGetDeck() {
 		std::array<int, 54> deck{ -1, 54 };
 		std::string input;
+		int val;
 		for (int i = 0; i < 54; i++) {
 			std::cout << i << ". ";
 			std::cin >> input;
@@ -167,7 +171,9 @@ namespace solitaire {
 				deck[i] = 0; //Unknown
 			}
 			else {
-				deck[i] = stringToCardNum(input);
+				val = stringToCardNum(input);
+				deck[i] = val;
+				std::cout << val << std::endl;
 			}
 		}
 		return deck;

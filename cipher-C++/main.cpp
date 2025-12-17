@@ -29,7 +29,11 @@ int testStuff(std::string cipher) {
 
 	cipher = basics::formatString(cipher);
 
-	std::cout << transpositions::columnarDecrypt(cipher, {0, 2, 4, 5, 1, 6, 3}) << std::endl;
+	/*std::cout << transpositions::columnarDecrypt(cipher, {0, 2, 4, 5, 1, 6, 3}) << std::endl;*/
+
+	auto deck = solitaire::cliGetDeck();
+
+	std::cout << solitaire::decrypt(cipher, deck) << std::endl;
 
 	return 2;
 }
