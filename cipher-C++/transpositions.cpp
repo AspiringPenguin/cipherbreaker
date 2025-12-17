@@ -411,4 +411,36 @@ namespace transpositions{
 
 		return basics::removeSpaces(plain);
 	}
+
+	std::string twistedScytaleBruteForce(std::string cipher) {
+		int n = cipher.length();
+		float max = sqrtf(n);
+
+		std::string decrypt;
+
+		for (int width = 0; width < max; width++) {
+			for (int twist = 1; twist < width; twist++) {
+				decrypt = twistedScytaleDecrypt(cipher, width, twist);
+				if (fitness::tetragramFitness(&decrypt) > -15) {
+					return decrypt;
+				}
+			}
+		}
+
+		return "";
+	}
+
+	int cliTwistedScytaleBruteForce(std::string cipher) {
+		cipher = basics::formatString(cipher);
+
+		auto res = twistedScytaleBruteForce(cipher);
+
+		if (res != "") {
+			if (cliInterface::offerDecryption(res)) {
+				return 1;
+			}
+		}
+		
+		return 0;
+	}
 }

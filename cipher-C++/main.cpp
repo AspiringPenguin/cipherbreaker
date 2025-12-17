@@ -29,7 +29,7 @@ int testStuff(std::string cipher) {
 
 	cipher = basics::formatString(cipher);
 
-	std::cout << transpositions::twistedScytaleDecrypt(cipher, 5, 1) << std::endl;
+	std::cout << transpositions::twistedScytaleBruteForce(cipher) << std::endl;
 
 	return 2;
 }
@@ -54,6 +54,7 @@ int main() {
 
 	menu.addMenuItem(cliInterface::MenuItem("Permutation Transposition (Hill Climber)", *transpositions::cliPermutationHillClimber));
 	menu.addMenuItem(cliInterface::MenuItem("Columnar Transposition (Hill Climber)", *transpositions::cliColumnarHillClimber));
+	menu.addMenuItem(cliInterface::MenuItem("Twisted Scytale (Brute Force)", *transpositions::cliTwistedScytaleBruteForce));
 
 	menu.addMenuItem(cliInterface::MenuItem("Playfair (Wandering Hill Climber)", *polybius::cliPlayfairHillClimber));
 	menu.addMenuItem(cliInterface::MenuItem("Playfair 2025 Variation (Wandering Hill Climber)", *polybius::cliPlayfair2025VariationHillClimber));
