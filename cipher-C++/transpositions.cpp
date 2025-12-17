@@ -60,7 +60,7 @@ namespace transpositions{
 		std::vector<std::string> cols;
 		std::string decrypt;
 
-		for (int n = 2; n < 21; n++) {
+		for (int n = 2; n < 11; n++) {
 			std::cout << n << std::endl;
 			cols = strings::getColumns(cipher, n);
 			for (const auto& perm : heapsPerms(n)) {
@@ -141,7 +141,7 @@ namespace transpositions{
 		std::vector<std::string> cols;
 		std::string decrypt;
 
-		for (int n = 2; n < 21; n++) {
+		for (int n = 2; n < 11; n++) {
 			std::cout << n << std::endl;
 			for (const auto& perm : heapsPerms(n)) {
 				decrypt = columnarDecrypt(cipher, perm);
