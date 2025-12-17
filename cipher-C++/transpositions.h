@@ -10,4 +10,5 @@ namespace transpositions {
 	int cliPermutationBruteForce(std::string cipher);
 	std::string columnarDecrypt(std::string cipher, std::vector<int> key);
 	std::string columnarBruteForce(std::string cipher);
+	int cliColumnarBruteForce(std::string cipher);
 }

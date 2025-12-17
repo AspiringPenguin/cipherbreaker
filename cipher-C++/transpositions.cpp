@@ -152,4 +152,14 @@ namespace transpositions{
 		}
 		return "";
 	}
+
+	int cliColumnarBruteForce(std::string cipher) {
+		auto decrypt = columnarBruteForce(cipher);
+		if (decrypt != "") {
+			if (cliInterface::offerDecryption(decrypt)) {
+				return 1;
+			}
+		}
+		return 0;
+	}
 }
