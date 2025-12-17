@@ -8,6 +8,8 @@ namespace transpositions {
 
 	std::vector<int> rollKey(std::vector<int>& key, int roll);
 
+	std::string rollString(std::string toRoll, int roll);
+
 	std::string permutationDecrypt(std::string cipher, std::vector<int> key);
 
 	std::string permutationBruteForce(std::string cipher);
@@ -24,4 +26,6 @@ namespace transpositions {
 	std::vector<int> columnarSubHillClimber(std::string cipher, int keyLen);
 	std::vector<int> columnarHillClimber(std::string cipher);
 	int cliColumnarHillClimber(std::string cipher);
+
+	std::string twistedScytaleDecrypt(std::string cipher, int width, int twist);
 }

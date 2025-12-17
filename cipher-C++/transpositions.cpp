@@ -55,7 +55,17 @@ namespace transpositions{
 		return res;
 	}
 
-	std::string permutationDecrypt(std::string cipher, std::vector<int> key) { //Duplicated in permutationBruteForce to reuse objects
+	std::string rollString(std::string toRoll, int roll) {
+		std::string res = "";
+		int len = toRoll.length();
+		for (int i = roll; i < (len + roll); i++) {
+			res += toRoll[i % len];
+		}
+		return res;
+	}
+
+	//Duplicated in permutationBruteForce to reuse objects
+	std::string permutationDecrypt(std::string cipher, std::vector<int> key) { //This seems to add nulls by default. Not sure why, but its useful
 		auto cols = strings::getColumns(cipher, key.size());
 		auto newCols = std::vector<std::string>();
 		for (const auto& i : key) {
@@ -339,5 +349,68 @@ namespace transpositions{
 			}
 		}
 		return 0;
+	}
+
+	std::string twistedScytaleDecrypt(std::string cipher, int width, int twist) {
+		//Get keyLen and number of columns that are shorter
+		int cipherLen = cipher.length();
+		int numGaps = width - (cipherLen % width);
+		if (numGaps == width) {
+			numGaps = 0;
+		}
+
+		//Get column lengths
+		float fColumnLen = static_cast<float>(cipherLen) / width;
+		#pragma warning(push)
+		#pragma warning(disable:4244) //Intentional behaviour to narrow cast
+		int columnLen = fColumnLen;
+		#pragma warning(pop)
+		if (std::fmod(fColumnLen, 1) != 0) {
+			columnLen++;
+		}
+
+		//Find columns which need extra spaces
+		std::vector<int> needsGaps = std::vector<int>();
+		for (int i = (width - numGaps); i < width; i++) {
+			needsGaps.push_back(i);
+		}
+
+		//Add spaces to orig text
+		for (int i = 0; i < numGaps; i++) {
+			cipher = cipher.substr(0, columnLen * (needsGaps[i] + 1) - 1) + " " + cipher.substr(columnLen * (needsGaps[i] + 1) - 1);
+		}
+
+		//Get rows out
+		std::vector<std::string> columns = strings::getBlocks(cipher, columnLen);
+		auto rows = std::vector<std::string>();
+		for (int i = 0; i < columnLen; i++) {
+			rows.push_back("");
+		}
+
+		for (int y = 0; y < columnLen; y++) {
+			for (int x = 0; x < width; x++) {
+				rows[y] += columns[x][y];
+			}
+		}
+
+		//Roll rows here
+		auto rolledRows = std::vector<std::string>();
+		int roll;
+		std::string rolled;
+		for (int y = 0; y < columnLen; y++) {
+			roll = ((twist * y) % width) * -1;
+			while (roll < 0) {
+				roll += width;
+			}
+			rolled = rollString(rows[y], roll);
+			rolledRows.push_back(rolled);
+		}
+
+		std::string plain = "";
+		for (std::string row : rolledRows) {
+			plain += row;
+		}
+
+		return basics::removeSpaces(plain);
 	}
 }

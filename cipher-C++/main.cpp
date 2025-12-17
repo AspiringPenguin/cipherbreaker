@@ -27,6 +27,10 @@ int testStuff(std::string cipher) {
 	//	std::cout << ms_int.count() << std::endl;
 	//}
 
+	cipher = basics::formatString(cipher);
+
+	std::cout << transpositions::twistedScytaleDecrypt(cipher, 5, 1) << std::endl;
+
 	return 2;
 }
 #endif
