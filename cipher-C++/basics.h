@@ -20,4 +20,6 @@ namespace basics {
 	bool coprime(int a, int b);
 
 	int multiplicativeInverse(int n, int modulus);
+
+	std::vector<int> getFactors(int n);
 }

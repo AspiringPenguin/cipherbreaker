@@ -1,4 +1,5 @@
 #include "basics.h"
+#include <cmath>
 #include <iostream>
 
 namespace basics {
@@ -81,5 +82,17 @@ namespace basics {
 			t += modulus;
 		}
 		return t;
+	}
+
+	std::vector<int> getFactors(int n) {
+		auto factors = std::vector<int>();
+		int max = sqrt(n);
+		for (int i = 1; i < max; i++) {
+			if ((n % i) == 0) {
+				factors.push_back(i);
+				factors.push_back(n/i);
+			}
+		}
+		return factors;
 	}
 }
