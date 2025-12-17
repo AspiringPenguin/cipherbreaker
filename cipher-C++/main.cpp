@@ -77,6 +77,6 @@ int main() {
 // More ways of filling out a polybius square, and a mixed alphabet generator
 // Double playfair?
 // Hill, as per forum post attack?
-// More tranpositions, and hill-climbers for perms, cols etc.
+// More tranpositions
 // More polybius-derived stuff
 // Solitaire hill-climber
