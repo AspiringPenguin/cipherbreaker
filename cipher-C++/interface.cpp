@@ -98,7 +98,7 @@ namespace cliInterface {
 			std::cout << "Monogram angle: " << fitness::angleBetweenVectorsFitness(formatted) << std::endl;
 			std::cout << "Tetragram Fitness: " << fitness::tetragramFitness(&formatted) << std::endl;
 			std::cout << "Index of Coincidence: " << fitness::indexOfCoincidence(formatted) << std::endl;
-			std::cout << "Index of Coincidence for bigrams (Corpus 0.0072): " << fitness::indexOfCoincidenceBigrams(formatted) << std::endl << std::endl;
+			std::cout << "Index of Coincidence for bigrams (Corpus 0.0072): " << fitness::indexOfCoincidenceBigrams(formatted) << std::endl;
 			std::cout << "Index of Coincidence for trigrams (Corpus 0.0013): " << fitness::indexOfCoincidenceTrigrams(formatted) << std::endl << std::endl;
 
 			std::cout << "Periodic IOC:" << std::endl;
