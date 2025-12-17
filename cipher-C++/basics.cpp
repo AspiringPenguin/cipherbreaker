@@ -13,6 +13,16 @@ namespace basics {
 		return newString;
 	}
 
+	std::string removeSpaces(std::string inp) {
+		std::string newString = "";
+		for (char c : inp) {
+			if (c != ' ') {
+				newString += c;
+			}
+		}
+		return newString;
+	}
+
 	std::unordered_map<char, int> createAlphabetMap()
 	{
 		auto map = std::unordered_map<char, int>();

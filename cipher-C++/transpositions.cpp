@@ -132,7 +132,7 @@ namespace transpositions{
 			}
 		}
 
-		return basics::formatString(plain);
+		return basics::removeSpaces(plain);
 	}
 
 	std::string columnarBruteForce(std::string cipher) {

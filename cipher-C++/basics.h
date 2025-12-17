@@ -7,6 +7,8 @@ namespace basics {
 
 	std::string formatString(std::string inp);
 
+	std::string removeSpaces(std::string inp);
+
 	std::unordered_map<char, int> createAlphabetMap();
 
 	static std::unordered_map<char, int> alphabetIndex = createAlphabetMap();
