@@ -27,10 +27,6 @@ int testStuff(std::string cipher) {
 	//	std::cout << ms_int.count() << std::endl;
 	//}
 
-	cipher = basics::formatString(cipher);
-
-	std::cout << transpositions::columnarBruteForce(cipher) << std::endl;
-
 	return 2;
 }
 #endif
@@ -52,7 +48,7 @@ int main() {
 	menu.addMenuItem(cliInterface::MenuItem("Vigenere (Multiple Caesar Shifts)", *periodic::cliVigenere));
 	menu.addMenuItem(cliInterface::MenuItem("Polyalphabetic Substitution (Hill Climber)", *periodic::cliHillClimber));
 
-	menu.addMenuItem(cliInterface::MenuItem("Permutation Transposition (Brute Force)", *transpositions::cliPermutationBruteForce));
+	menu.addMenuItem(cliInterface::MenuItem("Permutation Transposition (Hill Climber)", *transpositions::cliPermutationHillClimber));
 	menu.addMenuItem(cliInterface::MenuItem("Columnar Transposition (Brute Force)", *transpositions::cliColumnarBruteForce));
 
 	menu.addMenuItem(cliInterface::MenuItem("Playfair (Wandering Hill Climber)", *polybius::cliPlayfairHillClimber));
