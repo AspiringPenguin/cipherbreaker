@@ -134,6 +134,7 @@ namespace transpositions{
 
 		int counter = 0;
 		int limit = 1000 * keyLen;
+		int absoluteLimit = 100000 * keyLen;
 		int total = 0; //This is used to give up on wrong key lengths
 
 		std::random_device rd;
@@ -145,7 +146,7 @@ namespace transpositions{
 
 		int a, b, _; //For copies
 
-		while (counter < limit && (total < limit || bestFitness > -40)) {
+		while (counter < limit && (total < limit || bestFitness > -40) && total < absoluteLimit) {
 			childKey = bestKey;
 			if (coin(gen) == 0) { //Swap
 				a = keyChoice(gen);
@@ -287,6 +288,7 @@ namespace transpositions{
 
 		int counter = 0;
 		int limit = 1000 * keyLen;
+		int absoluteLimit = 100000 * keyLen;
 		int total = 0; //This is used to give up on wrong key lengths
 
 		std::random_device rd;
@@ -298,7 +300,7 @@ namespace transpositions{
 
 		int a, b, _; //For copies
 
-		while (counter < limit && (total < limit || bestFitness > -40)) {
+		while (counter < limit && (total < limit || bestFitness > -40) && total < absoluteLimit) {
 			childKey = bestKey;
 			if (coin(gen) == 0) { //Swap
 				a = keyChoice(gen);
