@@ -6,7 +6,7 @@ namespace basics {
 		std::string newString = "";
 		for (char c : inp) {
 			c = tolower(c);
-			if (std::find(alphabet.begin(), alphabet.end(), c) != alphabet.end()) {
+			if (c >= 97 && c < 123) {
 				newString += c;
 			}
 		}
