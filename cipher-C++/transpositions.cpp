@@ -102,7 +102,7 @@ namespace transpositions{
 		#pragma warning(disable:4244) //Intentional behaviour to narrow cast
 		int columnLen = fColumnLen;
 		#pragma warning(pop)
-		if (std::fmod(cipherLen, 1) != 0) {
+		if (std::fmod(fColumnLen, 1) != 0) {
 			columnLen++;
 		}
 
@@ -120,17 +120,36 @@ namespace transpositions{
 		}
 
 		std::vector<std::string> blocks = strings::getBlocks(cipher, columnLen);
+		auto newBlocks = std::vector<std::string>();
 		for (const int& index : key) {
-			blocks.push_back(blocks[index]);
+			newBlocks.push_back(blocks[index]);
 		}
 
 		std::string plain = "";
 		for (int x = 0; x < columnLen; x++) {
 			for (int y = 0; y < keyLen; y++) {
-				plain += blocks[y][x];
+				plain += newBlocks[y][x];
 			}
 		}
 
 		return basics::formatString(plain);
+	}
+
+	std::string columnarBruteForce(std::string cipher) {
+		cipher = basics::formatString(cipher);
+		auto newCols = std::vector<std::string>();
+		std::vector<std::string> cols;
+		std::string decrypt;
+
+		for (int n = 2; n < 21; n++) {
+			std::cout << n << std::endl;
+			for (const auto& perm : heapsPerms(n)) {
+				decrypt = columnarDecrypt(cipher, perm);
+				if (fitness::tetragramFitness(&decrypt) > -15) {
+					return decrypt;
+				}
+			}
+		}
+		return "";
 	}
 }
