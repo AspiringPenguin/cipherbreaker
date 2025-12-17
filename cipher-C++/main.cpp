@@ -52,8 +52,8 @@ int main() {
 	menu.addMenuItem(cliInterface::MenuItem("Vigenere (Multiple Caesar Shifts)", *periodic::cliVigenere));
 	menu.addMenuItem(cliInterface::MenuItem("Polyalphabetic Substitution (Hill Climber)", *periodic::cliHillClimber));
 
-	menu.addMenuItem(cliInterface::MenuItem("Permutation (Brute Force)", *transpositions::cliPermutationBruteForce));
-	menu.addMenuItem(cliInterface::MenuItem("Columnar (Brute Force)", *transpositions::cliColumnarBruteForce));
+	menu.addMenuItem(cliInterface::MenuItem("Permutation Transposition (Brute Force)", *transpositions::cliPermutationBruteForce));
+	menu.addMenuItem(cliInterface::MenuItem("Columnar Transposition (Brute Force)", *transpositions::cliColumnarBruteForce));
 
 	menu.addMenuItem(cliInterface::MenuItem("Playfair (Wandering Hill Climber)", *polybius::cliPlayfairHillClimber));
 	menu.addMenuItem(cliInterface::MenuItem("Playfair 2025 Variation (Wandering Hill Climber)", *polybius::cliPlayfair2025VariationHillClimber));
