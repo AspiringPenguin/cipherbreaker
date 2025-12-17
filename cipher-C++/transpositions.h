@@ -4,6 +4,8 @@
 #include <vector>
 
 namespace transpositions {
+	int integerDivisionRoundUp(int a, int b);
+
 	std::generator<std::vector<int>> heapsPerms(int size);
 
 	std::vector<int> rollKey(std::vector<int>& key, int roll);

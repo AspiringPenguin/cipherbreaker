@@ -9,6 +9,18 @@
 #include <random>
 
 namespace transpositions{
+	int integerDivisionRoundUp(int a, int b) {
+		float fRes = static_cast<float>(a) / b;
+		#pragma warning(push)
+		#pragma warning(disable:4244) //Intentional behaviour to narrow cast
+		int res = fRes;
+		#pragma warning(pop)
+		if (std::fmod(fRes, 1) != 0) {
+			res++;
+		}
+		return res;
+	}
+
 	std::generator<std::vector<int>> heapsPerms(int n)
 	{
 		auto A = std::vector<int>();
@@ -201,14 +213,7 @@ namespace transpositions{
 		}
 
 		//Get column lengths
-		float fColumnLen = static_cast<float>(cipherLen) / keyLen;
-		#pragma warning(push)
-		#pragma warning(disable:4244) //Intentional behaviour to narrow cast
-		int columnLen = fColumnLen;
-		#pragma warning(pop)
-		if (std::fmod(fColumnLen, 1) != 0) {
-			columnLen++;
-		}
+		int columnLen = integerDivisionRoundUp(cipherLen, keyLen);
 
 		//Find blocks which need extra spaces
 		std::vector<int> needsGaps = std::vector<int>();
@@ -360,14 +365,7 @@ namespace transpositions{
 		}
 
 		//Get column lengths
-		float fColumnLen = static_cast<float>(cipherLen) / width;
-		#pragma warning(push)
-		#pragma warning(disable:4244) //Intentional behaviour to narrow cast
-		int columnLen = fColumnLen;
-		#pragma warning(pop)
-		if (std::fmod(fColumnLen, 1) != 0) {
-			columnLen++;
-		}
+		int columnLen = integerDivisionRoundUp(cipherLen, width);
 
 		//Find columns which need extra spaces
 		std::vector<int> needsGaps = std::vector<int>();
