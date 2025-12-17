@@ -20,4 +20,8 @@ namespace transpositions {
 	std::string columnarDecrypt(std::string cipher, std::vector<int> key);
 	std::string columnarBruteForce(std::string cipher);
 	int cliColumnarBruteForce(std::string cipher);
+
+	std::vector<int> columnarSubHillClimber(std::string cipher, int keyLen);
+	std::vector<int> columnarHillClimber(std::string cipher);
+	int cliColumnarHillClimber(std::string cipher);
 }

@@ -49,7 +49,7 @@ int main() {
 	menu.addMenuItem(cliInterface::MenuItem("Polyalphabetic Substitution (Hill Climber)", *periodic::cliHillClimber));
 
 	menu.addMenuItem(cliInterface::MenuItem("Permutation Transposition (Hill Climber)", *transpositions::cliPermutationHillClimber));
-	menu.addMenuItem(cliInterface::MenuItem("Columnar Transposition (Brute Force)", *transpositions::cliColumnarBruteForce));
+	menu.addMenuItem(cliInterface::MenuItem("Columnar Transposition (Hill Climber)", *transpositions::cliColumnarHillClimber));
 
 	menu.addMenuItem(cliInterface::MenuItem("Playfair (Wandering Hill Climber)", *polybius::cliPlayfairHillClimber));
 	menu.addMenuItem(cliInterface::MenuItem("Playfair 2025 Variation (Wandering Hill Climber)", *polybius::cliPlayfair2025VariationHillClimber));

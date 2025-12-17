@@ -256,4 +256,88 @@ namespace transpositions{
 		}
 		return 0;
 	}
+
+	std::vector<int> columnarSubHillClimber(std::string cipher, int keyLen) {
+		auto bestKey = std::vector<int>();
+		for (int i = 0; i < keyLen; i++) {
+			bestKey.push_back(i);
+		}
+
+		float bestFitness = fitness::tetragramFitness(&cipher);
+		std::string bestDecrypt = cipher;
+
+		std::vector<int> childKey;
+		float childFitness;
+		std::string childDecrypt;
+
+		int counter = 0;
+		int limit = 1000 * keyLen;
+		int total = 0; //This is used to give up on wrong key lengths
+
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<> coin(0, 1); //Coin toss
+		std::uniform_int_distribution<> keyChoice(0, keyLen - 1); //Picking elements
+		std::uniform_int_distribution<> rollChoice(1, keyLen - 1); //Picking roll amount
+		std::uniform_int_distribution<> die(1, 20); //20-sided die
+
+		int a, b, _; //For copies
+
+		while (counter < limit && (total < limit || bestFitness > -40)) {
+			childKey = bestKey;
+			if (coin(gen) == 0) { //Swap
+				a = keyChoice(gen);
+				b = keyChoice(gen);
+				while (a == b) {
+					b = keyChoice(gen);
+				}
+				_ = childKey[a];
+				childKey[a] = childKey[b];
+				childKey[b] = _;
+			}
+			else { //Roll
+				childKey = rollKey(childKey, rollChoice(gen));
+			}
+			childDecrypt = columnarDecrypt(cipher, childKey);
+			childFitness = fitness::tetragramFitness(&childDecrypt);
+
+			if (counter > 100 && childFitness > bestFitness || (childFitness > (bestFitness - 2) && die(gen) == 1)) {
+				counter = 0;
+				bestKey = childKey;
+				bestFitness = childFitness;
+				bestDecrypt = childDecrypt;
+			}
+
+			counter++;
+			total++;
+		}
+
+		return bestKey;
+	}
+
+	std::vector<int> columnarHillClimber(std::string cipher) {
+		cipher = basics::formatString(cipher);
+		std::string decrypt;
+		for (int i = 2; i < 21; i++) {
+			std::cout << i << std::endl;
+			auto res = columnarSubHillClimber(cipher, i);
+			decrypt = columnarDecrypt(cipher, res);
+			if (fitness::tetragramFitness(&decrypt) > -15) {
+				return res;
+			}
+		}
+		return {};
+	}
+
+	int cliColumnarHillClimber(std::string cipher) {
+		cipher = basics::formatString(cipher);
+		auto res = columnarHillClimber(cipher);
+		if (res.size() != 0) {
+			auto decrypt = columnarDecrypt(cipher, res);
+			if (cliInterface::offerDecryption(decrypt)) {
+				return 1;
+			}
+		}
+		return 0;
+	}
 }
