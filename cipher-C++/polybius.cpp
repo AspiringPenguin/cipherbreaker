@@ -219,6 +219,7 @@ namespace polybius {
         std::ios_base::sync_with_stdio(false);
 
         cipher = basics::formatString(cipher);
+
         polybius bestKey;
         bestKey[0] = { 'p', 'o', 'l', 'y', 'b' };
         bestKey[1] = { 'i', 'u', 's', 'a', 'c' };
@@ -228,7 +229,9 @@ namespace polybius {
         polybius currentKey = bestKey;
 
         std::string bestDecrypt = processPlayfairDecrypt(playfairDecrypt(cipher, bestKey));
+
         float bestFitness = fitness::tetragramFitness(&bestDecrypt);
+
         float currentFitness = bestFitness;
 
         polybius childKey;
@@ -271,6 +274,13 @@ namespace polybius {
             default:
                 swapElems(childKey, &dist, &gen);
                 break;
+            }
+
+            for (const auto& row : childKey) {
+                for (const auto& item : row) {
+                    std::cout << item << " ";
+                }
+                std::cout << std::endl;
             }
 
             childDecrypt = processPlayfairDecrypt(playfairDecrypt(cipher, childKey));
@@ -407,6 +417,8 @@ namespace polybius {
 
             childDecrypt = processPlayfairDecrypt(playfair2025VariationDecrypt(cipher, childKey));
             childFitness = fitness::tetragramFitness(&childDecrypt);
+
+            
 
             improved = false;
 
@@ -612,6 +624,15 @@ namespace polybius {
 
     int cliPlayfairHillClimber(std::string cipher) {
         cipher = basics::formatString(cipher);
+
+        if (cipher.length() % 2 == 1) {
+            return 0;
+        }
+
+        if (cipher.find('j') != std::string::npos) {
+            return 0;
+        }
+
         polybius bestKey = playfairHillClimber(cipher);
         for (const auto& row : bestKey) {
             for (const auto& item : row) {
@@ -633,6 +654,15 @@ namespace polybius {
 
     int cliPlayfair2025VariationHillClimber(std::string cipher) {
         cipher = basics::formatString(cipher);
+
+        if (cipher.length() % 2 == 1) {
+            return 0;
+        }
+
+        if (cipher.find('j') != std::string::npos) {
+            return 0;
+        }
+
         polybius bestKey = playfair2025VariationHillClimber(cipher);
         for (const auto& row : bestKey) {
             for (const auto& item : row) {
