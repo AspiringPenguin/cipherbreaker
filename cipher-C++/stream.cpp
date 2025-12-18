@@ -4,6 +4,7 @@
 #include "fitness.h"
 #include "interface.h"
 #include "periodic.h"
+#include <iostream>
 #include <queue>
 #include <random>
 
@@ -78,6 +79,7 @@ namespace stream {
 
 	std::string autokeyDecrypt(std::string cipher, std::string key, mode m) {
 		std::string plain = "";
+		plain.reserve(cipher.length());
 		std::queue<char> stream;
 		for (char c : key) {
 			stream.push(c);
@@ -111,9 +113,9 @@ namespace stream {
 		std::string bestDecrypt = autokeyDecrypt(cipher, bestKey, m);
 		float bestFitness = fitness::tetragramFitness(&bestDecrypt);
 
-		std::string childKey;
-		std::string childDecrypt;
-		float childFitness;
+		std::string childKey = "";
+		std::string childDecrypt = "";
+		float childFitness = 0.0f;
 
 		bool flag = false;
 		
@@ -140,8 +142,8 @@ namespace stream {
 
 	std::tuple<std::string, mode> autokeyHillClimber(std::string cipher) {
 		cipher = basics::formatString(cipher);
-		std::string result;
-		std::string decrypt;
+		std::string result = "";
+		std::string decrypt =  "";
 		for (int l = 1; l < 21; l++) {
 			for (mode m : {add, subtractKey, subtractText}) {
 				result = autokeyMiniHillClimber(cipher, l, m);
@@ -157,6 +159,9 @@ namespace stream {
 	int cliAutokeyHillClimber(std::string cipher) {
 		cipher = basics::formatString(cipher);
 		auto res = autokeyHillClimber(cipher);
+		if (std::get<0>(res) == "") {
+			return 0;
+		}
 		std::string decrypt = autokeyDecrypt(cipher, std::get<0>(res), std::get<1>(res));
 		if (fitness::tetragramFitness(&decrypt) > -15) {
 			if (cliInterface::offerDecryption(decrypt)) {
