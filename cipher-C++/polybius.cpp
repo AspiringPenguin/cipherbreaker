@@ -276,13 +276,6 @@ namespace polybius {
                 break;
             }
 
-            for (const auto& row : childKey) {
-                for (const auto& item : row) {
-                    std::cout << item << " ";
-                }
-                std::cout << std::endl;
-            }
-
             childDecrypt = processPlayfairDecrypt(playfairDecrypt(cipher, childKey));
             childFitness = fitness::tetragramFitness(&childDecrypt);
 
