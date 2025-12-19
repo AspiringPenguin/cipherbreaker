@@ -180,6 +180,9 @@ namespace periodic {
 	int cliHillClimber(std::string cipher) {
 		cipher = basics::formatString(cipher);
 		std::string decrypt = hillClimber(cipher);
+		if (decrypt == "") {
+			return 0;
+		}
 		if (fitness::tetragramFitness(&decrypt) > -15) {
 			if (cliInterface::offerDecryption(decrypt)) {
 				return 1;
