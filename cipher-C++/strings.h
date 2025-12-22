@@ -3,6 +3,8 @@
 #include <vector>
 
 namespace strings {
+	//A set of tools for handling strings - see implementation for details
+
 	std::vector<std::string> split(std::string string, std::string delimiter);
 
 	std::vector<std::string> getBlocks(std::string string, int size);
