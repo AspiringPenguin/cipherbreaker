@@ -3,6 +3,8 @@
 #include <string>
 
 namespace basics {
+	//See implementation file for comments regarding these
+
 	static std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
 
 	std::string formatString(std::string inp);
