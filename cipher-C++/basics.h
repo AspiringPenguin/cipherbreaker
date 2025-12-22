@@ -9,10 +9,6 @@ namespace basics {
 
 	std::string removeSpaces(std::string inp);
 
-	std::unordered_map<char, int> createAlphabetMap();
-
-	static std::unordered_map<char, int> alphabetIndex = createAlphabetMap();
-
 	int lcm(int a, int b);
 
 	int hcf(int a, int b);

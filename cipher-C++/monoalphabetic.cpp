@@ -14,7 +14,7 @@ namespace monoalphabetic {
 		int l = text.length();
 
 		for (int i = 0; i < l; i++) {
-			encrypted += key[basics::alphabetIndex[text[i]]];
+			encrypted += key[key[i] - 97];
 		}
 
 		return encrypted;
@@ -25,7 +25,7 @@ namespace monoalphabetic {
 		auto newKey = std::array<char, 26>();
 
 		for (int i = 0; i < 26; i++) {
-			newKey[basics::alphabetIndex[key[i]]] = basics::alphabet[i];
+			newKey[key[i] - 97] = basics::alphabet[i];
 		}
 
 		return newKey;
@@ -88,7 +88,7 @@ namespace monoalphabetic {
 		std::string text = "";
 		modularNumber n;
 		for (char c : cipher) {
-			n = basics::alphabetIndex[c];
+			n = (c - 97);
 			n += shift;
 			text += basics::alphabet[n];
 		}
@@ -137,7 +137,7 @@ namespace monoalphabetic {
 		std::string result = "";
 		modularNumber n;
 		for (char c : text) {
-			n = basics::alphabetIndex[c];
+			n = (c - 97);
 			n = n * a;
 			n += b;
 			result += basics::alphabet[n.getValue()];
@@ -150,7 +150,7 @@ namespace monoalphabetic {
 		std::string result = "";
 		modularNumber n;
 		for (char c : text) {
-			n = basics::alphabetIndex[c];
+			n = (c - 97);
 			n = n * a;
 			n = n - b;
 			result += basics::alphabet[n.getValue()];

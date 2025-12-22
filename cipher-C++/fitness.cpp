@@ -8,7 +8,7 @@ namespace fitness {
 		std::array<float, 26> array = { 0 };
 		int l = text.length();
 		for (int i = 0; i < l; i++) {
-			array[basics::alphabetIndex[text[i]]]++;
+			array[text[i] - 97]++;
 		}
 		return array;
 	}
@@ -17,7 +17,7 @@ namespace fitness {
 		std::array<float, 26> array = { 0 };
 		int l = text.length();
 		for (int i = 0; i < l; i++) {
-			array[basics::alphabetIndex[text[i]]]++;
+			array[text[i] - 97]++;
 		}
 		for (int i = 0; i < 26; i++) {
 			array[i] = array[i] / divisor;

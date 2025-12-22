@@ -26,16 +26,6 @@ namespace basics {
 		return newString;
 	}
 
-	std::unordered_map<char, int> createAlphabetMap()
-	{
-		auto map = std::unordered_map<char, int>();
-
-		for (int i = 0; i < 26; i++) {
-			map[alphabet[i]] = i;
-		}
-		return map;
-	}
-
 	int lcm(int a, int b)
 	{
 		return a * b / hcf(a, b);
