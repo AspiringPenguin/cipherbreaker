@@ -3,6 +3,7 @@
 #include <iostream>
 
 namespace basics {
+	//Turns a string to lowercase and removes all non-alphabetical characters
 	std::string formatString(std::string inp) {
 		std::string newString = "";
 		for (char c : inp) {
@@ -14,6 +15,7 @@ namespace basics {
 		return newString;
 	}
 
+	//Removes spaces from a string
 	std::string removeSpaces(std::string inp) {
 		std::string newString = "";
 		for (char c : inp) {
@@ -39,6 +41,7 @@ namespace basics {
 		return a * b / hcf(a, b);
 	}
 
+	//Euclidean algorithm
 	int hcf(int a, int b)
 	{
 		int _;
@@ -57,6 +60,7 @@ namespace basics {
 		return hcf(a, b) == 1;
 	}
 
+	//Extended Euclidean algorithm
 	int multiplicativeInverse(int n, int modulus) {
 		int t = 0;
 		int tPrime = 1;
@@ -84,6 +88,8 @@ namespace basics {
 		return t;
 	}
 
+	//Get all the factors of a number.
+	//Just uses an exhaustive search <= the square root
 	std::vector<int> getFactors(int n) {
 		auto factors = std::vector<int>();
 		int max = sqrt(n);
@@ -93,7 +99,7 @@ namespace basics {
 					factors.push_back(i);
 				}
 				else {
-				factors.push_back(i);
+					factors.push_back(i);
 					factors.push_back(n / i);
 				}
 			}

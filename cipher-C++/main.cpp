@@ -15,7 +15,7 @@
 #include "strings.h"
 #include "transpositions.h"
 
-//Add test func if not a release build
+//Add test func if not a release build - this is generally used for testing or providing easy debug access to a certain piece of code
 #ifdef TEST
 int testStuff(std::string cipher) {
 	//std::string text = basics::formatString(cipher);
@@ -80,9 +80,3 @@ int main() {
 
 	return 0;
 }
-
-//Priorities:
-// More ways of filling out a polybius square, and a mixed alphabet generator
-// Hill, as per forum post attack
-// More tranpositions
-// Solitaire hill-climber
