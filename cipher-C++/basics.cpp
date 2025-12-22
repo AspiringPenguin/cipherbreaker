@@ -87,10 +87,15 @@ namespace basics {
 	std::vector<int> getFactors(int n) {
 		auto factors = std::vector<int>();
 		int max = sqrt(n);
-		for (int i = 1; i < max; i++) {
+		for (int i = 1; i <= max; i++) {
 			if ((n % i) == 0) {
+				if (i == n / i) {
+					factors.push_back(i);
+				}
+				else {
 				factors.push_back(i);
-				factors.push_back(n/i);
+					factors.push_back(n / i);
+				}
 			}
 		}
 		return factors;
