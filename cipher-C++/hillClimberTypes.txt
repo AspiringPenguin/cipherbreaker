@@ -1,5 +1,9 @@
 A list of all the variations on hill-climbing attacks used to reduce duplication, these will be referenced from code comments
 
+• "basic hillclimber":
+  The most basic possible hill-climbing attack - making a random change to a child key, which is a copy of the best key
+  If it is better than the best key, update the best key to the value of the child key
+
 • "basic best-current-child key":
 	The best and current keys start as the same value.
 	The child key to be modified is always copied from the current key.
