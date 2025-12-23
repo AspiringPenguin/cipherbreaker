@@ -52,7 +52,7 @@ int main() {
 	menu.addMenuItem(cliInterface::MenuItem("Affine Shift (Brute Force)", *monoalphabetic::cliAffineBruteForce));
 	menu.addMenuItem(cliInterface::MenuItem("Monoalphabetic (Hill Climber)", *monoalphabetic::cliHillClimber));
 
-	menu.addMenuItem(cliInterface::MenuItem("Vigenere (Multiple Caesar Shifts)", *periodic::cliVigenere));
+	menu.addMenuItem(cliInterface::MenuItem("Vigenere (Multiple Caesar Shifts)", *periodic::cliVigenereAsCaesarShifts));
 	menu.addMenuItem(cliInterface::MenuItem("Polyalphabetic Substitution (Hill Climber)", *periodic::cliHillClimber));
 
 	menu.addMenuItem(cliInterface::MenuItem("Permutation Transposition (Hill Climber)", *transpositions::cliPermutationHillClimber));

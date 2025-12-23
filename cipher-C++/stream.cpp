@@ -180,7 +180,7 @@ namespace stream {
 	}
 
 	std::string progressiveVigenereSubBruteForce(std::string cipher, int l, int prog) {
-		return periodic::vigenere(progressiveVigenereAsVigenere(cipher, l, prog), l);
+		return periodic::vigenereAsCaesarShifts(progressiveVigenereAsVigenere(cipher, l, prog), l);
 	}
 
 	std::string progressiveVigenereBruteForce(std::string cipher) {

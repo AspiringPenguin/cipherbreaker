@@ -19,7 +19,7 @@ namespace periodic {
 		//Returns -1 if there is no match
 	}
 
-	std::string vigenere(std::string cipher, int keyLen) {
+	std::string vigenereAsCaesarShifts(std::string cipher, int keyLen) {
 		auto columns = strings::getColumns(cipher, keyLen);
 
 		auto decryptedColumns = std::vector<std::string>();
@@ -37,18 +37,18 @@ namespace periodic {
 		return strings::columnsToString(decryptedColumns);
 	}
 
-	std::string vigenere(std::string cipher)
+	std::string vigenereAsCaesarShifts(std::string cipher)
 	{
 		int keySize = getKeySize(cipher);
 		if (keySize == -1) {
 			return "";
 		}
-		return vigenere(cipher, keySize);
+		return vigenereAsCaesarShifts(cipher, keySize);
 	}
 
-	int cliVigenere(std::string cipher) {
+	int cliVigenereAsCaesarShifts(std::string cipher) {
 		cipher = basics::formatString(cipher);
-		auto result = vigenere(cipher);
+		auto result = vigenereAsCaesarShifts(cipher);
 		if (result == "") {
 			return 0;
 		}

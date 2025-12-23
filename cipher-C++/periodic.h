@@ -5,10 +5,10 @@
 namespace periodic {
 	//A set of tools for periodic substitution ciphers
 
-	std::string vigenere(std::string cipher, int keyLen);
-	std::string vigenere(std::string cipher);
+	std::string vigenereAsCaesarShifts(std::string cipher, int keyLen);
+	std::string vigenereAsCaesarShifts(std::string cipher);
 
-	int cliVigenere(std::string cipher);
+	int cliVigenereAsCaesarShifts(std::string cipher);
 
 	std::string polyalphabeticDecrypt(std::string cipher, std::vector<std::array<char, 26>>, bool);
 
