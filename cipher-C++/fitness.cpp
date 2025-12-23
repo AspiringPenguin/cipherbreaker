@@ -4,6 +4,7 @@
 #include "strings.h"
 
 namespace fitness {
+	//Count all the characters a-z in a string and return them as a s6-item array with frequencies in alphabetical order
 	std::array<float, 26> monogramFrequencies(std::string text) {
 		std::array<float, 26> array = { 0 };
 		int l = text.length();
@@ -13,6 +14,7 @@ namespace fitness {
 		return array;
 	}
 
+	//Count all the characters a-z in a string, divide each total by the divisor and return them as a s6-item array with frequencies in alphabetical order
 	std::array<float, 26> monogramFrequencies(std::string text, int divisor) {
 		std::array<float, 26> array = { 0 };
 		int l = text.length();
@@ -25,6 +27,7 @@ namespace fitness {
 		return array;
 	}
 
+	//Calculate chi2 for two 26-dimensional vectors
 	float chi2(std::array<float, 26> actual, std::array<float, 26> expected) {
 		float tot = 0.0;
 		for (int i = 0; i < 26; i++) {
@@ -33,10 +36,12 @@ namespace fitness {
 		return tot;
 	}
 
+	//Monogram fitness using chi2 between the text frequencies and the corpus frequencies.
 	float chi2Fitness(std::string text) {
 		return chi2(monogramFrequencies(text, text.length()), corpus::frequencyArray);
 	}
 
+	//Calculate dot produce of two 26-dimensional vectors
 	float dotProduct(std::array<float, 26> vec1, std::array<float, 26> vec2) {
 		float tot = 0.0;
 		for (int i = 0; i < 26; i++) {
@@ -44,15 +49,21 @@ namespace fitness {
 		}
 		return tot;
 	}
-
+	
+	//Using the formula for cosine of the angle between two vectors, find it for two 26d vectors
 	float angleBetweenVectors(std::array <float, 26 > vec1, std::array<float, 26> vec2) {
 		return dotProduct(vec1, vec2) / sqrt(dotProduct(vec1, vec1) * dotProduct(vec2, vec2));
 	}
 
+
+	//Use cosine of the angle between vectors compare monogram frequencies between the text and the corpus
 	float angleBetweenVectorsFitness(std::string text) {
 		return angleBetweenVectors(monogramFrequencies(text), corpus::frequencyArray);
 	}
 
+	//Tetragram fitness function. This sums the logarithms of the corpus frequencies of the tetragrams found in the input text and divides it by (the length of the text - 3)
+	//To reduce random memory accesses, the tetragrams logarithms are stored as precaluclated pairs for quintgrams,
+	//while the original table is only used if there are an odd number of tetragrams in the text.
 	float tetragramFitness(std::string* text) {
 		float tot = 0;
 		int n = text->length() - 3;
@@ -67,7 +78,9 @@ namespace fitness {
 		tot /= n;
 		return tot;
 	}
-
+	
+	//Calculate index of coincidence, multiplied by a normalisation factor.
+	//Some people like that as 26, but I am used to having it as 1, where IoC of English roughly = 0.066
 	float indexOfCoincidence(std::string text, int normalisationFactor) {
 		unsigned long long l = text.length();
 		auto freqs = monogramFrequencies(text);
@@ -78,10 +91,13 @@ namespace fitness {
 		return tot * normalisationFactor;
 	}
 
+	//An overload for index of coincidence that defaults the normalisation factor to 1
 	float indexOfCoincidence(std::string text) {
 		return indexOfCoincidence(text, 1);
 	}
 
+	//Index of coincidence by period - splitting the text into blocks of a given length and arranging on top of each other, as in strings::getColumns
+	//Then taking the mean index of coincidence of each column
 	float indexOfCoincidencePeriodic(std::string text, int n, int normalisationFactor) {
 		auto cols = strings::getColumns(text, n);
 		float avg = 0;
@@ -94,6 +110,7 @@ namespace fitness {
 		return avg;
 	}
 
+	//Same as the above but noramlisationFactor=1
 	float indexOfCoincidencePeriodic(std::string text, int n) {
 		auto cols = strings::getColumns(text, n);
 		float avg = 0;
@@ -106,6 +123,7 @@ namespace fitness {
 		return avg;
 	}
 
+	//Calculates the index of coincidence for bigrams
 	float indexOfCoincidenceBigrams(std::string text) {
 		text = basics::formatString(text);
 		float tot = 0;
@@ -128,6 +146,7 @@ namespace fitness {
 		return tot;
 	}
 
+	//Calculates the index of coincidence for trigrams
 	float indexOfCoincidenceTrigrams(std::string text) {
 		text = basics::formatString(text);
 		float tot = 0;

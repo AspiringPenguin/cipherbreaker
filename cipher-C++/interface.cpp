@@ -4,6 +4,7 @@
 #include <iostream>
 
 namespace cliInterface {
+	//Multiline cipher input, conacatenates all input up to a line cotaining just 'end' and returns it.
 	std::string getCipherInput() {
 		std::cout << "Enter ciphertext:" << std::endl;
 		std::string cipher = "";
@@ -22,19 +23,20 @@ namespace cliInterface {
 		return cipher;
 	}
 
+	//A function for offering a decryption with a y/n prompt for whether to accept it.
 	bool offerDecryption(std::string text) {
 		std::cout << "Possible decryption:" << std::endl;
 		std::cout << text << std::endl;
 		std::cout << "Accept? (y/n) > ";
 		std::string inp;
 		getline(std::cin, inp);
-		if (basics::formatString(inp) == "y") {
+		if (basics::formatString(inp) == "y") { //formatString used here to remove non-alphabetic characters and strip out any spaces
 			return true;
 		}
 		return false;
 	}
 
-	//MenuItem
+	//MenuItem to add to menu, with descriptor to show and a pointer to the function
 	MenuItem::MenuItem(std::string s, int(*_func)(std::string))
 	{
 		name = s;
@@ -47,7 +49,7 @@ namespace cliInterface {
 	}
 
 	
-	//Menu
+	//Menu itself
 	std::string Menu::getCipher()
 	{ 
 		return cipher;
@@ -63,6 +65,8 @@ namespace cliInterface {
 		menuItems.push_back(i);
 	}
 
+	//This handles the output of menu item descriptors, choosing a menu item and running it before returning the exit code
+	//The rest is handled in showMenu
 	int Menu::run()
 	{
 		std::cout << "----------MENU----------" << std::endl;
@@ -83,10 +87,12 @@ namespace cliInterface {
 		return 2;
 	}
 
+	//Option to exit
 	int exit(std::string cipher) {
 		return -2;
 	}
 
+	//Significant analysis ouput function, with various stats
 	int analysis(std::string cipher) {
 		auto formatted = basics::formatString(cipher);
 
@@ -110,6 +116,7 @@ namespace cliInterface {
 		return 2;
 	}
 
+	//This handles the exit code logic of the menu and the repeated display of the menu
 	void showMenu(Menu menu) {
 		int exitCode = menu.run();
 		if (exitCode == -2) {
