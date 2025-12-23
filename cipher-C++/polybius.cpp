@@ -1094,6 +1094,15 @@ namespace polybius {
 
     int cliVertTwoSquareHillClimber(std::string cipher) {
         cipher = basics::formatString(cipher);
+
+        if (cipher.length() % 2 == 1) { //Can't be bigram substitution as it has an odd number of letters
+            return 0; //Failure
+        }
+
+        if (cipher.find('j') != std::string::npos) { //not possible as 'j' is disallowed
+            return 0; //Failure
+        }
+
         auto bestKeys = vertTwoSquareHillClimber(cipher);
         std::string decrypt = vertTwoSquareDecrypt(cipher, std::get<0>(bestKeys), std::get<1>(bestKeys));
         if (fitness::tetragramFitness(&decrypt) > -15) {
@@ -1323,6 +1332,15 @@ namespace polybius {
 
     int cliHorizTwoSquareHillClimber(std::string cipher) {
         cipher = basics::formatString(cipher);
+
+        if (cipher.length() % 2 == 1) { //Can't be bigram substitution as it has an odd number of letters
+            return 0; //Failure
+        }
+
+        if (cipher.find('j') != std::string::npos) { //not possible as 'j' is disallowed
+            return 0; //Failure
+        }
+
         auto bestKeys = horizTwoSquareHillClimber(cipher);
         std::string decrypt = horizTwoSquareDecrypt(cipher, std::get<0>(bestKeys), std::get<1>(bestKeys));
         if (fitness::tetragramFitness(&decrypt) > -15) {
@@ -1532,6 +1550,14 @@ namespace polybius {
 
     int cliFourSquareHillClimber(std::string cipher) {
         cipher = basics::formatString(cipher);
+
+        if (cipher.length() % 2 == 1) { //Can't be bigram substitution as it has an odd number of letters
+            return 0; //Failure
+        }
+
+        if (cipher.find('j') != std::string::npos) { //not possible as 'j' is disallowed
+            return 0; //Failure
+        }
 
         std::tuple<polybius, polybius> result = fourSquareHillClimber(cipher);
 
