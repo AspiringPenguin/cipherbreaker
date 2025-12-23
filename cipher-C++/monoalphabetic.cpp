@@ -113,7 +113,7 @@ namespace monoalphabetic {
 				return decrypt;
 			}
 		}
-		return "";
+		return ""; //Return an empty string representing a failed decrypt
 	}
 
 	//Brute force attack on the caesar shift cipher using monogram fitness. Includes shift=0 as this is used for vigenere ciphers, and there could be an 'a' in the key
@@ -183,14 +183,14 @@ namespace monoalphabetic {
 				}
 			}
 		}
-		return "";
+		return ""; //Return an empty string representing a failed attack
 	}
 
 	//CLI code for affine shift cipher brute force attack
 	int cliAffineBruteForce(std::string cipher) {
 		cipher = basics::formatString(cipher);
 		auto decryption = affineBruteForce(cipher);
-		if (decryption != "") {
+		if (decryption != "") { //If attack hasn't failed
 			if (cliInterface::offerDecryption(decryption)) {
 				return 1;
 			}

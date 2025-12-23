@@ -19,6 +19,8 @@ namespace periodic {
 		//Returns -1 if there is no match
 	}
 
+	//Break a vignere by breaking it down into the separate 'columns' with the same caesar shift
+	//and breaking those as a caesar with brute force and monogram fitness
 	std::string vigenereAsCaesarShifts(std::string cipher, int keyLen) {
 		auto columns = strings::getColumns(cipher, keyLen);
 
@@ -28,39 +30,35 @@ namespace periodic {
 
 		for (int i = 0; i < keyLen; i++) {
 			result = monoalphabetic::caesarMonogramBruteForce(columns[i]);
-			if (result == "") {
-				return "";
-			}
 			decryptedColumns.push_back(result);
 		}
 
 		return strings::columnsToString(decryptedColumns);
 	}
 
+	//An overload for the above that determines key length before calling the overload above with the key length
 	std::string vigenereAsCaesarShifts(std::string cipher)
 	{
 		int keySize = getKeySize(cipher);
 		if (keySize == -1) {
-			return "";
+			return ""; //Return an empty string representing a failed decrypt
 		}
 		return vigenereAsCaesarShifts(cipher, keySize);
 	}
 
+	//CLI interface for the above attack
 	int cliVigenereAsCaesarShifts(std::string cipher) {
 		cipher = basics::formatString(cipher);
 		auto result = vigenereAsCaesarShifts(cipher);
-		if (result == "") {
-			return 0;
+		if (result == "") { //Has the decryption process failed?
+			return 0; //Failure
 		}
 		if (fitness::tetragramFitness(&result) > -15) {
 			if (cliInterface::offerDecryption(result)) {
-				return 1;
+				return 1; //Success
 			}
 		}
-		else {
-			std::cout << fitness::tetragramFitness(&result) << std::endl;
-		}
-		return 0;
+		return 0; //Failure
 	}
 
 	std::string polyalphabeticDecrypt(std::string cipher, std::vector<std::array<char, 26>> key, bool encryptionKey) {
