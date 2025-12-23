@@ -113,10 +113,10 @@ namespace transpositions{
 		auto decrypt = permutationBruteForce(cipher);
 		if (decrypt != "") {
 			if (cliInterface::offerDecryption(decrypt)) {
-				return 1;
+				return 1; //Success
 			}
 		}
-		return 0;
+		return 0; //Failure
 	}
 
 	std::vector<int> permutationSubHillClimber(std::string cipher, int keyLen) {
@@ -198,10 +198,10 @@ namespace transpositions{
 		if (res.size() != 0) {
 			auto decrypt = permutationDecrypt(cipher, res);
 			if (cliInterface::offerDecryption(decrypt)) {
-				return 1;
+				return 1; //Success
 			}
 		}
-		return 0;
+		return 0; //Failure
 	}
 
 	std::string columnarDecrypt(std::string cipher, std::vector<int> key) { //Doesn't work
@@ -267,10 +267,10 @@ namespace transpositions{
 		auto decrypt = columnarBruteForce(cipher);
 		if (decrypt != "") {
 			if (cliInterface::offerDecryption(decrypt)) {
-				return 1;
+				return 1; //Success
 			}
 		}
-		return 0;
+		return 0; //Failure
 	}
 
 	std::vector<int> columnarSubHillClimber(std::string cipher, int keyLen) {
@@ -352,10 +352,10 @@ namespace transpositions{
 		if (res.size() != 0) {
 			auto decrypt = columnarDecrypt(cipher, res);
 			if (cliInterface::offerDecryption(decrypt)) {
-				return 1;
+				return 1; //Success
 			}
 		}
-		return 0;
+		return 0; //Failure
 	}
 
 	std::string twistedScytaleDecrypt(std::string cipher, int width, int twist) {
@@ -439,10 +439,10 @@ namespace transpositions{
 
 		if (res != "") {
 			if (cliInterface::offerDecryption(res)) {
-				return 1;
+				return 1; //Success
 			}
 		}
 		
-		return 0;
+		return 0; //Failure
 	}
 }

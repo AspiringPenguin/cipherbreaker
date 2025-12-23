@@ -81,7 +81,7 @@ namespace monoalphabetic {
 
 		if (fitness::tetragramFitness(&decrypted) > -18) {
 			if (cliInterface::offerDecryption(decrypted)) {
-				return 1;
+				return 1; //Success
 			}
 		}
 		return 0;
@@ -139,10 +139,10 @@ namespace monoalphabetic {
 		std::string decrypt = caesarBruteForce(cipher);
 		if (decrypt != "") {
 			if (cliInterface::offerDecryption(decrypt)) {
-				return 1;
+				return 1; //Success
 			}
 		}
-		return 0;
+		return 0; //Failure
 	}
 
 	//Affine encryption code
@@ -192,10 +192,10 @@ namespace monoalphabetic {
 		auto decryption = affineBruteForce(cipher);
 		if (decryption != "") { //If attack hasn't failed
 			if (cliInterface::offerDecryption(decryption)) {
-				return 1;
+				return 1; //Success
 			}
 		}
-		return 0;
+		return 0; //Failure
 	}
 
 	//Hill climber for monoalphabetic substitution 
@@ -264,9 +264,9 @@ namespace monoalphabetic {
 		auto result = hillClimber(cipher);
 		if (fitness::tetragramFitness(&result) > -15) {
 			if (cliInterface::offerDecryption(result)) {
-				return 1;
+				return 1; //Success
 			}
 		}
-		return 0;
+		return 0; //Failure
 	}
 }

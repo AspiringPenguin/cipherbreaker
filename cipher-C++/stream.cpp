@@ -160,15 +160,15 @@ namespace stream {
 		cipher = basics::formatString(cipher);
 		auto res = autokeyHillClimber(cipher);
 		if (std::get<0>(res) == "") {
-			return 0;
+			return 0; //Failure
 		}
 		std::string decrypt = autokeyDecrypt(cipher, std::get<0>(res), std::get<1>(res));
 		if (fitness::tetragramFitness(&decrypt) > -15) {
 			if (cliInterface::offerDecryption(decrypt)) {
-				return 1;
+				return 1; //Success
 			}
 		}
-		return 0;
+		return 0; //Failure
 	}
 
 	std::string progressiveVigenereAsVigenere(std::string cipher, int l, int prog) {
@@ -199,8 +199,8 @@ namespace stream {
 	int cliProgressiveVigenereBruteForce(std::string cipher) {
 		std::string decrypt = progressiveVigenereBruteForce(cipher);
 		if (cliInterface::offerDecryption(decrypt)) {
-			return 1;
+			return 1; //Success
 		}
-		return 0;
+		return 0; //Failure
 	}
 }

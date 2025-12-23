@@ -34,7 +34,7 @@ int testStuff(std::string cipher) {
 
 	std::cout << homophonic::dualBetDecrypt(cipher, std::get<0>(res), std::get<1>(res));
 
-	return 2;
+	return 2; //Complete
 }
 #endif
 

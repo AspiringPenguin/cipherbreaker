@@ -84,12 +84,12 @@ namespace cliInterface {
 	//Option to print the cipher
 	int outputCipher(std::string cipher) {
 		std::cout << cipher << std::endl;
-		return 2;
+		return 2; //Complete
 	}
 
 	//Option to exit
 	int exit(std::string cipher) {
-		return -2;
+		return -2; //Exit
 	}
 
 	//Significant analysis ouput function, with various stats
@@ -113,7 +113,7 @@ namespace cliInterface {
 			}
 		}
 
-		return 2;
+		return 2; //Complete
 	}
 
 	//This handles the exit code logic of the menu and the repeated display of the menu

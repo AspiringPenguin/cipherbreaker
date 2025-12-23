@@ -618,12 +618,12 @@ namespace polybius {
     int cliPlayfairHillClimber(std::string cipher) {
         cipher = basics::formatString(cipher);
 
-        if (cipher.length() % 2 == 1) {
-            return 0;
+        if (cipher.length() % 2 == 1) { //Can't be bigram substitution as it has an odd number of letters
+            return 0; //Failure
         }
 
-        if (cipher.find('j') != std::string::npos) {
-            return 0;
+        if (cipher.find('j') != std::string::npos) { //not possible as 'j' is disallowed
+            return 0; //Failure
         }
 
         polybius bestKey = playfairHillClimber(cipher);
@@ -639,21 +639,21 @@ namespace polybius {
             if (cliInterface::offerDecryption(decrypt)) {
                 std::cout << "Raw Decrypt: " << std::endl;
                 std::cout << rawDecrypt << std::endl;
-                return 1;
+                return 1; //Success
             }
         }
-        return 0;
+        return 0; //Failure
     }
 
     int cliPlayfair2025VariationHillClimber(std::string cipher) {
         cipher = basics::formatString(cipher);
 
-        if (cipher.length() % 2 == 1) {
-            return 0;
+        if (cipher.length() % 2 == 1) { //Can't be bigram substitution as it has an odd number of letters
+            return 0; //Failure
         }
 
-        if (cipher.find('j') != std::string::npos) {
-            return 0;
+        if (cipher.find('j') != std::string::npos) { //not possible as 'j' is disallowed
+            return 0; //Failure
         }
 
         polybius bestKey = playfair2025VariationHillClimber(cipher);
@@ -669,10 +669,10 @@ namespace polybius {
             if (cliInterface::offerDecryption(decrypt)) {
                 std::cout << "Raw Decrypt: " << std::endl;
                 std::cout << rawDecrypt << std::endl;
-                return 1;
+                return 1; //Success
             }
         }
-        return 0;
+        return 0; //Failure
     }
 
     //Same process to encrypt
@@ -1098,10 +1098,10 @@ namespace polybius {
         std::string decrypt = vertTwoSquareDecrypt(cipher, std::get<0>(bestKeys), std::get<1>(bestKeys));
         if (fitness::tetragramFitness(&decrypt) > -15) {
             if (cliInterface::offerDecryption(decrypt)) {
-                return 1;
+                return 1; //Success
             }
         }
-        return 0;
+        return 0; //Failure
     }
 
     std::tuple<polybius, polybius> horizTwoSquareHillClimber(std::string cipher) { //Not the best, but it works for fair-sized texts
@@ -1327,10 +1327,10 @@ namespace polybius {
         std::string decrypt = horizTwoSquareDecrypt(cipher, std::get<0>(bestKeys), std::get<1>(bestKeys));
         if (fitness::tetragramFitness(&decrypt) > -15) {
             if (cliInterface::offerDecryption(decrypt)) {
-                return 1;
+                return 1; //Success
             }
         }
-        return 0;
+        return 0; //Failure
     }
 
     std::string fourSquareDecrypt(std::string text, polybius topRight, polybius bottomLeft) {
@@ -1538,10 +1538,10 @@ namespace polybius {
         if (std::get<0>(result) != nullPolybius) {
             std::string decrypt = fourSquareDecrypt(cipher, std::get<0>(result), std::get<1>(result));
             if (cliInterface::offerDecryption(decrypt)) { //Can skip fitness here as filtering in hill-climber
-                return 1;
+                return 1; //Success
             }
         }
 
-        return 0;
+        return 0; //Failure
     }
 }

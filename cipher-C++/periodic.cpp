@@ -181,13 +181,13 @@ namespace periodic {
 		cipher = basics::formatString(cipher);
 		std::string decrypt = hillClimber(cipher);
 		if (decrypt == "") {
-			return 0;
+			return 0; //Failure
 		}
 		if (fitness::tetragramFitness(&decrypt) > -15) {
 			if (cliInterface::offerDecryption(decrypt)) {
-				return 1;
+				return 1; //Success
 			}
 		}
-		return 0;
+		return 0; //Failure
 	}
 }
