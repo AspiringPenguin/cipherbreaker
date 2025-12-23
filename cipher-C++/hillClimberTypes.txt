@@ -1,8 +1,9 @@
 A list of all the variations on hill-climbing attacks used to reduce duplication, these will be referenced from code comments
 
 • "basic hillclimber":
-  The most basic possible hill-climbing attack - making a random change to a child key, which is a copy of the best key
-  If it is better than the best key, update the best key to the value of the child key
+	The most basic possible hill-climbing attack - making a random change to a child key, which is a copy of the best key
+	If it is better than the best key, update the best key to the value of the child key
+	Increment the counter each iteration and break once it exceeds a set limit
 
 • "basic best-current-child key":
 	The best and current keys start as the same value.
@@ -18,3 +19,4 @@ A list of all the variations on hill-climbing attacks used to reduce duplication
 		Wandering is otherwise false, and impatience as such remains at 0
 		When impatience gets too high the current key is reset to the best key, impatience is set to 0 and wandering is set to false again,
 		allowing the attack to 'wander' significantly, while never letting it get too far from the best key found so far.
+	Increment the counter each iteration and break once it exceeds a set limit

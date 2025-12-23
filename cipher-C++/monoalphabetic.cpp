@@ -203,7 +203,7 @@ namespace monoalphabetic {
 	std::string hillClimber(std::string cipher, int limit) {
 
 		//Set up parent and child key, decrypt and fitness
-		auto parentKey = stringToKey("abcdefghijklmnopqrstuvwxyz");
+		auto parentKey = stringToKey("abcdefghijklmnopqrstuvwxyz"); //An arbitrary starting key
 		auto parentPlain = decrypt(cipher, parentKey, true);
 		float parentFitness = fitness::tetragramFitness(&parentPlain);
 		std::array<char, 26> childKey;
