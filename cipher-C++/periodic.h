@@ -3,6 +3,8 @@
 #include "strings.h"
 
 namespace periodic {
+	//A set of tools for periodic substitution ciphers
+
 	std::string vigenere(std::string cipher, int keyLen);
 	std::string vigenere(std::string cipher);
 

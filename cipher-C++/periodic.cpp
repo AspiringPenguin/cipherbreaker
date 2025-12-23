@@ -8,13 +8,15 @@
 #include <random>
 
 namespace periodic {
+	//A method for determining keylength of periodic substitution ciphers
 	int getKeySize(std::string cipher) {
-		for (int i = 2; i < 27; i++) {
+		for (int i = 2; i <= 26; i++) { //Tries every period 2 <= i <= 26 to allow for the trithemius cipher
 			if (fitness::indexOfCoincidencePeriodic(cipher, i) > 0.06) {
-				return i;
+				return i; //if it matches English return i
 			}
 		}
 		return -1;
+		//Returns -1 if there is no match
 	}
 
 	std::string vigenere(std::string cipher, int keyLen) {
