@@ -1,6 +1,9 @@
 #pragma once
 #include <iostream>
 
+// A modular number class for a given base in the constructor, defaulting to 26. This only gets used for affine and caesar ciphers at present,
+// but I plan to switch to this in polybius coordinates and stream cipher implementations.
+
 class modularNumber {
 	int value;
 	int modulus;
