@@ -15,7 +15,7 @@ namespace monoalphabetic {
 		int l = text.length();
 
 		for (int i = 0; i < l; i++) {
-			encrypted += key[key[i] - 97];
+			encrypted += key[text[i] - 97];
 		}
 
 		return encrypted;
