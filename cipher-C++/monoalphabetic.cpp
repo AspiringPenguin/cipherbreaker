@@ -97,7 +97,7 @@ namespace monoalphabetic {
 		std::string text = "";
 		modularNumber n;
 		for (char c : cipher) {
-			n = (c - 97);
+			n = (c - 97); //a = 97 in ascii & unicode
 			n += shift;
 			text += basics::alphabet[n];
 		}
@@ -150,7 +150,7 @@ namespace monoalphabetic {
 		std::string result = "";
 		modularNumber n;
 		for (char c : text) {
-			n = (c - 97);
+			n = (c - 97); //a = 97 in ascii & unicode
 			n = n * a;
 			n += b;
 			result += basics::alphabet[n.getValue()];
@@ -164,7 +164,7 @@ namespace monoalphabetic {
 		std::string result = "";
 		modularNumber n;
 		for (char c : text) {
-			n = (c - 97);
+			n = (c - 97); //a = 97 in ascii & unicode
 			n = n * a;
 			n = n - b;
 			result += basics::alphabet[n.getValue()];
