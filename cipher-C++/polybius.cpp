@@ -232,11 +232,12 @@ namespace polybius {
     //This is based on a mixture of Madness's attack the book, a load of articles I read online and my own experimentation
     polybius playfairHillClimber(std::string cipher)
     {
-        std::ios_base::sync_with_stdio(false);
+        std::ios_base::sync_with_stdio(false); //Makes std::cout faster so it isn't a bottleneck to print status updates
 
         cipher = basics::formatString(cipher);
 
-        polybius bestKey;
+        //Best and current vars
+        polybius bestKey; //An arbitrary starting key
         bestKey[0] = { 'p', 'o', 'l', 'y', 'b' };
         bestKey[1] = { 'i', 'u', 's', 'a', 'c' };
         bestKey[2] = { 'd', 'e', 'f', 'g', 'h' };
@@ -250,13 +251,17 @@ namespace polybius {
 
         float currentFitness = bestFitness;
 
+        //Child vars
         polybius childKey;
         std::string childDecrypt;
         float childFitness;
 
+        //Loop control vars
         int counter = 0;
         int impatience = 0;
+        bool wandering = false;
 
+        //To control goto statement
         bool improved;
 
         //For pseudo-random numbers
@@ -270,8 +275,8 @@ namespace polybius {
         while (counter < 2000000) {
             childKey = currentKey;
             
-            //Change the key with the key here
-            switch (changeChoice(gen)) {
+            //Change the key
+            switch (changeChoice(gen)) { //Random num 1 - 50
             case 1:
                 flipDiag(childKey);
                 break;
@@ -292,85 +297,105 @@ namespace polybius {
                 break;
             }
 
+            //Decrypt using child key and get fitness
             childDecrypt = processPlayfairDecrypt(playfairDecrypt(cipher, childKey));
             childFitness = fitness::tetragramFitness(&childDecrypt);
 
-            improved = false;
+            improved = false; //Key hasn't been recursively improved
 
-            playfairEvaluate:
+            playfairEvaluate: //Label for goto. I know using goto is generally bad but it is strictly controlled here and it seemed the best way to reevaluate improved keys
             if (childFitness > bestFitness) {
-                childKey = playfairBacktracking(cipher, childKey, false);
+                if (!improved) {
+                    childKey = playfairBacktracking(cipher, childKey, false); //Recursively improve the key by only taking forward steps
+                    //Don't need to set improved here as no goto is used
 
-                childDecrypt = processPlayfairDecrypt(playfairDecrypt(cipher, childKey));
-                childFitness = fitness::tetragramFitness(&childDecrypt);
+                    //Redecrypt
+                    childDecrypt = processPlayfairDecrypt(playfairDecrypt(cipher, childKey));
+                    childFitness = fitness::tetragramFitness(&childDecrypt);
+                }
 
                 std::cout << childFitness << std::endl;
 
-                //Because of the recursive improver
+                //Because of the recursive improver I can exit confidently here
+                //Experiments in python showed that any key ~6 steps or less from the best key can be recursively improved to the best key without stepping back
+                //Hence if the improved key gives very high fitness, it must be best
                 if (childFitness > -13) {
                     return childKey;
                 }
 
+                //Update best and current vars
                 bestKey = childKey;
                 bestFitness = childFitness;
                 bestDecrypt = childDecrypt;
                 currentKey = childKey;
                 currentFitness = childFitness;
+
+                //Update loop control
                 counter = 0;
                 impatience = 0;
+                wandering = false;
             }
 
-            else if (childFitness == bestFitness) {
-                impatience = 0;
-                goto playfairChildFitnessGreater;
-            }
-
-            else if (childFitness > currentFitness) {
-                playfairChildFitnessGreater:
-                if (!improved) {
-                    improved = true;
+            else if (childFitness >= currentFitness) {
+                if (childFitness == bestFitness) {
+                    impatience = 0;
+                    wandering = false;
+                }
+                if (!improved) { //If the key hasn't been improved
+                    //Improve it
+                    improved = true; //To prevent loop 
 
                     childKey = playfairBacktracking(cipher, childKey, false);
 
                     childDecrypt = processPlayfairDecrypt(playfairDecrypt(cipher, childKey));
                     childFitness = fitness::tetragramFitness(&childDecrypt);
 
-                    goto playfairEvaluate;
+                    goto playfairEvaluate; //Re-evaluate
                 }
 
                 currentKey = childKey;
                 currentFitness = childFitness;
             }
 
-            else if (counter > 5000) {
-                chance = -(((-childFitness / 8.0f) - 1.0f) / (childFitness - bestFitness)) * 3.0f + 0.5f;
+            else {
+                //'Magic' formula I came up with a while ago based on bestFitness and childFitness
+                //Provides a nice gradient - small steps are very likely, while larger steps are increasingly less so as bestFitness increases
+                chance = -(((-childFitness / 8.0f) - 1.0f) / (childFitness - bestFitness)) * 3.0f + 0.5f; 
                 if (changeChoice(gen) < chance) {
                     currentKey = childKey;
                     currentFitness = childFitness;
+                    wandering = true;
                 }
             }
 
             counter++;
-            impatience++;
 
-            if (impatience > 2000) {
+            if (wandering) {
+                impatience++;
+            }
+
+            if (impatience > 2000) { //Dewander the key if its been wandering for a long time
                 currentKey = bestKey;
                 currentFitness = bestFitness;
                 impatience = 0;
+                wandering = false;
             }
         }
 
-        std::ios_base::sync_with_stdio(true);
+        std::ios_base::sync_with_stdio(true); //Resyncs std::cout to prevent issues elsewhere
 
         return bestKey;
     }
 
+    //A copy of the above but using 2025Variation decryption and recursive improver
     polybius playfair2025VariationHillClimber(std::string cipher)
     {
-        std::ios_base::sync_with_stdio(false);
+        std::ios_base::sync_with_stdio(false); //Makes std::cout faster so it isn't a bottleneck to print status updates
 
         cipher = basics::formatString(cipher);
-        polybius bestKey;
+
+        //Best and current vars
+        polybius bestKey; //An arbitrary starting key
         bestKey[0] = { 'p', 'o', 'l', 'y', 'b' };
         bestKey[1] = { 'i', 'u', 's', 'a', 'c' };
         bestKey[2] = { 'd', 'e', 'f', 'g', 'h' };
@@ -382,13 +407,19 @@ namespace polybius {
         float bestFitness = fitness::tetragramFitness(&bestDecrypt);
         float currentFitness = bestFitness;
 
+        //Child vars
         polybius childKey;
         std::string childDecrypt;
         float childFitness;
 
+        //Loop control vars
         int counter = 0;
         int impatience = 0;
+        bool wandering = false;
 
+        float chance;
+
+        //To control goto statement
         bool improved;
 
         //For pseudo-random numbers
@@ -396,14 +427,12 @@ namespace polybius {
         std::mt19937 gen(rd());
         std::uniform_int_distribution<> dist(0, 4);
         std::uniform_int_distribution<> changeChoice(1, 50);
-
-        float chance;
-
+        
         while (counter < 2000000) {
             childKey = currentKey;
 
             //Change the key with the key here
-            switch (changeChoice(gen)) {
+            switch (changeChoice(gen)) { //Random num 1-50
             case 1:
                 flipDiag(childKey);
                 break;
@@ -424,76 +453,91 @@ namespace polybius {
                 break;
             }
 
+            //Decrypt
             childDecrypt = processPlayfairDecrypt(playfair2025VariationDecrypt(cipher, childKey));
             childFitness = fitness::tetragramFitness(&childDecrypt);
 
-            
-
+            //To control goto statement
             improved = false;
 
-        playfair2025VariationEvaluate:
+        playfair2025VariationEvaluate: //Label for goto
             if (childFitness > bestFitness) {
-                childKey = playfair2025VariationBacktracking(cipher, childKey, false);
+                if (!improved) {
+                    childKey = playfairBacktracking(cipher, childKey, false); //Recursively improve the key by only taking forward steps
+                    //Don't need to set improved here as no goto is used
 
-                childDecrypt = processPlayfairDecrypt(playfair2025VariationDecrypt(cipher, childKey));
-                childFitness = fitness::tetragramFitness(&childDecrypt);
-                std::cout << childFitness << std::endl;
+                    //Redecrypt
+                    childDecrypt = processPlayfairDecrypt(playfair2025VariationDecrypt(cipher, childKey));
+                    childFitness = fitness::tetragramFitness(&childDecrypt);
+                    std::cout << childFitness << std::endl;
+                }
 
-                //Because of the recursive improver
+                //Because of the recursive improver I can exit confidently here
+                //Experiments in python showed that any key ~6 steps or less from the best key can be recursively improved to the best key without stepping back
+                //Hence if the improved key gives very high fitness, it must be best
                 if (childFitness > -13) {
                     return childKey;
                 }
 
+                //Update best and current vars
                 bestKey = childKey;
                 bestFitness = childFitness;
                 bestDecrypt = childDecrypt;
                 currentKey = childKey;
                 currentFitness = childFitness;
+
+                //Update loop control
                 counter = 0;
                 impatience = 0;
-            }
-
-            else if (childFitness == bestFitness) {
-                impatience = 0;
-                goto playfair2025VariationChildFitnessGreater;
+                wandering = false;
             }
 
             else if (childFitness > currentFitness) {
-            playfair2025VariationChildFitnessGreater:
-                if (!improved) {
-                    improved = true;
+                if (childFitness == bestFitness) {
+                    impatience = 0;
+                    wandering = false;
+                }
+                if (!improved) { //If the key hasn't been improved
+                    //Improve it
+                    improved = true; //To prevent loop 
 
                     childKey = playfair2025VariationBacktracking(cipher, childKey, false);
 
                     childDecrypt = processPlayfairDecrypt(playfair2025VariationDecrypt(cipher, childKey));
                     childFitness = fitness::tetragramFitness(&childDecrypt);
 
-                    goto playfair2025VariationEvaluate;
+                    goto playfair2025VariationEvaluate; //Re-evaluate
                 }
 
                 currentKey = childKey;
                 currentFitness = childFitness;
             }
 
-            else if (counter > 5000) {
+            else {
+                //'Magic' formula I came up with a while ago based on bestFitness and childFitness
+                //Provides a nice gradient - small steps are very likely, while larger steps are increasingly less so as bestFitness increases
                 chance = -(((-childFitness / 8.0f) - 1.0f) / (childFitness - bestFitness)) * 3.0f + 0.5f;
                 if (changeChoice(gen) < chance) {
                     currentKey = childKey;
                     currentFitness = childFitness;
+                    wandering = true;
                 }
             }
 
             counter++;
-            impatience++;
+            if (wandering) {
+                impatience++;
+            }
 
-            if (impatience > 2000) {
+            if (impatience > 2000) { //Dewander the key if its been wandering for a long time
                 currentKey = bestKey;
                 currentFitness = bestFitness;
                 impatience = 0;
+                wandering = false;
             }
         }
 
-        std::ios_base::sync_with_stdio(true);
+        std::ios_base::sync_with_stdio(true); //Resyncs std::cout to prevent issues elsewhere
 
         return bestKey;
     }
