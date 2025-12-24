@@ -542,6 +542,7 @@ namespace polybius {
         return bestKey;
     }
 
+    //A helper function to get every possible child key that the options to change a playfair key could produce
     std::vector<polybius> getAllChildKeysPlayfair(polybius key) {
         auto keys = std::vector<polybius>();
         polybius childKey;
@@ -601,6 +602,9 @@ namespace polybius {
         return keys;
     }
 
+    //A helper function for the hillclimbing attack that repeatedly takes the best improvement available until there are no more and it returns the key.
+    //This is a flattened recursive algorithm, so its a bit weird-looking
+    //ignoreBad is a flag for if a result with fitness below -15 should be ignored and a null result given instead of returning it anyway
     polybius playfairBacktracking(std::string cipher, polybius startKey, bool ignoreBad) {
         //Get a starting point
         auto decrypt = processPlayfairDecrypt(playfairDecrypt(cipher, startKey));
@@ -609,14 +613,15 @@ namespace polybius {
         float bestFitness = fitness;
         float childFitness;
 
+        //Empty variables to store stuff
         std::vector<polybius> children;
         polybius bestChild;
 
         while (true) {
-            children = getAllChildKeysPlayfair(bestKey);
-            fitness = -100;
+            children = getAllChildKeysPlayfair(bestKey); //Get all children of current best
+            fitness = -100; //Anything that looks at all like English will be better as I defined log 0 as -100 for tetragram fitness
             bestChild = nullPolybius;
-            for (const polybius& child : children) {
+            for (const polybius& child : children) { //Check if any of the children are better than the others in this depth
                 decrypt = processPlayfairDecrypt(playfairDecrypt(cipher, child));
                 childFitness = fitness::tetragramFitness(&decrypt);
                 if (childFitness > fitness) {
@@ -624,20 +629,20 @@ namespace polybius {
                     bestChild = child;
                 }
             }
-            if (fitness > bestFitness) {
+            if (fitness > bestFitness) { //If the best this depth is better than the best in all prior searches, update it
                 bestKey = bestChild;
                 bestFitness = fitness;
             }
-            else if (bestFitness > -15 || !ignoreBad) {
+            else if (bestFitness > -15 || !ignoreBad) { //Else return bestKey, unless we are ignoring 'bad' keys and fitness < -15
                 return bestKey;
             }
-            else {
+            else { //Return a nullPolybius, only happens if the above was false, so fitness < -15 and we are ignoring 'bad' keys
                 return nullPolybius;
             }
         }
-        return bestKey;
     }
 
+    //A version of the above for the 2025 9B variation
     polybius playfair2025VariationBacktracking(std::string cipher, polybius startKey, bool ignoreBad) {
         //Get a starting point
         auto decrypt = processPlayfairDecrypt(playfair2025VariationDecrypt(cipher, startKey));
@@ -646,14 +651,15 @@ namespace polybius {
         float bestFitness = fitness;
         float childFitness;
 
+        //Empty variables to store stuff
         std::vector<polybius> children;
         polybius bestChild;
 
         while (true) {
-            children = getAllChildKeysPlayfair(bestKey);
-            fitness = -100;
+            children = getAllChildKeysPlayfair(bestKey); //Get all children of current best
+            fitness = -100; //Anything that looks at all like English will be better as I defined log 0 as -100 for tetragram fitness
             bestChild = nullPolybius;
-            for (const polybius& child : children) {
+            for (const polybius& child : children) { //Check if any of the children are better than the others in this depth
                 decrypt = processPlayfairDecrypt(playfair2025VariationDecrypt(cipher, child));
                 childFitness = fitness::tetragramFitness(&decrypt);
                 if (childFitness > fitness) {
@@ -661,18 +667,17 @@ namespace polybius {
                     bestChild = child;
                 }
             }
-            if (fitness > bestFitness) {
+            if (fitness > bestFitness) { //If the best this depth is better than the best in all prior searches, update it
                 bestKey = bestChild;
                 bestFitness = fitness;
             }
-            else if (bestFitness > -15 || !ignoreBad) {
+            else if (bestFitness > -15 || !ignoreBad) { //Else return bestKey, unless we are ignoring 'bad' keys and fitness < -15
                 return bestKey;
             }
-            else {
+            else { //Return a nullPolybius, only happens if the above was false, so fitness < -15 and we are ignoring 'bad' keys
                 return nullPolybius;
             }
         }
-        return bestKey;
     }
 
     int cliPlayfairHillClimber(std::string cipher) {
