@@ -1,9 +1,20 @@
 A list of all the variations on hill-climbing attacks used to reduce duplication, these will be referenced from code comments
 
-• "basic hillclimber":
+• "basic hill climber":
 	The most basic possible hill-climbing attack - making a random change to a child key, which is a copy of the best key
 	If it is better than the best key, update the best key to the value of the child key
 	Increment the counter each iteration and break once it exceeds a set limit
+
+• "periodic substitution hill climber"
+	This uses a best-parent-child key setup.
+	For a given keysize it generates an arbitrary starting key of that length (I could maximise monogram fitness of each slice first but it makes little real difference)
+	While a big counter is less than a limit, which I set as 100000000 * keyLen^2 / textLen:
+		For each subkey in the key:
+			Copy bestKey to parentKey, and randomise the given subkey in it.
+			Climb back up the hill with the randomised subkey, randomly swapping two elements in it as per the basic hill climber with a limit of 1000.
+			The only extra steps here are added at the end:
+				If the childKey is better than the bestKey, update the bestKey and bestFitness as well.
+				Increment the big counter.
 
 • "basic best-current-child key":
 	The best and current keys start as the same value.
