@@ -200,15 +200,10 @@ namespace polybius {
             if (n + 1 == decrypt.length()) {
                 return decrypt.substr(0, n);
             }
-            if (n + 2 != decrypt.length()) {
-                if (decrypt[n - 1] == decrypt[n + 1]) {
-                    decrypt = decrypt.substr(0, n) + decrypt.substr(n + 1);
-                }
-                else {
-                    n++;
-                }
+            if (decrypt[n - 1] == decrypt[n + 1]) { //is it a double letter
+                decrypt = decrypt.substr(0, n) + decrypt.substr(n + 1); //remove the x
             }
-            else {
+            else { //Increment n as we can ignore this 'x'
                 n++;
             }
         }
