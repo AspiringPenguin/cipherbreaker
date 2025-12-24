@@ -463,7 +463,7 @@ namespace polybius {
         playfair2025VariationEvaluate: //Label for goto
             if (childFitness > bestFitness) {
                 if (!improved) {
-                    childKey = playfairBacktracking(cipher, childKey, false); //Recursively improve the key by only taking forward steps
+                    childKey = playfair2025VariationBacktracking(cipher, childKey, false); //Recursively improve the key by only taking forward steps
                     //Don't need to set improved here as no goto is used
 
                     //Redecrypt
@@ -680,6 +680,7 @@ namespace polybius {
         }
     }
 
+    //CLI interface code for playfair hill climber
     int cliPlayfairHillClimber(std::string cipher) {
         cipher = basics::formatString(cipher);
 
@@ -691,7 +692,8 @@ namespace polybius {
             return 0; //Failure
         }
 
-        polybius bestKey = playfairHillClimber(cipher);
+        polybius bestKey = playfairHillClimber(cipher); //Run attack
+        //Print key
         for (const auto& row : bestKey) {
             for (const auto& item : row) {
                 std::cout << item << " ";
@@ -699,17 +701,20 @@ namespace polybius {
             std::cout << std::endl;
         }
         std::string rawDecrypt = playfairDecrypt(cipher, bestKey);
+
         std::string decrypt = processPlayfairDecrypt(rawDecrypt);
+
         if (fitness::tetragramFitness(&decrypt) > -15) {
             if (cliInterface::offerDecryption(decrypt)) {
                 std::cout << "Raw Decrypt: " << std::endl;
-                std::cout << rawDecrypt << std::endl;
+                std::cout << rawDecrypt << std::endl; //Print raw decrypt so excess 'x's can be included in a decrypt
                 return 1; //Success
             }
         }
         return 0; //Failure
     }
 
+    //CLI interface code for playfair 2025 9B variation hill climber
     int cliPlayfair2025VariationHillClimber(std::string cipher) {
         cipher = basics::formatString(cipher);
 
@@ -721,19 +726,23 @@ namespace polybius {
             return 0; //Failure
         }
 
-        polybius bestKey = playfair2025VariationHillClimber(cipher);
+        polybius bestKey = playfair2025VariationHillClimber(cipher); //Run attack 
+
+        //Print key
         for (const auto& row : bestKey) {
             for (const auto& item : row) {
                 std::cout << item << " ";
             }
             std::cout << std::endl;
         }
+
         std::string rawDecrypt = playfair2025VariationDecrypt(cipher, bestKey);
         std::string decrypt = processPlayfairDecrypt(rawDecrypt);
+
         if (fitness::tetragramFitness(&decrypt) > -15) {
             if (cliInterface::offerDecryption(decrypt)) {
                 std::cout << "Raw Decrypt: " << std::endl;
-                std::cout << rawDecrypt << std::endl;
+                std::cout << rawDecrypt << std::endl; //Print raw decrypt so excess 'x's can be included in a decrypt
                 return 1; //Success
             }
         }
