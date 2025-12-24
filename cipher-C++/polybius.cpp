@@ -11,26 +11,27 @@
 #include <thread>
 
 namespace polybius {
+    //Lay out a string key containing all of a-z into a polybius square
     polybius makePolybius(std::string key) {
         polybius result{ -1 };
         int y = 0;
         int x = -1;
         for (char c : key) {
-            if (c == 'j') {
+            if (c == 'j') { //Ignore j
                 continue;
             }
-            x++;
-            if (x == 5) {
+            x++; //Go along the row
+            if (x == 5) { //If have spilled over, go back to the start of the next row
                 x = 0;
                 y++;
             }
-            result[y][x] = c;
+            result[y][x] = c; //Put the character in the polybius at the coordinates
         }
         return result;
     }
 
-    std::tuple<int, int> findInPolybius(char c, polybius key)
-    {
+    //Linear search to find c in the key. Returns y, x not x, y as polybiuses are indexed [y][x]
+    std::tuple<int, int> findInPolybius(char c, polybius key) {
         for (int y = 0; y < 5; y++) {
             for (int x = 0; x < 5; x++) {
                 if (key[y][x] == c) {
@@ -41,6 +42,8 @@ namespace polybius {
         return { -1, -1 };
     }
 
+    //A helper function to swap two elements in a key. Return type is void as the key is passed by reference
+    //Pointers to a distribution and random number generator are passed in to avoid cost of instantiating them every time this is called
     void swapElems(polybius& key, std::uniform_int_distribution<>* rd, std::mt19937* gen) {
         int x1 = (*rd)(*gen);
         int y1 = (*rd)(*gen);
@@ -52,6 +55,8 @@ namespace polybius {
         key[y2][x2] = _;
     }
 
+    //A helper function to swap two rows in a key. Return type is void as the key is passed by reference
+    //Pointers to a distribution and random number generator are passed in to avoid cost of instantiating them every time this is called
     void swapRows(polybius& key, std::uniform_int_distribution<>* rd, std::mt19937* gen) {
         int y1 = (*rd)(*gen);
         int y2 = (*rd)(*gen);
@@ -60,6 +65,8 @@ namespace polybius {
         key[y2] = _;
     }
 
+    //A helper function to swap two columns in a key. Return type is void as the key is passed by reference
+    //Pointers to a distribution and random number generator are passed in to avoid cost of instantiating them every time this is called
     void swapCols(polybius& key, std::uniform_int_distribution<>* rd, std::mt19937* gen) {
         int x1 = (*rd)(*gen);
         int x2 = (*rd)(*gen);
@@ -70,6 +77,8 @@ namespace polybius {
         }
     }
 
+    //Flips a polybius along the y=x diagonal (given top-left (0, 0) bottom-right (4, 4))
+    // Return type is void as the key is passed by reference
     void flipDiag(polybius& key) {
         char _;
         for (int y = 0; y < 5; y++) {
@@ -81,6 +90,8 @@ namespace polybius {
         }
     }
 
+    //Flips a polybius vertically (i.e. in y=2)
+    //Return type is void as the key is passed by reference
     void flipVert(polybius& key) {
         std::array<char, 5> _;
         _ = key[0];
@@ -91,6 +102,8 @@ namespace polybius {
         key[3] = _;
     }
 
+    //Flips a polybius horizontally (i.e. in x=2)
+    //Return type is void as the key is passed by reference
     void flipHoriz(polybius& key) {
         char _;
         for (int i = 0; i < 5; i++) {
@@ -103,7 +116,8 @@ namespace polybius {
             
         }
     }
-
+    
+    //A helper function for modular arithmetic base 5 without instantiating lots of modularNumbers
     int removeFive(int n){
         n = n % 5;
         if (n < 0) {
@@ -112,38 +126,40 @@ namespace polybius {
         return n;
     }
 
+    //Decrypt function for standard playfair
     std::string playfairDecrypt(std::string text, polybius key)
     {
         std::string plain = "";
         plain.reserve(text.size());
-        //auto blocks = strings::getBlocks(text, 2);
 
         std::array<std::tuple<int, int>, 26> lookup;
-        //Lookup table for char position
+        //Lookup table for char position, to reduce number of memory lookups by avoiding linear search
         for (char c = 97; c < 123; c++) {
-            lookup[c - 97] = findInPolybius(c, key);
+            lookup[c - 97] = findInPolybius(c, key); //Stored in {y, x} form
         }
 
+        //Tuples for position of chars in the ciphertext bigram and the plaintext bigram
         std::tuple<int, int> pos0;
         std::tuple<int, int> pos1;
         std::tuple<int, int> newpos0;
         std::tuple<int, int> newpos1;
         int l = text.size();
         for (int i = 0; i < l; i+=2) {
-            pos0 = lookup[text[i] - 97];
-            pos1 = lookup[text[i+1] - 97];
-            if (std::get<0>(pos0) == std::get<0>(pos1)) { //Same row
+            pos0 = lookup[text[i] - 97]; //get the positions, subtract 97 as a=97 in ascii & unicode
+            pos1 = lookup[text[i+1] - 97]; 
+            if (std::get<0>(pos0) == std::get<0>(pos1)) { //Same row - y is equal - shift up
                 newpos0 = { std::get<0>(pos0), removeFive(std::get<1>(pos0) - 1) };
                 newpos1 = { std::get<0>(pos1), removeFive(std::get<1>(pos1) - 1) };
             }
-            else if (std::get<1>(pos0) == std::get<1>(pos1)) { //Same column
+            else if (std::get<1>(pos0) == std::get<1>(pos1)) { //Same column - x is equal - shift to the left
                 newpos0 = { removeFive(std::get<0>(pos0) - 1), std::get<1>(pos0) };
                 newpos1 = { removeFive(std::get<0>(pos1) - 1), std::get<1>(pos1) };
             }
-            else { //Main case
+            else { //Main case - corners of a rectangle
                 newpos0 = { std::get<0>(pos0) , std::get<1>(pos1) };
                 newpos1 = { std::get<0>(pos1) , std::get<1>(pos0) };
             }
+            //Add characters to plain based on plain char positions
             plain += key[std::get<0>(newpos0)][std::get<1>(newpos0)];
             plain += key[std::get<0>(newpos1)][std::get<1>(newpos1)];
         }
@@ -151,53 +167,55 @@ namespace polybius {
     }
 
 
-
+    //Decrypt function for the playfair variation used in 9B this year, effectively an exact copy of the above with a few minor tweaks
     std::string playfair2025VariationDecrypt(std::string text, polybius key)
     {
         std::string plain = "";
         plain.reserve(text.size());
-        //auto blocks = strings::getBlocks(text, 2);
 
         std::array<std::tuple<int, int>, 26> lookup;
-        //Lookup table for char position
+        //Lookup table for char position, to reduce number of memory lookups by avoiding linear search
         for (char c = 97; c < 123; c++) {
             lookup[c - 97] = findInPolybius(c, key); //Stored in {y, x} form
         }
-
+        
+        //Tuples for position of chars in the ciphertext bigram and the plaintext bigram
         std::tuple<int, int> pos0;
         std::tuple<int, int> pos1;
         std::tuple<int, int> newpos0;
         std::tuple<int, int> newpos1;
         int l = text.size();
         for (int i = 0; i < l; i += 2) {
-            pos0 = lookup[text[i] - 97];
+            pos0 = lookup[text[i] - 97]; //get the positions, subtract 97 as a=97 in ascii & unicode
             pos1 = lookup[text[i + 1] - 97];
-            if (std::get<0>(pos0) == std::get<0>(pos1)) { //Same row, shift to the right instead, with wrapping
+            if (std::get<0>(pos0) == std::get<0>(pos1)) { //Same row - y is equal - shift to the right instead, with wrapping
                 newpos0 = { std::get<0>(pos0), removeFive(std::get<1>(pos0) + 1) };
                 newpos1 = { std::get<0>(pos1), removeFive(std::get<1>(pos1) + 1) };
             }
-            else if (std::get<1>(pos0) == std::get<1>(pos1)) { //Same column, shift to the right instead, with wrapping 
+            else if (std::get<1>(pos0) == std::get<1>(pos1)) { //Same column - x is equal - shift to the right instead, with wrapping 
                 newpos0 = { std::get<0>(pos0), removeFive(std::get<1>(pos0) + 1) };
                 newpos1 = { std::get<0>(pos1), removeFive(std::get<1>(pos1) + 1) };
             }
-            else { //Normal case, unchanged
+            else { //Normal case, unchanged - corners of a rectangle
                 newpos0 = { std::get<0>(pos0) , std::get<1>(pos1) };
                 newpos1 = { std::get<0>(pos1) , std::get<1>(pos0) };
             }
+            //Add characters to plain based on plain char positions
             plain += key[std::get<0>(newpos0)][std::get<1>(newpos0)];
             plain += key[std::get<0>(newpos1)][std::get<1>(newpos1)];
         }
         return plain;
     }
 
+    //A helper function to remove the excess 'x's from a playfair decryption to make tetragram fitness more accurate
     std::string processPlayfairDecrypt(std::string decrypt) {
-        int n = 0;
+        int n = 0; //Start search from the beginning
         while (true) {
             n = decrypt.find('x', n);
-            if (n == std::string::npos) {
+            if (n == std::string::npos) { //No more 'x's from position n onwards, so return
                 return decrypt;
             }
-            if (n + 1 == decrypt.length()) {
+            if (n + 1 == decrypt.length()) { //Only 'x' is the last letter, probably a null so remove it and return
                 return decrypt.substr(0, n);
             }
             if (decrypt[n - 1] == decrypt[n + 1]) { //is it a double letter
@@ -209,6 +227,9 @@ namespace polybius {
         }
     }
 
+    //Hill climbing attack on the playfair cipher
+    //This uses the "recursive improving best-current-child key" setup
+    //This is based on a mixture of Madness's attack the book, a load of articles I read online and my own experimentation
     polybius playfairHillClimber(std::string cipher)
     {
         std::ios_base::sync_with_stdio(false);

@@ -31,3 +31,19 @@ A list of all the variations on hill-climbing attacks used to reduce duplication
 		When impatience gets too high the current key is reset to the best key, impatience is set to 0 and wandering is set to false again,
 		allowing the attack to 'wander' significantly, while never letting it get too far from the best key found so far.
 	Increment the counter each iteration and break once it exceeds a set limit
+
+• "recursive improving best-current-child key":
+	The best and current keys start as the same value.
+	The child key to be modified is always copied from the current key.
+
+	For each iteration:
+		If the child key is better than the best key, both the best key and current key are updated to it, wandering set to false and impatience set to 0.
+		If the child key is only as good as the best key (as such most likely identical), the current key is updated, wandering set to false and impatience set to 0.
+		If the child key is only better than the current key, only the current key is updated to it.
+		Finally, here is a fairly large chance of a random step backwards, in which the current key is updated but not the best key.
+
+		While the current key is different to the best key, wandering is true, and impatience is incremented every iteration.
+		Wandering is otherwise false, and impatience as such remains at 0
+		When impatience gets too high the current key is reset to the best key, impatience is set to 0 and wandering is set to false again,
+		allowing the attack to 'wander' significantly, while never letting it get too far from the best key found so far.
+	Increment the counter each iteration and break once it exceeds a set limit

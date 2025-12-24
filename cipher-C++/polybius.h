@@ -4,9 +4,11 @@
 #include <unordered_set>
 
 namespace polybius {
-	typedef std::array<std::array<char, 5>, 5> polybius;
+	//A large grouping of tools for polybius-based ciphers
+	
+	typedef std::array<std::array<char, 5>, 5> polybius; //Define the polybius type as a list of rows, so its indexed [y][x]
 
-	static polybius nullPolybius{ -1 };
+	static polybius nullPolybius{ -1 }; //For returning 'null' results from attacks
 
 	polybius makePolybius(std::string key);
 
