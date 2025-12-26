@@ -751,7 +751,7 @@ namespace polybius {
 
     //Decryption code for the vertical two square cipher
     //Can also be used to encrypt as they are the same process
-    //Flips is a binar flag that is 0 by default. 
+    //Flips is a binary flag that is 0 by default. 
     // The '1' bit controls if characters in the same column have their order reversed.
     // The '2' bit controls if characters in the normal case have their order reversed.
     std::string vertTwoSquareDecrypt(std::string cipher, polybius top, polybius bottom, int flips) {
@@ -811,11 +811,15 @@ namespace polybius {
         return plain;
     }
 
+    //Encryption code for the horizontal two square cipher. This isn't actually used anywhere, but it exists if ever needed
+    // Flips is a binary flag that is 1 by default. 
+    // The '1' bit controls if characters in the same column have their order reversed.
+    // The '2' bit controls if characters in the normal case have their order reversed.
     std::string horizTwoSquareEncrypt(std::string cipher, polybius left, polybius right, int flips) {
         std::string plain = "";
         plain.reserve(cipher.size());
 
-        //Lookup table for char position
+        //Lookup table for char positions
         std::array<std::tuple<int, int>, 26> leftLookup;
         for (char c = 97; c < 123; c++) {
             leftLookup[c - 97] = findInPolybius(c, left);
@@ -825,16 +829,19 @@ namespace polybius {
             rightLookup[c - 97] = findInPolybius(c, right);
         }
 
+        //Temp storage for the loop
         std::tuple<int, int> pos0;
         std::tuple<int, int> pos1;
         int newX;
         int newY;
+
+        //Limit
         int l = cipher.size();
         for (int i = 0; i < l; i += 2) {
-            pos0 = leftLookup[cipher[i] - 97];
+            pos0 = leftLookup[cipher[i] - 97]; //Get positions
             pos1 = rightLookup[cipher[i + 1] - 97];
             if (std::get<0>(pos0) == std::get<0>(pos1)) { //Same row
-                if (flips & 1) {
+                if (flips & 1) { //If flipped
                     plain += cipher[i + 1];
                     plain += cipher[i];
                 }
@@ -843,8 +850,9 @@ namespace polybius {
                     plain += cipher[i + 1];
                 }
             }
-            else {
-                if (flips & 2) {
+            else { 
+                if (flips & 2) { //If flipped
+                    //Get other corners of the rectangle
                     newX = std::get<1>(pos0);
                     newY = std::get<0>(pos1);
                     plain += right[newY][newX];
@@ -853,6 +861,7 @@ namespace polybius {
                     plain += left[newY][newX];
                 }
                 else {
+                    //Get other corners of the rectangle
                     newX = std::get<1>(pos1);
                     newY = std::get<0>(pos0);
                     plain += right[newY][newX];
@@ -865,11 +874,15 @@ namespace polybius {
         return plain;
     }
 
+    //Decryption code for the horizontal two square cipher
+    //Flips is a binary flag that is 1 by default. 
+    // The '1' bit controls if characters in the same column have their order reversed.
+    // The '2' bit controls if characters in the normal case have their order reversed.
     std::string horizTwoSquareDecrypt(std::string cipher, polybius left, polybius right, int flips) {
         std::string plain = "";
         plain.reserve(cipher.size());
 
-        //Lookup table for char position
+        //Lookup table for char positions
         std::array<std::tuple<int, int>, 26> leftLookup;
         for (char c = 97; c < 123; c++) {
             leftLookup[c - 97] = findInPolybius(c, left);
@@ -879,16 +892,19 @@ namespace polybius {
             rightLookup[c - 97] = findInPolybius(c, right);
         }
 
+        //Temp storage inside loop
         std::tuple<int, int> pos0;
         std::tuple<int, int> pos1;
         int newX;
         int newY;
+
+        //Limit
         int l = cipher.size();
         for (int i = 0; i < l; i += 2) {
-            pos0 = rightLookup[cipher[i] - 97];
+            pos0 = rightLookup[cipher[i] - 97]; //Get coords in grids
             pos1 = leftLookup[cipher[i + 1] - 97];
             if (std::get<0>(pos0) == std::get<0>(pos1)) { //Same row
-                if (flips & 1) {
+                if (flips & 1) { //If flipped
                     plain += cipher[i + 1];
                     plain += cipher[i];
                 }
@@ -898,7 +914,8 @@ namespace polybius {
                 }
             }
             else {
-                if (flips & 2) {
+                if (flips & 2) { //If flipped
+                    //Get other corners of the rectangle
                     newX = std::get<1>(pos0);
                     newY = std::get<0>(pos1);
                     plain += left[newY][newX] ;
@@ -907,6 +924,7 @@ namespace polybius {
                     plain += right[newY][newX];
                 }
                 else {
+                    //Get other corners of the rectangle
                     newX = std::get<1>(pos1);
                     newY = std::get<0>(pos0);
                     plain += left[newY][newX];
