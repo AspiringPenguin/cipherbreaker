@@ -261,9 +261,6 @@ namespace polybius {
         int impatience = 0;
         bool wandering = false;
 
-        //To control goto statement
-        bool improved;
-
         //For pseudo-random numbers
         std::random_device rd;
         std::mt19937 gen(rd());
@@ -301,19 +298,13 @@ namespace polybius {
             childDecrypt = processPlayfairDecrypt(playfairDecrypt(cipher, childKey));
             childFitness = fitness::tetragramFitness(&childDecrypt);
 
-            improved = false; //Key hasn't been recursively improved
+            if (childFitness > currentFitness) {  // If it's at all promising recursively improve it
+                childKey = playfairBacktracking(cipher, childKey, false);
+                childDecrypt = processPlayfairDecrypt(playfairDecrypt(cipher, childKey));
+                childFitness = fitness::tetragramFitness(&childDecrypt);
+            }
 
-            playfairEvaluate: //Label for goto. I know using goto is generally bad but it is strictly controlled here and it seemed the best way to reevaluate improved keys
             if (childFitness > bestFitness) {
-                if (!improved) {
-                    childKey = playfairBacktracking(cipher, childKey, false); //Recursively improve the key by only taking forward steps
-                    //Don't need to set improved here as no goto is used
-
-                    //Redecrypt
-                    childDecrypt = processPlayfairDecrypt(playfairDecrypt(cipher, childKey));
-                    childFitness = fitness::tetragramFitness(&childDecrypt);
-                }
-
                 std::cout << childFitness << std::endl;
 
                 //Because of the recursive improver I can exit confidently here
@@ -340,17 +331,6 @@ namespace polybius {
                 if (childFitness == bestFitness) {
                     impatience = 0;
                     wandering = false;
-                }
-                if (!improved) { //If the key hasn't been improved
-                    //Improve it
-                    improved = true; //To prevent loop 
-
-                    childKey = playfairBacktracking(cipher, childKey, false);
-
-                    childDecrypt = processPlayfairDecrypt(playfairDecrypt(cipher, childKey));
-                    childFitness = fitness::tetragramFitness(&childDecrypt);
-
-                    goto playfairEvaluate; //Re-evaluate
                 }
 
                 currentKey = childKey;
@@ -419,9 +399,6 @@ namespace polybius {
 
         float chance;
 
-        //To control goto statement
-        bool improved;
-
         //For pseudo-random numbers
         std::random_device rd;
         std::mt19937 gen(rd());
@@ -457,20 +434,14 @@ namespace polybius {
             childDecrypt = processPlayfairDecrypt(playfair2025VariationDecrypt(cipher, childKey));
             childFitness = fitness::tetragramFitness(&childDecrypt);
 
-            //To control goto statement
-            improved = false;
+            if (childFitness > currentFitness) { // If it's at all promising recursively improve it
+                childKey = playfair2025VariationBacktracking(cipher, childKey, false);
+                childDecrypt = processPlayfairDecrypt(playfair2025VariationDecrypt(cipher, childKey));
+                childFitness = fitness::tetragramFitness(&childDecrypt);
+            }
 
-        playfair2025VariationEvaluate: //Label for goto
             if (childFitness > bestFitness) {
-                if (!improved) {
-                    childKey = playfair2025VariationBacktracking(cipher, childKey, false); //Recursively improve the key by only taking forward steps
-                    //Don't need to set improved here as no goto is used
-
-                    //Redecrypt
-                    childDecrypt = processPlayfairDecrypt(playfair2025VariationDecrypt(cipher, childKey));
-                    childFitness = fitness::tetragramFitness(&childDecrypt);
-                    std::cout << childFitness << std::endl;
-                }
+                std::cout << childFitness << std::endl;
 
                 //Because of the recursive improver I can exit confidently here
                 //Experiments in python showed that any key ~6 steps or less from the best key can be recursively improved to the best key without stepping back
@@ -497,18 +468,6 @@ namespace polybius {
                     impatience = 0;
                     wandering = false;
                 }
-                if (!improved) { //If the key hasn't been improved
-                    //Improve it
-                    improved = true; //To prevent loop 
-
-                    childKey = playfair2025VariationBacktracking(cipher, childKey, false);
-
-                    childDecrypt = processPlayfairDecrypt(playfair2025VariationDecrypt(cipher, childKey));
-                    childFitness = fitness::tetragramFitness(&childDecrypt);
-
-                    goto playfair2025VariationEvaluate; //Re-evaluate
-                }
-
                 currentKey = childKey;
                 currentFitness = childFitness;
             }
