@@ -228,7 +228,7 @@ namespace polybius {
     }
 
     //Hill climbing attack on the playfair cipher
-    //This uses the "recursive improving best-current-child key" setup
+    //This uses the "best-current-child key with improver" setup
     //This is based on a mixture of Madness's attack the book, a load of articles I read online and my own experimentation
     polybius playfairHillClimber(std::string cipher)
     {
@@ -307,8 +307,8 @@ namespace polybius {
             if (childFitness > bestFitness) {
                 std::cout << childFitness << std::endl;
 
-                //Because of the recursive improver I can exit confidently here
-                //Experiments in python showed that any key ~6 steps or less from the best key can be recursively improved to the best key without stepping back
+                //Because of the improver I can exit confidently here
+                //Experiments in python showed that any key ~6 steps or less from the best key can be improved to the best key without stepping back
                 //Hence if the improved key gives very high fitness, it must be best
                 if (childFitness > -13) {
                     return childKey;
@@ -367,7 +367,7 @@ namespace polybius {
         return bestKey;
     }
 
-    //A copy of the above but using 2025Variation decryption and recursive improver
+    //A copy of the above but using 2025Variation decryption and improver
     polybius playfair2025VariationHillClimber(std::string cipher)
     {
         std::ios_base::sync_with_stdio(false); //Makes std::cout faster so it isn't a bottleneck to print status updates

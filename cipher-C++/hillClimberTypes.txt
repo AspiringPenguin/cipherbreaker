@@ -32,11 +32,13 @@ A list of all the variations on hill-climbing attacks used to reduce duplication
 		allowing the attack to 'wander' significantly, while never letting it get too far from the best key found so far.
 	Increment the counter each iteration and break once it exceeds a set limit
 
-• "recursive improving best-current-child key":
+• "best-current-child key with improver":
 	The best and current keys start as the same value.
 	The child key to be modified is always copied from the current key.
 
 	For each iteration:
+		If the child key is better than the current key, improve it by taking the best possible improvement until there are no improvements before continuing
+
 		If the child key is better than the best key, both the best key and current key are updated to it, wandering set to false and impatience set to 0.
 		If the child key is only as good as the best key (as such most likely identical), the current key is updated, wandering set to false and impatience set to 0.
 		If the child key is only better than the current key, only the current key is updated to it.
