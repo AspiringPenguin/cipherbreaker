@@ -299,7 +299,7 @@ namespace polybius {
             childFitness = fitness::tetragramFitness(&childDecrypt);
 
             if (childFitness > currentFitness) {  // If it's at all promising recursively improve it
-                childKey = playfairBacktracking(cipher, childKey, false);
+                childKey = playfairImprover(cipher, childKey, false);
                 childDecrypt = processPlayfairDecrypt(playfairDecrypt(cipher, childKey));
                 childFitness = fitness::tetragramFitness(&childDecrypt);
             }
@@ -435,7 +435,7 @@ namespace polybius {
             childFitness = fitness::tetragramFitness(&childDecrypt);
 
             if (childFitness > currentFitness) { // If it's at all promising recursively improve it
-                childKey = playfair2025VariationBacktracking(cipher, childKey, false);
+                childKey = playfair2025VariationImprover(cipher, childKey, false);
                 childDecrypt = processPlayfairDecrypt(playfair2025VariationDecrypt(cipher, childKey));
                 childFitness = fitness::tetragramFitness(&childDecrypt);
             }
@@ -564,7 +564,7 @@ namespace polybius {
     //A helper function for the hillclimbing attack that repeatedly takes the best improvement available until there are no more and it returns the key.
     //This is a flattened recursive algorithm, so its a bit weird-looking
     //ignoreBad is a flag for if a result with fitness below -15 should be ignored and a null result given instead of returning it anyway
-    polybius playfairBacktracking(std::string cipher, polybius startKey, bool ignoreBad) {
+    polybius playfairImprover(std::string cipher, polybius startKey, bool ignoreBad) {
         //Get a starting point
         auto decrypt = processPlayfairDecrypt(playfairDecrypt(cipher, startKey));
         float fitness = fitness::tetragramFitness(&decrypt);
@@ -602,7 +602,7 @@ namespace polybius {
     }
 
     //A version of the above for the 2025 9B variation
-    polybius playfair2025VariationBacktracking(std::string cipher, polybius startKey, bool ignoreBad) {
+    polybius playfair2025VariationImprover(std::string cipher, polybius startKey, bool ignoreBad) {
         //Get a starting point
         auto decrypt = processPlayfairDecrypt(playfair2025VariationDecrypt(cipher, startKey));
         float fitness = fitness::tetragramFitness(&decrypt);
@@ -1014,7 +1014,7 @@ namespace polybius {
                 if (childFitness > bestFitness) {
                     //Improve if not already improved, don't need to reevaluate as already the best key seen
                     if (!improved){
-                        improvedKey = vertTwoSquareBacktracking(cipher, childTopKey, childRightKey, false);
+                        improvedKey = vertTwoSquareImprover(cipher, childTopKey, childRightKey, false);
                         childTopKey = std::get<0>(improvedKey);
                         childRightKey = std::get<1>(improvedKey);
 
@@ -1042,7 +1042,7 @@ namespace polybius {
                 }
                 else if (childFitness == bestFitness) {
                     if (!improved) {
-                        improvedKey = vertTwoSquareBacktracking(cipher, childTopKey, childRightKey, false);
+                        improvedKey = vertTwoSquareImprover(cipher, childTopKey, childRightKey, false);
                         childTopKey = std::get<0>(improvedKey);
                         childRightKey = std::get<1>(improvedKey);
 
@@ -1062,7 +1062,7 @@ namespace polybius {
                 }
                 else if (childFitness > currentFitness) {
                     if (!improved) {
-                        improvedKey = vertTwoSquareBacktracking(cipher, childTopKey, childRightKey, false);
+                        improvedKey = vertTwoSquareImprover(cipher, childTopKey, childRightKey, false);
                         childTopKey = std::get<0>(improvedKey);
                         childRightKey = std::get<1>(improvedKey);
 
@@ -1113,7 +1113,7 @@ namespace polybius {
         return { nullPolybius, nullPolybius };
     }
 
-    std::tuple<polybius, polybius> vertTwoSquareBacktracking(std::string cipher, polybius startTop, polybius startRight, bool ignoreBad) {
+    std::tuple<polybius, polybius> vertTwoSquareImprover(std::string cipher, polybius startTop, polybius startRight, bool ignoreBad) {
         //Get a starting point
         auto decrypt = vertTwoSquareDecrypt(cipher, startTop, startRight);
         float fitness = fitness::tetragramFitness(&decrypt);
@@ -1252,7 +1252,7 @@ namespace polybius {
                 if (childFitness > bestFitness) {
                     //Improve if not already improved, don't need to reevaluate as already the best key seen
                     if (!improved) {
-                        improvedKey = horizTwoSquareBacktracking(cipher, childLeftKey, childRightKey, false);
+                        improvedKey = horizTwoSquareImprover(cipher, childLeftKey, childRightKey, false);
                         childLeftKey = std::get<0>(improvedKey);
                         childRightKey = std::get<1>(improvedKey);
 
@@ -1280,7 +1280,7 @@ namespace polybius {
                 }
                 else if (childFitness == bestFitness) {
                     if (!improved) {
-                        improvedKey = horizTwoSquareBacktracking(cipher, childLeftKey, childRightKey, false);
+                        improvedKey = horizTwoSquareImprover(cipher, childLeftKey, childRightKey, false);
                         childLeftKey = std::get<0>(improvedKey);
                         childRightKey = std::get<1>(improvedKey);
 
@@ -1300,7 +1300,7 @@ namespace polybius {
                 }
                 else if (childFitness > currentFitness) {
                     if (!improved) {
-                        improvedKey = horizTwoSquareBacktracking(cipher, childLeftKey, childRightKey, false);
+                        improvedKey = horizTwoSquareImprover(cipher, childLeftKey, childRightKey, false);
                         childLeftKey = std::get<0>(improvedKey);
                         childRightKey = std::get<1>(improvedKey);
 
@@ -1351,7 +1351,7 @@ namespace polybius {
         return { nullPolybius, nullPolybius };
     }
 
-    std::tuple<polybius, polybius> horizTwoSquareBacktracking(std::string cipher, polybius startLeft, polybius startRight, bool ignoreBad) {
+    std::tuple<polybius, polybius> horizTwoSquareImprover(std::string cipher, polybius startLeft, polybius startRight, bool ignoreBad) {
         //Get a starting point
         auto decrypt = horizTwoSquareDecrypt(cipher, startLeft, startRight);
         float fitness = fitness::tetragramFitness(&decrypt);

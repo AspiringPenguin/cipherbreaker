@@ -23,8 +23,8 @@ namespace polybius {
 	polybius playfairHillClimber(std::string cipher);
 	polybius playfair2025VariationHillClimber(std::string cipher);
 	//These is used in the above
-	polybius playfairBacktracking(std::string cipher, polybius startKey, bool ignoreBad);
-	polybius playfair2025VariationBacktracking(std::string cipher, polybius startKey, bool ignoreBad);
+	polybius playfairImprover(std::string cipher, polybius startKey, bool ignoreBad);
+	polybius playfair2025VariationImprover(std::string cipher, polybius startKey, bool ignoreBad);
 
 	int cliPlayfairHillClimber(std::string cipher);
 	int cliPlayfair2025VariationHillClimber(std::string cipher);
@@ -36,12 +36,12 @@ namespace polybius {
 
 	std::tuple<polybius, polybius> vertTwoSquareHillClimber(std::string cipher);
 	//Used in the above
-	std::tuple<polybius, polybius> vertTwoSquareBacktracking(std::string cipher, polybius startTop, polybius startBottom, bool ignoreBad);
+	std::tuple<polybius, polybius> vertTwoSquareImprover(std::string cipher, polybius startTop, polybius startBottom, bool ignoreBad);
 	int cliVertTwoSquareHillClimber(std::string cipher);
 
 	std::tuple<polybius, polybius> horizTwoSquareHillClimber(std::string cipher);
 	//Used in the above
-	std::tuple<polybius, polybius> horizTwoSquareBacktracking(std::string cipher, polybius startTop, polybius startBottom, bool ignoreBad);
+	std::tuple<polybius, polybius> horizTwoSquareImprover(std::string cipher, polybius startTop, polybius startBottom, bool ignoreBad);
 	int cliHorizTwoSquareHillClimber(std::string cipher);
 
 	//Four-square
