@@ -749,41 +749,47 @@ namespace polybius {
         return 0; //Failure
     }
 
-    //Same process to encrypt
+    //Decryption code for the vertical two square cipher
+    //Can also be used to encrypt as they are the same process
+    //Flips is a binar flag that is 0 by default. 
+    // The '1' bit controls if characters in the same column have their order reversed.
+    // The '2' bit controls if characters in the normal case have their order reversed.
     std::string vertTwoSquareDecrypt(std::string cipher, polybius top, polybius bottom, int flips) {
         std::string plain = "";
         plain.reserve(cipher.size());
 
-        //Lookup table for char position
+        //Lookup table for char positions
         std::array<std::tuple<int, int>, 26> topLookup;
-        for (char c = 97; c < 123; c++) {
+        for (char c = 97; c < 123; c++) { //a=97, z=122
             topLookup[c - 97] = findInPolybius(c, top);
         }
         std::array<std::tuple<int, int>, 26> bottomLookup;
-        for (char c = 97; c < 123; c++) {
+        for (char c = 97; c < 123; c++) { //a=97, z=122
             bottomLookup[c - 97] = findInPolybius(c, bottom);
         }
 
+        //Variables for temp storage in the loop
         std::tuple<int, int> pos0;
         std::tuple<int, int> pos1;
         int newX;
         int newY;
-        int l = cipher.size();
+        int l = cipher.size(); //Limit on loop
         for (int i = 0; i < l; i += 2) {
             pos0 = topLookup[cipher[i] - 97];
             pos1 = bottomLookup[cipher[i + 1] - 97];
             if (std::get<1>(pos0) == std::get<1>(pos1)) { //Same column
-                if (flips & 1) {
+                if (flips & 1) { //If flipped, using bitwise operations to detect if that bit is 'on'
                     plain += cipher[i + 1];
                     plain += cipher[i];
                 }
-                else {
+                else { //Else
                     plain += cipher[i];
                     plain += cipher[i + 1];
                 }
             }
             else {
-                if (flips & 2) {
+                if (flips & 2) { //If flipped, using bitwise operations to detect if that bit is 'on'
+                    //Get other corners of the rectangle
                     newX = std::get<1>(pos0);
                     newY = std::get<0>(pos1);
                     plain += bottom[newY][newX];
@@ -791,7 +797,8 @@ namespace polybius {
                     newY = std::get<0>(pos0);
                     plain += top[newY][newX];
                 }
-                else {
+                else { //Else
+                    //Get other corners of the rectangle
                     newX = std::get<1>(pos1);
                     newY = std::get<0>(pos0);
                     plain += top[newY][newX];
