@@ -9,7 +9,7 @@ namespace cliInterface {
 		std::cout << "Enter ciphertext:" << std::endl;
 		std::string cipher = "";
 		std::string inp = "";
-		bool first = true;
+		bool first = true; //Controls the addition of '\n', not sure why this is needed
 		while (!(inp == "end")) {
 			cipher += inp;
 			if (!first) {
@@ -77,7 +77,7 @@ namespace cliInterface {
 		std::cout << "> ";
 		std::string inp;
 		getline(std::cin, inp);
-		int pos = std::stoi(inp) - 1;
+		int pos = std::stoi(inp) - 1; //Index 0 is printed as 1. etc.
 		return menuItems[pos].run(cipher);
 	}
 
@@ -108,7 +108,7 @@ namespace cliInterface {
 			std::cout << "Index of Coincidence for trigrams (Corpus 0.0013): " << fitness::indexOfCoincidenceTrigrams(formatted) << std::endl << std::endl;
 
 			std::cout << "Periodic IOC:" << std::endl;
-			for (int n = 2; n < 27; n++) {
+			for (int n = 2; n < 27; n++) { //Goes up to 26 to cover for trithemius cipher
 				std::cout << "  Period " << n << ": " << fitness::indexOfCoincidencePeriodic(formatted, n) << std::endl;
 			}
 		}
@@ -139,5 +139,6 @@ namespace cliInterface {
 			std::cout << "FUNCTION IS WIP\nThe function has finished with no other relevant outcome." << std::endl << std::endl;
 			showMenu(menu);
 		}
+		//Any other codes just fall through and cause the program to exit in the end
 	}
 }
