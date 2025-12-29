@@ -3,6 +3,8 @@
 #include <string>
 
 namespace solitaire {
+	//A set of tools for future attacks on the solitaire cipher.
+
 	// 53 = Joker A
 	// 54 = Joker B
 	// For value of card purposes 54 -> 53
