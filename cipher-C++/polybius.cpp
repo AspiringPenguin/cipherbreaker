@@ -511,6 +511,9 @@ namespace polybius {
             for (int y2 = 0; y2 < 5; y2++) {
                 for (int x1 = 0; x1 < 5; x1++) {
                     for (int x2 = 0; x2 < 5; x2++) {
+                        if (x1 == x2 && y1 == y2) { //Don't return a copy of the original key
+                            continue;
+                        }
                         childKey = key;
                         char _ = childKey[y1][x1];
                         childKey[y1][x1] = childKey[y2][x2];
@@ -896,17 +899,23 @@ namespace polybius {
         return plain;
     }
 
+    //Get all child keys for a given two-square key.
+    //This returns every possible swap on the first key with the second key unchanged and every possible swap on the second key with the first key unchanged
     std::vector<std::tuple<polybius, polybius>> getAllChildKeysTwoSquare(polybius key1, polybius key2) {
         auto keys = std::vector<std::tuple<polybius, polybius>>();
         polybius childKey;
+        char _;
 
         //Swap two places in first square
         for (int y1 = 0; y1 < 5; y1++) {
             for (int y2 = 0; y2 < 5; y2++) {
                 for (int x1 = 0; x1 < 5; x1++) {
                     for (int x2 = 0; x2 < 5; x2++) {
+                        if (x1 == x2 && y1 == y2) { //Don't return a copy of the original key
+                            continue;
+                        }
                         childKey = key1;
-                        char _ = childKey[y1][x1];
+                        _ = childKey[y1][x1];
                         childKey[y1][x1] = childKey[y2][x2];
                         childKey[y2][x2] = _;
                         keys.push_back({ childKey, key2 });
@@ -920,8 +929,11 @@ namespace polybius {
             for (int y2 = 0; y2 < 5; y2++) {
                 for (int x1 = 0; x1 < 5; x1++) {
                     for (int x2 = 0; x2 < 5; x2++) {
+                        if (x1 == x2 && y1 == y2) { //Don't return a copy of the original key
+                            continue;
+                        }
                         childKey = key2;
-                        char _ = childKey[y1][x1];
+                        _ = childKey[y1][x1];
                         childKey[y1][x1] = childKey[y2][x2];
                         childKey[y2][x2] = _;
                         keys.push_back({ key1, childKey });
