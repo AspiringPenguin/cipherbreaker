@@ -9,6 +9,7 @@
 #include <random>
 
 namespace transpositions{
+	//Helper function to divide two integers, but always round up if they do not produce an integer result. e.g. 36,6 -> 6 but 37,6 -> 7
 	int integerDivisionRoundUp(int a, int b) {
 		float fRes = static_cast<float>(a) / b;
 		#pragma warning(push)
@@ -21,17 +22,20 @@ namespace transpositions{
 		return res;
 	}
 
-	std::generator<std::vector<int>> heapsPerms(int n)
-	{
-		auto A = std::vector<int>();
-		auto c = std::vector<int>();
+	//Generator for permutations of array 0->n inclusive, using heap's algorithm
+	//This uses std::generator and coroutines so the permuatations can be generated on the fly
+	// as opposed to generating them all and consuming large amounts of memory in a vactor,
+	// which could potentially cause system crashes due to the huge contiguous memory allocations
+	std::generator<std::vector<int>> heapsPerms(int n) { 
+		auto A = std::vector<int>(); //The array being modified
+		auto c = std::vector<int>(); //A collection of counters
 		for (int i = 0; i < n; i++) {
 			A.push_back(i);
 			c.push_back(0);
 		}
 		int i = 0;
 		int _;
-		co_yield A; //Unmodified array
+		co_yield A; //Yield the unmodified array
 
 		while (i < n) {
 			if (c[i] < i) {
@@ -45,7 +49,7 @@ namespace transpositions{
 					A[c[i]] = A[i];
 					A[i] = _;
 				}
-				co_yield A;
+				co_yield A; //Yield the current value of A - it will be used by the code calling the generator, then this code will continue until another co_yield is reached
 				c[i]++;
 				i = 0;
 			}
@@ -55,9 +59,10 @@ namespace transpositions{
 			}
 		}
 
-		co_return;
+		co_return; //Exit to show the generator is finished
 	}
 
+	//A helper function for hill-climbing attacks to 'roll' a key e.g. 0123 roll 2 -> 2301
 	std::vector<int> rollKey(std::vector<int>& key, int roll) {
 		auto res = std::vector<int>();
 		int keyLen = key.size();
@@ -67,6 +72,7 @@ namespace transpositions{
 		return res;
 	}
 
+	//Like the above but for strings
 	std::string rollString(std::string toRoll, int roll) {
 		std::string res = "";
 		int len = toRoll.length();
@@ -76,8 +82,10 @@ namespace transpositions{
 		return res;
 	}
 
-	//Duplicated in permutationBruteForce to reuse objects
-	std::string permutationDecrypt(std::string cipher, std::vector<int> key) { //This seems to add nulls by default. Not sure why, but its useful
+	//Permutation cipher decryption
+	//This adds and then remove nulls by default as the columns don't have to be the same length
+	//Duplicated in permutationBruteForce to reuse objects and reduce memory overhead
+	std::string permutationDecrypt(std::string cipher, std::vector<int> key) { 
 		auto cols = strings::getColumns(cipher, key.size());
 		auto newCols = std::vector<std::string>();
 		for (const auto& i : key) {
@@ -86,32 +94,36 @@ namespace transpositions{
 		return strings::columnsToString(newCols);
 	}
 
+	//Brute force attack on the permutation cipher
+	//No longer used as replaced by a hill-climbing attack
 	std::string permutationBruteForce(std::string cipher) {
 		cipher = basics::formatString(cipher);
 		auto newCols = std::vector<std::string>();
 		std::vector<std::string> cols;
 		std::string decrypt;
 
-		for (int n = 2; n < 11; n++) {
+		for (int n = 2; n < 11; n++) { //For keysize 2->10 inclusive
 			std::cout << n << std::endl;
-			cols = strings::getColumns(cipher, n);
-			for (const auto& perm : heapsPerms(n)) {
+			cols = strings::getColumns(cipher, n); //Duplicate of permuatation decrypt
+			for (const auto& perm : heapsPerms(n)) { //For all permutations
 				newCols.clear();
 				for (const auto& i : perm) {
 					newCols.push_back(cols[i]);
 				}
-				decrypt = strings::columnsToString(newCols);
-				if (fitness::tetragramFitness(&decrypt) > -15) {
+				decrypt = strings::columnsToString(newCols); //End duplicate
+				if (fitness::tetragramFitness(&decrypt) > -15) { //Check if the decrypt is English-like
 					return decrypt;
 				}
 			}
 		}
-		return "";
+		return ""; //Return empty string for failure
 	}
 
+	//CLI interface code for the above
+	//No longer used as replaced by a hill-climbing attack
 	int cliPermutationBruteForce(std::string cipher) {
 		auto decrypt = permutationBruteForce(cipher);
-		if (decrypt != "") {
+		if (decrypt != "") { //Check for a null result
 			if (cliInterface::offerDecryption(decrypt)) {
 				return 1; //Success
 			}
@@ -119,6 +131,8 @@ namespace transpositions{
 		return 0; //Failure
 	}
 
+	//Hill-climbing attack on the permutation cipher for a given key length.
+	//This uses the "basic hill climber with step back" setup
 	std::vector<int> permutationSubHillClimber(std::string cipher, int keyLen) {
 		auto bestKey = std::vector<int>();
 		for (int i = 0; i < keyLen; i++) {

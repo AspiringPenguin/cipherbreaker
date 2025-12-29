@@ -5,6 +5,9 @@ A list of all the variations on hill-climbing attacks used to reduce duplication
 	If it is better than the best key, update the best key to the value of the child key
 	Increment the counter each iteration and break once it exceeds a set limit
 
+• "basic hill climber with step back"
+	Details here
+
 • "periodic substitution hill climber"
 	This uses a best-parent-child key setup.
 	For a given keysize it generates an arbitrary starting key of that length (I could maximise monogram fitness of each slice first but it makes little real difference)
