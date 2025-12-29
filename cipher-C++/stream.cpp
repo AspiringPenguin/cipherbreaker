@@ -9,40 +9,42 @@
 #include <random>
 
 namespace stream {
+	//Combine two chars 97-122 using a given mode (a=97, z=122)
 	char combineChars(char p, char s, mode m) {
 		char val = -1;
 		switch (m) {
 		case add:
-			val = (p + s - 194) % 26;
-			if (val >= 26) {
+			val = (p + s - 194); //Add together and subtract the ascii offset (97, as we want a=0)*2 = 194 before doing mod 26
+			if (val >= 26) { //Deal with values >= 26
 				val -= 26;
 			}
 			break;
 		case subtractKey:
-			val = (p - s);
-			if (val < 0) {
+			val = (p - s); //Subtract, which deals with the ascii offset as they cancel out
+			if (val < 0) { //Deal with negatives
 				val += 26;
 			}
 			break;
 		case subtractText:
-			val = (s - p);
-			if (val < 0) {
+			val = (s - p); //Subtract, which deals with the ascii offset as they cancel out
+			if (val < 0) { //Deal with negatives
 				val += 26;
 			}
 			break;
 		case solitaire:
-			char pConv = p - 96;
+			char pConv = p - 96; //Convert to soliaire form A=1, Z=26 etc.
 			char sConv = s - 96;
-			val = pConv + sConv;
-			if (val > 26) {
+			val = pConv + sConv; //Add together
+			if (val > 26) { //Subtract 26 if greater than 26
 				val -= 26;
 			}
-			val--;
+			val--; //Convert to a form that can have 97 added to be correct
 			break;
 		}
 		return 97 + val;
 	}
 
+	//Decombine two chars 97-122 using a given mode (a=97, z=122)
 	char decombineChars(char p, char s, mode m) {
 		char val = -1;
 		switch (m) {
@@ -65,13 +67,13 @@ namespace stream {
 			}
 			break;
 		case solitaire:
-			char pConv = p - 96;
+			char pConv = p - 96; //Convert to soliaire form A=1, Z=26 etc.
 			char sConv = s - 96;
 			val = pConv - sConv;
-			if (val < 1) {
+			if (val < 1) { //Add 26 to remove negative results
 				val += 26;
 			}
-			val--;
+			val--; //Convert to a form that can have 97 added to be correct
 			break;
 		}
 		return 97 + val;

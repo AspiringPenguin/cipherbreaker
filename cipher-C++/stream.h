@@ -3,8 +3,11 @@
 #include <tuple>
 
 namespace stream {
+	//Some tools and attacks on stream ciphers
+	//Tools for the solitaire cipher can be found in solitaire.cpp
+
 	enum mode {
-		add, subtractKey, subtractText, solitaire
+		add, subtractKey, subtractText, solitaire //solitaire generally isn't used here but it is implemented in case of need
 	};
 
 	char combineChars(char p, char s, mode m);
