@@ -1157,10 +1157,12 @@ namespace polybius {
         }
 
         auto bestKeys = vertTwoSquareHillClimber(cipher);
-        std::string decrypt = vertTwoSquareDecrypt(cipher, std::get<0>(bestKeys), std::get<1>(bestKeys));
-        if (fitness::tetragramFitness(&decrypt) > -15) {
-            if (cliInterface::offerDecryption(decrypt)) {
-                return 1; //Success
+        if (std::get<0>(bestKeys) != nullPolybius) { //Check its not a null result
+            std::string decrypt = vertTwoSquareDecrypt(cipher, std::get<0>(bestKeys), std::get<1>(bestKeys));
+            if (fitness::tetragramFitness(&decrypt) > -15) {
+                if (cliInterface::offerDecryption(decrypt)) {
+                    return 1; //Success
+                }
             }
         }
         return 0; //Failure
@@ -1307,7 +1309,7 @@ namespace polybius {
                 }
 
                 counter++;
-                if (wandering) {
+                if (wandering) { //De-wander the key if it has wandered too far without improvement
                     impatience++;
                 }
 
@@ -1380,38 +1382,43 @@ namespace polybius {
         }
 
         auto bestKeys = horizTwoSquareHillClimber(cipher);
-        std::string decrypt = horizTwoSquareDecrypt(cipher, std::get<0>(bestKeys), std::get<1>(bestKeys));
-        if (fitness::tetragramFitness(&decrypt) > -15) {
-            if (cliInterface::offerDecryption(decrypt)) {
-                return 1; //Success
+        if (std::get<0>(bestKeys) != nullPolybius) { //Check its not a null result
+            std::string decrypt = horizTwoSquareDecrypt(cipher, std::get<0>(bestKeys), std::get<1>(bestKeys));
+            if (fitness::tetragramFitness(&decrypt) > -15) {
+                if (cliInterface::offerDecryption(decrypt)) {
+                    return 1; //Success
+                }
             }
         }
         return 0; //Failure
     }
 
-    std::string fourSquareDecrypt(std::string text, polybius topRight, polybius rightLeft) {
+    //Decryption code for the four square cipher
+    std::string fourSquareDecrypt(std::string text, polybius topRight, polybius bottomLeft) {
         auto blocks = strings::getBlocks(text, 2);
 
         std::string newText = "";
         newText.reserve(text.size());
 
-        //Lookup table for char position
+        //Lookup table for char positions
         std::array<std::tuple<int, int>, 26> topRightLookup;
         for (char c = 97; c < 123; c++) {
             topRightLookup[c - 97] = findInPolybius(c, topRight);
         }
-        std::array<std::tuple<int, int>, 26> rightLeftLookup;
+        std::array<std::tuple<int, int>, 26> bottomLeftLookup;
         for (char c = 97; c < 123; c++) {
-            rightLeftLookup[c - 97] = findInPolybius(c, rightLeft);
+            bottomLeftLookup[c - 97] = findInPolybius(c, bottomLeft);
         }
 
+        //Temp storage inside loop
         std::tuple<int, int> pos0;
         std::tuple<int, int> pos1;
 
         for (const auto& block : blocks) {
             pos0 = topRightLookup[block[0]-97];
-            pos1 = rightLeftLookup[block[1]-97];
+            pos1 = bottomLeftLookup[block[1]-97];
 
+            //This cipher is quite simple, just use the other corners of the rectangle
             newText += alphabetPolybius[std::get<0>(pos0)][std::get<1>(pos1)];
             newText += alphabetPolybius[std::get<0>(pos1)][std::get<1>(pos0)];
         }
@@ -1419,6 +1426,9 @@ namespace polybius {
         return newText;
     }
 
+    //A hill-climbing attack on the four-square cipher.
+    //This uses a shotgun version of the "basic best-current-child key" setup
+    //Though it is more for reliability than a small chance of the attack being successful
     std::tuple<polybius, polybius> fourSquareHillClimber(std::string cipher) {
         cipher = basics::formatString(cipher);
 
@@ -1429,39 +1439,45 @@ namespace polybius {
         std::uniform_int_distribution<> dist(0, 4);
         std::uniform_int_distribution<> changeChoice(1, 50);
 
-        auto alphabetCopy = basics::alphabet;
+        std::string alphabetCopy = basics::alphabet;
 
-        polybius bestTopKey, bestRightKey, currentTopKey, currentRightKey;
-
+        //Memory allocations
+        //Best and current
+        polybius bestTopRightKey, bestBottomLeftKey, currentTopRightKey, currentBottomLeftKey;
         std::string bestDecrypt;
         std::string currentDecrypt;
         float bestFitness;
         float currentFitness;
 
-        polybius childTopKey, childRightKey;
+        //Child
+        polybius childTopRightKey, childBottomLeftKey;
         std::string childDecrypt;
         float childFitness;
 
+        //Loop control
         int counter;
         int impatience;
 
         bool wandering;
 
         for (int i = 0; i < 20; i++) { //It can take a few attempts
+            //Randomised starting key
             std::shuffle(alphabetCopy.begin(), alphabetCopy.end(), gen);
-            bestTopKey = makePolybius(alphabetCopy);
+            bestTopRightKey = makePolybius(alphabetCopy);
             std::shuffle(alphabetCopy.begin(), alphabetCopy.end(), gen);
-            bestRightKey = makePolybius(alphabetCopy);
+            bestBottomLeftKey = makePolybius(alphabetCopy);
 
-            bestDecrypt = fourSquareDecrypt(cipher, bestTopKey, bestRightKey);
-
+            //Generate decrypt and fitness
+            bestDecrypt = fourSquareDecrypt(cipher, bestTopRightKey, bestBottomLeftKey);
             bestFitness = fitness::tetragramFitness(&bestDecrypt);
 
-            currentTopKey = bestTopKey;
-            currentRightKey = bestRightKey;
+            //Copy to current
+            currentTopRightKey = bestTopRightKey;
+            currentBottomLeftKey = bestBottomLeftKey;
             currentDecrypt = bestDecrypt;
             currentFitness = bestFitness;
-
+            
+            //Reset loop control
             counter = 0;
             impatience = 0;
             wandering = false;
@@ -1469,55 +1485,56 @@ namespace polybius {
             std::cout << "Iteration " << i << std::endl;
 
             while (counter < 200000) {
-                childTopKey = currentTopKey;
-                childRightKey = currentRightKey;
+                childTopRightKey = currentTopRightKey; //Copy to child key
+                childBottomLeftKey = currentBottomLeftKey;
 
-                if (squareChoice(gen) == 0) {
-                    switch (changeChoice(gen)) {
+                if (squareChoice(gen) == 0) { //Flip a coin to choose a key to modify
+                    switch (changeChoice(gen)) { //This works just like in the playfair attacks
                     case 1:
-                        flipDiag(childTopKey);
+                        flipDiag(childTopRightKey);
                         break;
                     case 2:
-                        flipHoriz(childTopKey);
+                        flipHoriz(childTopRightKey);
                         break;
                     case 3:
-                        flipDiag(childTopKey);
+                        flipDiag(childTopRightKey);
                         break;
                     case 4:
-                        swapRows(childTopKey, &dist, &gen);
+                        swapRows(childTopRightKey, &dist, &gen);
                         break;
                     case 5:
-                        swapCols(childTopKey, &dist, &gen);
+                        swapCols(childTopRightKey, &dist, &gen);
                         break;
                     default:
-                        swapElems(childTopKey, &dist, &gen);
+                        swapElems(childTopRightKey, &dist, &gen);
                         break;
                     }
                 }
                 else {
-                    switch (changeChoice(gen)) {
+                    switch (changeChoice(gen)) { //This works just like in the playfair attacks
                     case 1:
-                        flipDiag(childRightKey);
+                        flipDiag(childBottomLeftKey);
                         break;
                     case 2:
-                        flipHoriz(childRightKey);
+                        flipHoriz(childBottomLeftKey);
                         break;
                     case 3:
-                        flipDiag(childRightKey);
+                        flipDiag(childBottomLeftKey);
                         break;
                     case 4:
-                        swapRows(childRightKey, &dist, &gen);
+                        swapRows(childBottomLeftKey, &dist, &gen);
                         break;
                     case 5:
-                        swapCols(childRightKey, &dist, &gen);
+                        swapCols(childBottomLeftKey, &dist, &gen);
                         break;
                     default:
-                        swapElems(childRightKey, &dist, &gen);
+                        swapElems(childBottomLeftKey, &dist, &gen);
                         break;
                     }
                 }
 
-                childDecrypt = fourSquareDecrypt(cipher, childTopKey, childRightKey);
+                //Get a decrypt and fitness
+                childDecrypt = fourSquareDecrypt(cipher, childTopRightKey, childBottomLeftKey);
                 childFitness = fitness::tetragramFitness(&childDecrypt);
 
                 if (childFitness > bestFitness) {
@@ -1529,10 +1546,10 @@ namespace polybius {
                     bestDecrypt = childDecrypt;
                     currentDecrypt = childDecrypt;
 
-                    bestTopKey = childTopKey;
-                    currentTopKey = childTopKey;
-                    bestRightKey = childRightKey;
-                    currentRightKey = childRightKey;
+                    bestTopRightKey = childTopRightKey;
+                    currentTopRightKey = childTopRightKey;
+                    bestBottomLeftKey = childBottomLeftKey;
+                    currentBottomLeftKey = childBottomLeftKey;
 
                     std::cout << bestFitness << " " << counter << std::endl;
 
@@ -1544,48 +1561,50 @@ namespace polybius {
                     wandering = false;
                     currentFitness = childFitness;
                     currentDecrypt = childDecrypt;
-                    currentTopKey = childTopKey;
-                    currentRightKey = childRightKey;
+                    currentTopRightKey = childTopRightKey;
+                    currentBottomLeftKey = childBottomLeftKey;
                 }
                 else if (childFitness > currentFitness) {
                     currentFitness = childFitness;
                     currentDecrypt = childDecrypt;
-                    currentTopKey = childTopKey;
-                    currentRightKey = childRightKey;
+                    currentTopRightKey = childTopRightKey;
+                    currentBottomLeftKey = childBottomLeftKey;
                 }
-                else if (counter > 100 && childFitness > (bestFitness + (bestFitness / 6)) && changeChoice(gen) < 5) {
-                    currentTopKey = childTopKey;
-                    currentRightKey = childRightKey;
+                else if (counter > 100 && childFitness > (bestFitness + (bestFitness / 6)) && changeChoice(gen) < 5) { //Randomly step back, with permissible range set to be 7/6 of the bestFitness and a 20% chance
+                    currentTopRightKey = childTopRightKey;
+                    currentBottomLeftKey = childBottomLeftKey;
                     currentFitness = childFitness;
                     currentDecrypt = childDecrypt;
                     wandering = true;
                 }
 
-                if (impatience > 2000) {
-                    currentTopKey = bestTopKey;
-                    currentRightKey = bestRightKey;
+                if (impatience > 2000) { //De-wander the key if it has wandered too far without improvement
+                    currentTopRightKey = bestTopRightKey;
+                    currentBottomLeftKey = bestBottomLeftKey;
                     impatience = 0;
                     wandering = false;
                 }
 
+                //Increment counter
                 counter++;
                 if (wandering) {
                     impatience++;
                 }
-
-                if (bestFitness > -12 && counter > 10000) {
-                    return { bestTopKey, bestRightKey };
+                
+                if (bestFitness > -12 && counter > 10000) { //Return and break if its clearly a good key
+                    return { bestTopRightKey, bestBottomLeftKey };
                 }
             }
 
-            if (i != 19) {
+            if (i != 19) { //Formatting code for iterations counter
                 std::cout << std::endl;
             }
         }
 
-        return { nullPolybius, nullPolybius };
+        return { nullPolybius, nullPolybius }; //Return a null result
     }
 
+    //CLI interface for the four-square hill-climbing attack
     int cliFourSquareHillClimber(std::string cipher) {
         cipher = basics::formatString(cipher);
 
@@ -1599,7 +1618,7 @@ namespace polybius {
 
         std::tuple<polybius, polybius> result = fourSquareHillClimber(cipher);
 
-        if (std::get<0>(result) != nullPolybius) {
+        if (std::get<0>(result) != nullPolybius) { //Check its not a null result
             std::string decrypt = fourSquareDecrypt(cipher, std::get<0>(result), std::get<1>(result));
             if (cliInterface::offerDecryption(decrypt)) { //Can skip fitness here as filtering in hill-climber
                 return 1; //Success
