@@ -14,7 +14,7 @@ namespace stream {
 		char val = -1;
 		switch (m) {
 		case add:
-			val = (p + s - 194); //Add together and subtract the ascii offset (97, as we want a=0)*2 = 194 before doing mod 26
+			val = (p + s - 194); //Add together and subtract the ascii offset (97, as we want a=0)*2 = 194
 			if (val >= 26) { //Deal with values >= 26
 				val -= 26;
 			}
@@ -49,20 +49,20 @@ namespace stream {
 		char val = -1;
 		switch (m) {
 		case add:
-			val = (p - s);
-			if (val < 0) {
+			val = (p - s); //Do the reverse and substract the stream character, which deals with the ascii offset as they cancel out
+			if (val < 0) { //Deal with negatives
 				val += 26;
 			}
 			break;
 		case subtractKey:
-			val = (p + s - 194);
-			if (val >= 26) {
+			val = (p + s - 194); //Do the inverse and back the stream character, subtract the ascii offset (97, as we want a=0)*2 = 194
+			if (val >= 26) { //Deal with values >= 26
 				val -= 26;
 			}
 			break;
-		case subtractText:
-			val = (s - p);
-			if (val < 0) {
+		case subtractText: 
+			val = (s - p); //Do the inverse and subtract the stream character, which works because we are dealing with mod 26, which deals with the ascii offset as they cancel out
+			if (val < 0) { //Deal with negative values
 				val += 26;
 			}
 			break;
