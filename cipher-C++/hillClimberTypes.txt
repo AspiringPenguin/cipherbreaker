@@ -10,6 +10,13 @@ A list of all the variations on hill-climbing attacks used to reduce duplication
 	There is a random chance to step back a small amount of fitness, and extra limits on the while loop using the total number of iterations.
 	This is used to handle oscillations between a few keys, which resets the counter a lot but gets nowhere.
 
+• "check all key changes"
+	A flag is set to false, and while it is false:
+		The flag is set to true.
+		For each position in the key:
+			The best key is copied to the childKey.
+			The child key has its value in that position changed to every possible value in turn, and if its better than the best key, the flag is set to false and the best key is updated
+
 • "periodic substitution hill climber"
 	This uses a best-parent-child key setup.
 	For a given keysize it generates an arbitrary starting key of that length (I could maximise monogram fitness of each slice first but it makes little real difference)
