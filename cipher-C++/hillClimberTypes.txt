@@ -5,8 +5,10 @@ A list of all the variations on hill-climbing attacks used to reduce duplication
 	If it is better than the best key, update the best key to the value of the child key
 	Increment the counter each iteration and break once it exceeds a set limit
 
-• "basic hill climber with step back"
-	Details here
+• "basic hill climber with step back and extra limits"
+	An enhancement on the most basic possible hill-climbing attack.
+	There is a random chance to step back a small amount of fitness, and extra limits on the while loop using the total number of iterations.
+	This is used to handle oscillations between a few keys, which resets the counter a lot but gets nowhere.
 
 • "periodic substitution hill climber"
 	This uses a best-parent-child key setup.

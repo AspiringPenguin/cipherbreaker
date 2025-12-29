@@ -4,6 +4,8 @@
 #include <vector>
 
 namespace transpositions {
+	//A set of tools and attacks for transposition ciphers
+
 	int integerDivisionRoundUp(int a, int b);
 
 	std::generator<std::vector<int>> heapsPerms(int size);

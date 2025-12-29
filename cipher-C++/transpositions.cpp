@@ -132,20 +132,23 @@ namespace transpositions{
 	}
 
 	//Hill-climbing attack on the permutation cipher for a given key length.
-	//This uses the "basic hill climber with step back" setup
+	//This uses the "basic hill climber with step back and extra limits" setup
 	std::vector<int> permutationSubHillClimber(std::string cipher, int keyLen) {
+		//Generate bestKey - an identity permuatation which has no effect
 		auto bestKey = std::vector<int>();
 		for (int i = 0; i < keyLen; i++) {
 			bestKey.push_back(i);
 		}
-
+		//Get bestFitness and bestDecrypt
 		float bestFitness = fitness::tetragramFitness(&cipher);
 		std::string bestDecrypt = cipher;
 
+		//child items
 		std::vector<int> childKey;
 		float childFitness;
 		std::string childDecrypt;
 
+		//Loop control
 		int counter = 0;
 		int limit = 1000 * keyLen;
 		int absoluteLimit = 100000 * keyLen;
@@ -160,9 +163,11 @@ namespace transpositions{
 
 		int a, b, _; //For copies
 
-		while (counter < limit && (total < limit || bestFitness > -40) && total < absoluteLimit) {
-			childKey = bestKey;
-			if (coin(gen) == 0) { //Swap
+		//counter < limit is normal, the next term is to quickly exit attacks that aren't going anywhere as total iterations exceeds the limit without a good fitness
+		//final term is to exit after a longer time if total becomes too large because similar ciphers can cause this attack to get stuck oscillating between a few keys for a certain keylength
+		while (counter < limit && (total < limit || bestFitness > -40) && total < absoluteLimit) { 
+			childKey = bestKey; //Copy to childKey
+			if (coin(gen) == 0) { //Flip a coin, heads - swap two elements
 				a = keyChoice(gen);
 				b = keyChoice(gen);
 				while (a == b) {
@@ -172,9 +177,11 @@ namespace transpositions{
 				childKey[a] = childKey[b];
 				childKey[b] = _;
 			}
-			else { //Roll
+			else { //tails - roll the key a random amount
 				childKey = rollKey(childKey, rollChoice(gen));
 			}
+
+			//Decrypt and get fitness
 			childDecrypt = permutationDecrypt(cipher, childKey);
 			childFitness = fitness::tetragramFitness(&childDecrypt);
 
@@ -185,6 +192,7 @@ namespace transpositions{
 				bestDecrypt = childDecrypt;
 			}
 
+			//Increment loop variables
 			counter++;
 			total++;
 		}
@@ -192,24 +200,26 @@ namespace transpositions{
 		return bestKey;
 	}
 
+	//Brute force wrapper for permutation hill-climber that tries every key length
 	std::vector<int> permutationHillClimber(std::string cipher) {
 		cipher = basics::formatString(cipher);
 		std::string decrypt;
-		for (int i = 2; i < 21; i++) {
+		for (int i = 2; i < 21; i++) { //Key length 2->20 inclusive
 			std::cout << i << std::endl;
-			auto res = permutationSubHillClimber(cipher, i);
+			auto res = permutationSubHillClimber(cipher, i); //Run the hill-climber
 			decrypt = permutationDecrypt(cipher, res);
 			if (fitness::tetragramFitness(&decrypt) > -15) {
 				return res;
 			}
 		}
-		return {};
+		return {}; //Return an empty vector as a null result
 	}
 
+	//CLI interface for the above attack
 	int cliPermutationHillClimber(std::string cipher) {
 		cipher = basics::formatString(cipher);
 		auto res = permutationHillClimber(cipher);
-		if (res.size() != 0) {
+		if (res.size() != 0) { //Ignore null results with size = 0
 			auto decrypt = permutationDecrypt(cipher, res);
 			if (cliInterface::offerDecryption(decrypt)) {
 				return 1; //Success
@@ -218,7 +228,8 @@ namespace transpositions{
 		return 0; //Failure
 	}
 
-	std::string columnarDecrypt(std::string cipher, std::vector<int> key) { //Doesn't work
+	//Columnar transposition decryption routine.
+	std::string columnarDecrypt(std::string cipher, std::vector<int> key) {
 		//Get keyLen and number of columns that are shorter
 		int keyLen = key.size();
 		int cipherLen = cipher.length();
@@ -237,18 +248,22 @@ namespace transpositions{
 				needsGaps.push_back(i);
 			}
 		}
+
+		//Sort by position in cipher so spaces can be added easily
 		std::sort(needsGaps.begin(), needsGaps.end());
 
+		//Add the missing spaces to get correct columns
 		for (int i = 0; i < numGaps; i++) {
 			cipher = cipher.substr(0, columnLen * (needsGaps[i] + 1) - 1) + " " + cipher.substr(columnLen * (needsGaps[i] + 1) - 1);
 		}
 
-		std::vector<std::string> blocks = strings::getBlocks(cipher, columnLen);
+		std::vector<std::string> blocks = strings::getBlocks(cipher, columnLen); //This gets the columns, as the text is read off column by column when encrypted
 		auto newBlocks = std::vector<std::string>();
-		for (const int& index : key) {
+		for (const int& index : key) { //Reorder the columns based on the key
 			newBlocks.push_back(blocks[index]);
 		}
 
+		//Join up the columns into a plaintext
 		std::string plain = "";
 		for (int x = 0; x < columnLen; x++) {
 			for (int y = 0; y < keyLen; y++) {
@@ -256,30 +271,34 @@ namespace transpositions{
 			}
 		}
 
-		return basics::removeSpaces(plain);
+		return basics::removeSpaces(plain); //Remove the extra spaces and return
 	}
 
+	//Brute force attack on the permutation cipher
+	//No longer used as replaced by a hill-climbing attack
 	std::string columnarBruteForce(std::string cipher) {
 		cipher = basics::formatString(cipher);
 		auto newCols = std::vector<std::string>();
 		std::vector<std::string> cols;
 		std::string decrypt;
 
-		for (int n = 2; n < 11; n++) {
+		for (int n = 2; n < 11; n++) { //For keylen 2->10 inclusive
 			std::cout << n << std::endl;
-			for (const auto& perm : heapsPerms(n)) {
+			for (const auto& perm : heapsPerms(n)) { //Try every key
 				decrypt = columnarDecrypt(cipher, perm);
 				if (fitness::tetragramFitness(&decrypt) > -15) {
 					return decrypt;
 				}
 			}
 		}
-		return "";
+		return ""; //Return a null result
 	}
 
+	//CLI interface for the above
+	//No longer used as replaced by a hill-climbing attack
 	int cliColumnarBruteForce(std::string cipher) {
-		auto decrypt = columnarBruteForce(cipher);
-		if (decrypt != "") {
+		auto decrypt = columnarBruteForce(cipher); //Run the attack
+		if (decrypt != "") { //Avoid null results
 			if (cliInterface::offerDecryption(decrypt)) {
 				return 1; //Success
 			}
@@ -287,19 +306,24 @@ namespace transpositions{
 		return 0; //Failure
 	}
 
+	//Hill-climbing attack on the columnar transposition cipher for a given key length.
+	//This uses the "basic hill climber with step back and extra limits" setup
 	std::vector<int> columnarSubHillClimber(std::string cipher, int keyLen) {
+		//Generate bestKey - just 0->(keyLen-1) inclusive
 		auto bestKey = std::vector<int>();
 		for (int i = 0; i < keyLen; i++) {
 			bestKey.push_back(i);
 		}
+		//Get bestfitness and decrypt
+		std::string bestDecrypt = columnarDecrypt(cipher, bestKey);
+		float bestFitness = fitness::tetragramFitness(&bestDecrypt);
 
-		float bestFitness = fitness::tetragramFitness(&cipher);
-		std::string bestDecrypt = cipher;
-
+		//Child items
 		std::vector<int> childKey;
 		float childFitness;
 		std::string childDecrypt;
 
+		//Loop control
 		int counter = 0;
 		int limit = 1000 * keyLen;
 		int absoluteLimit = 100000 * keyLen;
@@ -315,8 +339,8 @@ namespace transpositions{
 		int a, b, _; //For copies
 
 		while (counter < limit && (total < limit || bestFitness > -40) && total < absoluteLimit) {
-			childKey = bestKey;
-			if (coin(gen) == 0) { //Swap
+			childKey = bestKey; //Copy to childKey
+			if (coin(gen) == 0) { //Flip a coin, heads - swap two elements
 				a = keyChoice(gen);
 				b = keyChoice(gen);
 				while (a == b) {
@@ -326,9 +350,11 @@ namespace transpositions{
 				childKey[a] = childKey[b];
 				childKey[b] = _;
 			}
-			else { //Roll
+			else { //tails - roll the key a random amount
 				childKey = rollKey(childKey, rollChoice(gen));
 			}
+
+			//Decrypt and get fitness
 			childDecrypt = columnarDecrypt(cipher, childKey);
 			childFitness = fitness::tetragramFitness(&childDecrypt);
 
@@ -339,6 +365,7 @@ namespace transpositions{
 				bestDecrypt = childDecrypt;
 			}
 
+			//Increment loop variables
 			counter++;
 			total++;
 		}
@@ -346,24 +373,26 @@ namespace transpositions{
 		return bestKey;
 	}
 
+	//Brute force wrapper for columnar hill-climber that tries every key length
 	std::vector<int> columnarHillClimber(std::string cipher) {
 		cipher = basics::formatString(cipher);
 		std::string decrypt;
-		for (int i = 2; i < 21; i++) {
+		for (int i = 2; i < 21; i++) { //Key length 2->20 inclusive
 			std::cout << i << std::endl;
-			auto res = columnarSubHillClimber(cipher, i);
+			auto res = columnarSubHillClimber(cipher, i); //Run the hill-climber
 			decrypt = columnarDecrypt(cipher, res);
 			if (fitness::tetragramFitness(&decrypt) > -15) {
 				return res;
 			}
 		}
-		return {};
+		return {}; //Return an empty vector as a null result
 	}
 
+	//CLI interface for the above attack
 	int cliColumnarHillClimber(std::string cipher) {
 		cipher = basics::formatString(cipher);
 		auto res = columnarHillClimber(cipher);
-		if (res.size() != 0) {
+		if (res.size() != 0) { //Ignore null results with size = 0
 			auto decrypt = columnarDecrypt(cipher, res);
 			if (cliInterface::offerDecryption(decrypt)) {
 				return 1; //Success
@@ -372,6 +401,7 @@ namespace transpositions{
 		return 0; //Failure
 	}
 
+	//Decryption routine for the twistedScytale cipher
 	std::string twistedScytaleDecrypt(std::string cipher, int width, int twist) {
 		//Get keyLen and number of columns that are shorter
 		int cipherLen = cipher.length();
@@ -396,18 +426,19 @@ namespace transpositions{
 
 		//Get rows out
 		std::vector<std::string> columns = strings::getBlocks(cipher, columnLen);
+		//Generate vector of empty strings
 		auto rows = std::vector<std::string>();
 		for (int i = 0; i < columnLen; i++) {
 			rows.push_back("");
 		}
-
+		//Fill out the rows
 		for (int y = 0; y < columnLen; y++) {
 			for (int x = 0; x < width; x++) {
 				rows[y] += columns[x][y];
 			}
 		}
 
-		//Roll rows here
+		//Detwist the rows
 		auto rolledRows = std::vector<std::string>();
 		int roll;
 		std::string rolled;
@@ -420,30 +451,31 @@ namespace transpositions{
 			rolledRows.push_back(rolled);
 		}
 
+		//Join rows together
 		std::string plain = "";
 		for (std::string row : rolledRows) {
 			plain += row;
 		}
 
-		return basics::removeSpaces(plain);
+		return basics::removeSpaces(plain); //Remove added spaces
 	}
 
+	//Brute force attack on the twisted scytale cipher
 	std::string twistedScytaleBruteForce(std::string cipher) {
 		int n = cipher.length();
-		float max = sqrtf(n);
 
 		std::string decrypt;
 
-		for (int width = 0; width < max; width++) {
-			for (int twist = 1; twist < width; twist++) {
-				decrypt = twistedScytaleDecrypt(cipher, width, twist);
+		for (int width = 1; width < n; width++) { //For all widths
+			for (int twist = 1; twist < width; twist++) { //For all twists
+				decrypt = twistedScytaleDecrypt(cipher, width, twist); //Decrypt
 				if (fitness::tetragramFitness(&decrypt) > -15) {
 					return decrypt;
 				}
 			}
 		}
 
-		return "";
+		return ""; //Return a null result
 	}
 
 	int cliTwistedScytaleBruteForce(std::string cipher) {
@@ -451,7 +483,7 @@ namespace transpositions{
 
 		auto res = twistedScytaleBruteForce(cipher);
 
-		if (res != "") {
+		if (res != "") { //Ignore a null result
 			if (cliInterface::offerDecryption(res)) {
 				return 1; //Success
 			}
