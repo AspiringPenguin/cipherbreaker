@@ -243,19 +243,23 @@ namespace transpositions{
 
 		//Find blocks which need extra spaces
 		std::vector<int> needsGaps = std::vector<int>();
-		for (int i = 0; i < keyLen; i++) {
-			if (key[i] >= (keyLen - numGaps)) {
-				needsGaps.push_back(i);
-			}
+		for (int i = 0; i < numGaps; i++) {
+			needsGaps.push_back(key[keyLen - i - 1]);
 		}
 
 		//Sort by position in cipher so spaces can be added easily
 		std::sort(needsGaps.begin(), needsGaps.end());
 
+		/*for (auto c : needsGaps) {
+			std::cout << c << std::endl;
+		}*/
+
 		//Add the missing spaces to get correct columns
 		for (int i = 0; i < numGaps; i++) {
 			cipher = cipher.substr(0, columnLen * (needsGaps[i] + 1) - 1) + " " + cipher.substr(columnLen * (needsGaps[i] + 1) - 1);
 		}
+
+		/*std::cout << cipher << std::endl;*/
 
 		std::vector<std::string> blocks = strings::getBlocks(cipher, columnLen); //This gets the columns, as the text is read off column by column when encrypted
 		auto newBlocks = std::vector<std::string>();
