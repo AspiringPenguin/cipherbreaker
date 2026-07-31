@@ -376,6 +376,9 @@ namespace transpositions{
 		}
 
 		//Before we finish, let's try rolling the key to find the best possible fitness
+		//A weird quirk of this cipher is that rolling the key just changes the position of the first row of plaintext letters
+		//Getting and keeping this right seems to sometimes be difficult for the main part, possibly because it wanders within a fixed interval
+		//Madness's book has an example that behaves like this and needs this extra bit
 		std::vector<int> origKey = bestKey;
 		for (int i = 1; i < keyLen; i++) {
 			childKey = rollKey(origKey, i);
