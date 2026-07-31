@@ -82,7 +82,7 @@ namespace basics {
 	//Just uses an exhaustive search <= the square root
 	std::vector<int> getFactors(int n) {
 		auto factors = std::vector<int>();
-		int max = sqrt(n);
+		int max = std::floor(sqrt(n));
 		for (int i = 1; i <= max; i++) {
 			if ((n % i) == 0) {
 				if (i == n / i) {
