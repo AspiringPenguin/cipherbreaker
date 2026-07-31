@@ -71,25 +71,31 @@ namespace cliInterface {
 	{
 		std::cout << "----------MENU----------" << std::endl;
 		int l = menuItems.size();
+		std::cout << "1. Show ciphertext" << std::endl;
 		for (int i = 0; i < l; i++) {
-			std::cout << i + 1 << ". " << menuItems[i].name << std::endl;
+			std::cout << i + 2 << ". " << menuItems[i].name << std::endl;
 		}
+		std::cout << l+2 << ". Enter new ciphertext" << std::endl;
+		std::cout << l+3 << ". Exit" << std::endl;
 		std::cout << "> ";
 		std::string inp;
 		getline(std::cin, inp);
-		int pos = std::stoi(inp) - 1; //Index 0 is printed as 1. etc.
+		int pos = std::stoi(inp) - 2; //Index 0 is printed as 2. etc.
+
+		//Special functions
+		if (pos == -1){
+			std::cout << cipher << std::endl;
+			return 2; //Complete
+		}
+		if (pos == (l + 1)){
+			return -2; //Exit
+		}
+		else if (pos == (l)){
+			setCipher(getCipherInput());
+			return 2; //Complete
+		}
+
 		return menuItems[pos].run(cipher);
-	}
-
-	//Option to print the cipher
-	int outputCipher(std::string cipher) {
-		std::cout << cipher << std::endl;
-		return 2; //Complete
-	}
-
-	//Option to exit
-	int exit(std::string cipher) {
-		return -2; //Exit
 	}
 
 	//Significant analysis ouput function, with various stats

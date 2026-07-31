@@ -44,7 +44,6 @@ int main() {
 	menu.setCipher(cipher);
 
 	//Add menu options
-	menu.addMenuItem(cliInterface::MenuItem("Show cipher", *cliInterface::outputCipher));
 	menu.addMenuItem(cliInterface::MenuItem("Analysis", *cliInterface::analysis));
 
 	menu.addMenuItem(cliInterface::MenuItem("Atbash", *monoalphabetic::cliAtbash));
@@ -72,9 +71,6 @@ int main() {
 	#ifdef TEST
 	menu.addMenuItem(cliInterface::MenuItem("Test stuff", *testStuff));
 	#endif
-
-	//Finally, the exit code
-	menu.addMenuItem(cliInterface::MenuItem("Exit", *cliInterface::exit));
 
 	cliInterface::showMenu(menu);
 
