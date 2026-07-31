@@ -43,3 +43,6 @@
 /.vs/cipherbreaker
 /cipher-C++/x64/Release
 /cipher-C++/x64/Release-Test
+
+/cipher-C++/build
+/generated
