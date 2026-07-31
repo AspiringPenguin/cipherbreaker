@@ -1,6 +1,6 @@
-add_executable(MainProgram)
+add_executable(Cipher-C++)
 
-target_sources(MainProgram
+target_sources(Cipher-C++
   PRIVATE
     main.cpp
     basics.cpp
