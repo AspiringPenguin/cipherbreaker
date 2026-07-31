@@ -1,0 +1,19 @@
+add_executable(MainProgram)
+
+target_sources(MainProgram
+  PRIVATE
+    main.cpp
+    basics.cpp
+    corpus.cpp
+    fileLoaders.cpp
+    fitness.cpp
+    interface.cpp
+    modularNumber.cpp
+    monoalphabetic.cpp
+    periodic.cpp
+    polybius.cpp
+    solitaire.cpp
+    stream.cpp
+    strings.cpp
+    transpositions.cpp
+)

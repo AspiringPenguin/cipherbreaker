@@ -4,7 +4,6 @@
 #include "basics.h"
 #include "corpus.h"
 #include "fitness.h"
-#include "homophonic.h"
 #include "interface.h"
 #include "modularNumber.h"
 #include "monoalphabetic.h"
@@ -29,10 +28,6 @@ int testStuff(std::string cipher) {
 	//}
 
 	//cipher = basics::formatString(cipher);
-
-	auto res = homophonic::dualBetHillClimber(cipher);
-
-	std::cout << homophonic::dualBetDecrypt(cipher, std::get<0>(res), std::get<1>(res));
 
 	return 2; //Complete
 }

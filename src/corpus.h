@@ -4,7 +4,7 @@
 #include <string>
 
 namespace corpus {
-	static std::string dataLoc = "D:/cipher-data/"; //Change this to wherever you store the data if you want to build and run the code
+	static std::string dataLoc = "/home/iwh26/cipher-stuff/cipher-data/"; //Change this to wherever you store the data if you want to build and run the code
 
 	//Corpus
 	static auto corpus = fileLoaders::loadFile(dataLoc + "corpus.txt"); //Load the corpus file
