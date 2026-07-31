@@ -45,3 +45,5 @@
 /cipher-C++/x64/Release-Test
 
 build/
+/.vs
+/CMakeSettings.json
