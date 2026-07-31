@@ -209,7 +209,7 @@ namespace polybius {
 
     //A helper function to remove the excess 'x's from a playfair decryption to make tetragram fitness more accurate
     std::string processPlayfairDecrypt(std::string decrypt) {
-        int n = 0; //Start search from the beginning
+        int n = 1; //Start search from the beginning, but skip n=0 as it doesn't satisfy any of the criteria.
         while (true) {
             n = decrypt.find('x', n);
             if (n == std::string::npos) { //No more 'x's from position n onwards, so return
