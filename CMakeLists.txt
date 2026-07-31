@@ -7,6 +7,10 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
+if (TEST)
+	add_compile_definitions(TEST)
+endif()
+
 project(Cipher-C++)
 
 add_subdirectory(src)
