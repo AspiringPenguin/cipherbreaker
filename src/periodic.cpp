@@ -75,8 +75,8 @@ namespace periodic {
 	//Hill climbing attack on periodic substitution ciphers
 	//As described in Madness's book at the end of the periodic ciphers section, with just a different limit calculation
 	//Uses a custom hill climbing attack, see "periodic substitution hill climber"
-	std::string hillClimber(std::string cipher, int keySize) {
-		int l = cipher.length();
+	std::string hillClimber(std::string cipher, long keySize) {
+		long l = cipher.length();
 
 		//Generate best key as a list of copies of the alphabet
 		auto alphabetKey = monoalphabetic::stringToKey(basics::alphabet);
@@ -92,7 +92,7 @@ namespace periodic {
 
 		float bestFitness = fitness::tetragramFitness(&bestDecrypt);
 
-		int limit = (keySize * keySize) * 100000000 / l; // A variation on something I found in an academic article to make long texts finish more quickly
+		long limit = (keySize * keySize) * (100000000l / l); // A variation on something I found in an academic article to make long texts finish more quickly
 														 // without compromising accuracy on short texts
 
 		//Set up for vars in loops
