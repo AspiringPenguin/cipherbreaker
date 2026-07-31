@@ -329,8 +329,9 @@ namespace transpositions{
 
 		//Loop control
 		int counter = 0;
-		int limit = 1000 * keyLen;
-		int absoluteLimit = 100000 * keyLen;
+		int limit = 5000 * keyLen;
+		int middleLimit = limit * keyLen;
+		int absoluteLimit = 120000 * keyLen;
 		int total = 0; //This is used to give up on wrong key lengths
 
 		std::random_device rd;
@@ -342,7 +343,7 @@ namespace transpositions{
 
 		int a, b, _; //For copies
 
-		while (counter < limit && (total < limit || bestFitness > -40) && total < absoluteLimit) {
+		while (counter < limit && (total < middleLimit || bestFitness > -40) && total < absoluteLimit) {
 			childKey = bestKey; //Copy to childKey
 			if (coin(gen) == 0) { //Flip a coin, heads - swap two elements
 				a = keyChoice(gen);
@@ -372,6 +373,19 @@ namespace transpositions{
 			//Increment loop variables
 			counter++;
 			total++;
+		}
+
+		//Before we finish, let's try rolling the key to find the best possible fitness
+		std::vector<int> origKey = bestKey;
+		for (int i = 1; i < keyLen; i++) {
+			childKey = rollKey(origKey, i);
+			childDecrypt = columnarDecrypt(cipher, childKey);
+			childFitness = fitness::tetragramFitness(&childDecrypt);
+			if (childFitness > bestFitness) {
+				bestKey = childKey;
+				bestFitness = childFitness;
+				bestDecrypt = childDecrypt;
+			}
 		}
 
 		return bestKey;
