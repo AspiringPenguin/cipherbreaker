@@ -2,6 +2,7 @@
 #include "corpus.h"
 #include "fitness.h"
 #include "strings.h"
+#include <cmath>
 
 namespace fitness {
 	//Count all the characters a-z in a string and return them as a s6-item array with frequencies in alphabetical order
