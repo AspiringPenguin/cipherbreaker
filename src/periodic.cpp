@@ -92,8 +92,10 @@ namespace periodic {
 
 		float bestFitness = fitness::tetragramFitness(&bestDecrypt);
 
-		long limit = (keySize * keySize) * (500000000l / l); // A variation on something I found in an academic article to make long texts finish more quickly
+		long limit = (keySize * keySize) * (100000000l / l); // A variation on something I found in an academic article to make long texts finish more quickly
 														     // without compromising accuracy on short texts
+															 // We could make this constant bigger but I find it rarely makes a difference and can be easier
+															 // to restart if we get stuck.
 
 		//Set up for vars in loops
 		int littleCounter;
