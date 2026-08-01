@@ -607,4 +607,31 @@ namespace transpositions{
 
 		return decrypt;
 	}
+
+    std::string railfenceBruteForce(std::string cipher) {
+        for (int depth=2; depth<=20; depth++){
+			std::cout << depth << std::endl;
+			for (int offset=0; offset<(2*(depth-1)); offset++){
+				std::string decrypt = railfenceDecrypt(cipher, depth, offset);
+				if (fitness::tetragramFitness(&decrypt) > -15){
+					return decrypt;
+				}
+			}
+		}
+		return "";
+    }
+    
+	int cliRailfenceBruteForce(std::string cipher) {
+        cipher = basics::formatString(cipher);
+
+		auto res = railfenceBruteForce(cipher);
+
+		if (res != "") { //Ignore a null result
+			if (cliInterface::offerDecryption(res)) {
+				return 1; //Success
+			}
+		}
+		
+		return 0; //Failure
+    }
 }
