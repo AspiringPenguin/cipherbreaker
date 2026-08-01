@@ -34,4 +34,6 @@ namespace transpositions {
 	std::string twistedScytaleDecrypt(std::string cipher, int width, int twist);
 	std::string twistedScytaleBruteForce(std::string cipher);
 	int cliTwistedScytaleBruteForce(std::string cipher);
+
+	std::string railfenceDecrypt(std::string cipher, int depth, int offset);
 }

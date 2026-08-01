@@ -512,4 +512,99 @@ namespace transpositions{
 		
 		return 0; //Failure
 	}
+
+	std::string railfenceDecrypt(std::string cipher, int depth, int offset){
+		int charactersPerPass = (2*(depth - 1));
+
+		offset = offset % charactersPerPass;
+
+		int len = cipher.length() + offset;
+
+		int passes = std::ceil(((float) len) / ((float) charactersPerPass));
+		
+		//Work out how many letters on each layer
+		//General bit
+		auto letterCounts = std::vector<int>();
+		letterCounts.push_back(passes);
+		for (int i=1; i<(depth-1); i++){
+			letterCounts.push_back(2 * passes);
+		}
+		letterCounts.push_back(passes);
+		
+		//Remove offset letters at start
+		for (int i=0; i<offset; i++){
+			if (i < depth) {
+				letterCounts[i]--;
+			}
+			else{
+				letterCounts[charactersPerPass - i]--;
+			}
+		}
+
+		//Remove extra letters from end
+		for (int i=1; i<=(passes*charactersPerPass - len); i++){
+			if (i < depth) {
+				letterCounts[i]--;
+			}
+			else{
+				letterCounts[charactersPerPass - i]--;
+			}
+		}
+
+		// for (auto c : letterCounts){
+		// 	std::cout << c << ",";
+		// }
+		// std::cout << std::endl;
+
+		//Now get the letters from each row of the fence
+		auto rows = std::vector<std::string>();
+		
+		int pos = 0;
+		for (auto c: letterCounts){
+			rows.push_back(cipher.substr(pos, c));
+			pos += c;
+		}
+
+		//And use the rows to decrypt the text
+		std::string decrypt = "";
+
+		auto stringPositions = std::vector<int>(depth, 0);
+		
+		//Pass 1 needs to respect the offset, so we do that separately.
+		int j;
+		for (int i=offset; i<charactersPerPass; i++){
+			if (i < depth) {
+				j = i;
+			}
+			else{
+				j = charactersPerPass - i;
+			}
+			decrypt += rows[j][stringPositions[j]];
+			stringPositions[j]++;
+		}
+
+		//Now for the rest. Just break out when we try to add a character that isn't there.
+		int i = 0;
+		while (true) {
+			if (i < depth) {
+				j = i;
+			}
+			else{
+				j = charactersPerPass - i;
+			}
+			
+			if (stringPositions[j] == letterCounts[j]){
+				break;
+			}
+
+			decrypt += rows[j][stringPositions[j]];
+			stringPositions[j]++;
+
+			//Update i
+			i++;
+			i = i % charactersPerPass;
+		}
+
+		return decrypt;
+	}
 }
