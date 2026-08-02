@@ -33,6 +33,11 @@ int testStuff(std::string cipher) {
 }
 #endif
 
+// Todo:
+// Update polybius support to deal with z into y as well as j into i. We can't just botch it as each letter isn't independent.
+// Perhaps we need an extra parameter for which character to ignore in the starting key for attacks. 
+// Also add more decriptive error messages so I know why things have failed to start without checking the code.
+
 int main() {
 	std::string cipher = cliInterface::getCipherInput();
 	cliInterface::Menu menu;
