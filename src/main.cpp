@@ -53,6 +53,7 @@ int main() {
 	menu.addMenuItem(cliInterface::MenuItem("Columnar Transposition (Hill Climber)", *transpositions::cliColumnarHillClimber));
 	menu.addMenuItem(cliInterface::MenuItem("Twisted Scytale (Brute Force)", *transpositions::cliTwistedScytaleBruteForce));
 	menu.addMenuItem(cliInterface::MenuItem("Railfence (Brute Force)", *transpositions::cliRailfenceBruteForce));
+	menu.addMenuItem(cliInterface::MenuItem("Redefence (Brute Force)", *transpositions::cliRedefenceBruteForce));
 
 	menu.addMenuItem(cliInterface::MenuItem("Playfair (Wandering Hill Climber)", *polybius::cliPlayfairHillClimber));
 	menu.addMenuItem(cliInterface::MenuItem("Playfair 2025 Variation (Wandering Hill Climber)", *polybius::cliPlayfair2025VariationHillClimber));

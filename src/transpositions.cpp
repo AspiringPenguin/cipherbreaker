@@ -644,4 +644,33 @@ namespace transpositions{
 		
 		return 0; //Failure
     }
+
+	std::string redefenceBruteForce(std::string cipher) {
+		for (int depth = 2; depth <= 9; depth++) { //Only 9 as this takes long enough - this is O(n!n) for a given depth, and not particularly fast.
+			std::cout << depth << std::endl;
+			for (int offset = 0; offset < (2 * (depth - 1)); offset++) {
+				for (std::vector<int> key : heapsPerms(depth)) {
+					std::string decrypt = redefenceDecrypt(cipher, depth, offset, key);
+					if (fitness::tetragramFitness(&decrypt) > -15) {
+						return decrypt;
+					}
+				}
+			}
+		}
+		return "";
+	}
+
+	int cliRedefenceBruteForce(std::string cipher) {
+		cipher = basics::formatString(cipher);
+
+		auto res = redefenceBruteForce(cipher);
+
+		if (res != "") { //Ignore a null result
+			if (cliInterface::offerDecryption(res)) {
+				return 1; //Success
+			}
+		}
+
+		return 0; //Failure
+	}
 }

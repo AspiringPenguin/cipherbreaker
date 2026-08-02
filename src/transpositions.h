@@ -40,4 +40,7 @@ namespace transpositions {
 
 	std::string railfenceBruteForce(std::string cipher);
 	int cliRailfenceBruteForce(std::string cipher);
+
+	std::string redefenceBruteForce(std::string cipher);
+	int cliRedefenceBruteForce(std::string cipher);
 }
