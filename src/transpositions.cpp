@@ -22,7 +22,7 @@ namespace transpositions{
 		return res;
 	}
 
-	//Generator for permutations of array 0->n inclusive, using heap's algorithm
+	//Generator for permutations of array 0->n (inclusive, exclusive) using heap's algorithm
 	//This uses std::generator and coroutines so the permuatations can be generated on the fly
 	// as opposed to generating them all and consuming large amounts of memory in a vactor,
 	// which could potentially cause system crashes due to the huge contiguous memory allocations
@@ -573,10 +573,6 @@ namespace transpositions{
 			c = letterCounts[key[i]];
 			rows[key[i]] = cipher.substr(pos, c);
 			pos += c;
-		}
-
-		for (auto row : rows) {
-			std::cout << row << std::endl;
 		}
 
 		//And use the rows to decrypt the text
