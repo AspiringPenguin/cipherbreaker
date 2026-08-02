@@ -37,6 +37,31 @@ int testStuff(std::string cipher) {
 // Update polybius support to deal with z into y as well as j into i. We can't just botch it as each letter isn't independent.
 // Perhaps we need an extra parameter for which character to ignore in the starting key for attacks. 
 // Also add more decriptive error messages so I know why things have failed to start without checking the code.
+// 
+// Interpret morse?!
+// 
+// Improve tools for polyalphabetic substitutions
+// - Beaufort
+// - Variant Beaufort
+// - Porta
+// - Bellaso 1552
+// - Periodic Affine
+// - Quagmires?
+// - Create a menu option that tries each of these in turn
+// - perhaps improve the hill-climber (probably shotgun hill climbing would work best here, could be a good case for multithreading)
+//   Some texts work well (like Madness's example for that attack) but it would be good to make it faster and/or more reliable for shorter texts
+//   and for larger keys - it seems to struggle with most other things I threw at it - but this is probable mainly a result of the massive key-space
+//   and the consequent ease of overfitting to the text, giving gibberish that maximised tetragram fitness
+//
+// More grid ciphers - whole section?
+// 
+// Matrices implementation
+// Hill cipher - decrypt, brute force with less brute force, using cribs
+// Affine hill cipher?
+// 
+// More transposition ciphers, and maybe have a combined script that checks them all
+// 
+// Finish solitaire cipher attack
 
 int main() {
 	std::string cipher = cliInterface::getCipherInput();
