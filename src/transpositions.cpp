@@ -513,7 +513,15 @@ namespace transpositions{
 		return 0; //Failure
 	}
 
-	std::string railfenceDecrypt(std::string cipher, int depth, int offset){
+	std::string railfenceDecrypt(std::string cipher, int depth, int offset) {
+		auto nullKey = std::vector<int>();
+		for (int i = 0; i < depth; i++) {
+			nullKey.push_back(i);
+		}
+		return redefenceDecrypt(cipher, depth, offset, nullKey);
+	}
+
+	std::string redefenceDecrypt(std::string cipher, int depth, int offset, std::vector<int> key){
 		int charactersPerPass = (2*(depth - 1));
 
 		offset = offset % charactersPerPass;
@@ -557,12 +565,18 @@ namespace transpositions{
 		// std::cout << std::endl;
 
 		//Now get the letters from each row of the fence
-		auto rows = std::vector<std::string>();
+		auto rows = std::vector<std::string>(depth, "");
 		
 		int pos = 0;
-		for (auto c: letterCounts){
-			rows.push_back(cipher.substr(pos, c));
+		int c;
+		for (int i = 0; i < depth; i++) {
+			c = letterCounts[key[i]];
+			rows[key[i]] = cipher.substr(pos, c);
 			pos += c;
+		}
+
+		for (auto row : rows) {
+			std::cout << row << std::endl;
 		}
 
 		//And use the rows to decrypt the text

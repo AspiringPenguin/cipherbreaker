@@ -36,6 +36,8 @@ namespace transpositions {
 	int cliTwistedScytaleBruteForce(std::string cipher);
 
 	std::string railfenceDecrypt(std::string cipher, int depth, int offset);
+	std::string redefenceDecrypt(std::string cipher, int depth, int offset, std::vector<int> key);
+
 	std::string railfenceBruteForce(std::string cipher);
 	int cliRailfenceBruteForce(std::string cipher);
 }
