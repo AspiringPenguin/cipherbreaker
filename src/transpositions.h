@@ -43,4 +43,8 @@ namespace transpositions {
 
 	std::string redefenceBruteForce(std::string cipher);
 	int cliRedefenceBruteForce(std::string cipher);
+
+	std::string periodicColumnarDecrypt(std::string cipher, int blockSize, std::vector<int> key);
+	std::string periodicColumnarBruteForce(std::string cipher, int blockSize);
+	int cliPeriodicColumnarBruteForce(std::string cipher);
 }

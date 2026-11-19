@@ -81,6 +81,7 @@ int main() {
 
 	menu.addMenuItem(cliInterface::MenuItem("Permutation Transposition (Hill Climber)", *transpositions::cliPermutationHillClimber));
 	menu.addMenuItem(cliInterface::MenuItem("Columnar Transposition (Hill Climber)", *transpositions::cliColumnarHillClimber));
+	menu.addMenuItem(cliInterface::MenuItem("Periodic Columnar Transposition (??)", *transpositions::cliPeriodicColumnarBruteForce));
 	menu.addMenuItem(cliInterface::MenuItem("Twisted Scytale (Brute Force)", *transpositions::cliTwistedScytaleBruteForce));
 	menu.addMenuItem(cliInterface::MenuItem("Railfence (Brute Force)", *transpositions::cliRailfenceBruteForce));
 	menu.addMenuItem(cliInterface::MenuItem("Redefence (Brute Force)", *transpositions::cliRedefenceBruteForce));

@@ -673,4 +673,61 @@ namespace transpositions{
 
 		return 0; //Failure
 	}
+
+	std::string periodicColumnarDecrypt(std::string cipher, int blockSize, std::vector<int> key) {
+		auto blocks = strings::getBlocks(cipher, blockSize);
+
+		for (int i = 0; i < blocks.size(); i++) {
+			blocks[i] = columnarDecrypt(blocks[i], key);
+		}
+
+		return strings::blocksToString(blocks);
+	}
+
+	std::string periodicColumnarBruteForce(std::string cipher, int blockSize) {
+		auto factors = basics::getFactors(blockSize);
+		std::sort(factors.begin(), factors.end());
+		
+		std::string decrypt;
+
+		for (int n: factors) {
+			if (n == 1 || n == blockSize || n > 10) {
+				continue;
+			}
+			std::cout << "  " << n << std::endl;
+			for (const auto& perm : heapsPerms(n)) { //Try every key
+				decrypt = periodicColumnarDecrypt(cipher, blockSize, perm);
+				if (fitness::tetragramFitness(&decrypt) > -15) {
+					return decrypt;
+				}
+			}
+		}
+
+		return ""; //Return a null result
+	}
+
+	int cliPeriodicColumnarBruteForce(std::string cipher) {
+		cipher = basics::formatString(cipher);
+
+		auto factors = basics::getFactors(cipher.length());
+		std::sort(factors.begin(), factors.end());
+
+		std::string result;
+
+		//Try each block size
+		for (auto factor : factors) {
+			if (factor == 1) {
+				continue;
+			}
+			std::cout << factor << std::endl;
+			result = periodicColumnarBruteForce(cipher, factor);
+			if (result != "") { //Ignore a null result
+				if (cliInterface::offerDecryption(result)) {
+					return 1; //Success
+				}
+			}
+		}
+
+		return 0; //Failure
+	}
 }
