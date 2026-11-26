@@ -15,6 +15,7 @@
 #include "transpositions.h"
 
 //Add test func if not a release build - this is generally used for testing or providing easy debug access to a certain piece of code
+//Reminder!! - DON'T PUSH TO GITHUB UNTIL A WEEK LATER FOR LIVE CHALLENGES!
 #ifdef TEST
 int testStuff(std::string cipher) {
 	cipher = basics::formatString(cipher);
